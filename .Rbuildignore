@@ -1,0 +1,7 @@
+^dev$
+^\.Rproj\.user$
+^.*\.Rproj$
+^README\.md$
+^CHANGELOG\.md$
+^Dockerfile$
+^\.github$

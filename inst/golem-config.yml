@@ -1,0 +1,14 @@
+default:
+  golem_name: opescplus
+  golem_version: 1.0.0
+  app_prod: no
+  # Chemin du fichier SQLite. Laisser vide pour laisser `chemin_base()` decider :
+  # variable d'environnement OPESC_BASE, puis base livree avec le paquet, puis
+  # dossier de donnees de l'utilisateur.
+  base: ~
+
+production:
+  app_prod: yes
+
+dev:
+  golem_wd: !expr golem::pkg_path()

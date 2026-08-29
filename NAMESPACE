@@ -1,0 +1,23 @@
+# Genere a la main. Apres toute modification des balises roxygen, regenerez-le
+# avec devtools::document().
+
+export(base_modifiable)
+export(chemin_base)
+export(codes_produits_de_base)
+export(collecter)
+export(collecter_en_lot)
+export(connexion)
+export(diagnostic_frequences)
+export(creer_schema)
+export(explorer_champs_atlas)
+export(explorer_flux_fmi)
+export(initialiser_base)
+export(lire_categories)
+export(lire_indicateurs)
+export(lire_pays)
+export(preparer_base)
+export(run_app)
+export(tr)
+importFrom(shiny,shinyApp)
+importFrom(stats,setNames)
+importFrom(utils,head)

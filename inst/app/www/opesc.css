@@ -1,0 +1,291 @@
+:root{
+  --bleu:#1F3864; --bleu-clair:#2C4F8F; --or:#C8A24A;
+  --vert:#137B3B; --rouge:#B4232A;
+  --texte:#1B1F24; --gris:#5C6672; --bordure:#DCE1E8; --fond:#F5F7FA;
+  --rayon:6px;
+}
+body{background:var(--fond);color:var(--texte);margin:0}
+.conteneur{max-width:1560px;margin:0 auto;padding:16px 22px 40px}
+
+/* ---------------------------------------------------------- bandeau ----- */
+/* Bandeau fige : sur les pages longues, on garde les reperes institutionnels
+   et l'acces aux onglets sans remonter. */
+.bandeau{background:var(--bleu);border-bottom:3px solid var(--or);
+  position:sticky;top:0;z-index:1030;box-shadow:0 2px 10px rgba(0,0,0,.16)}
+/* ------------------------------------------- partenaires commerciaux ---- */
+.bandeau-partenaires{background:rgba(0,0,0,.16);border-top:1px solid rgba(255,255,255,.10)}
+/* Tout est centre : le titre du bloc au-dessus, les drapeaux en dessous.
+   Aligner le titre a gauche et les drapeaux a sa suite deportait l'ensemble
+   vers la droite et desequilibrait le bandeau. */
+.partenaires-interne{max-width:1560px;margin:0 auto;padding:6px 22px 8px;
+  display:flex;flex-direction:column;align-items:center;gap:5px}
+.partenaires-titre{color:#FFFFFF;font-size:.66rem;text-transform:uppercase;
+  letter-spacing:1.1px;font-weight:600;opacity:.72}
+.partenaires-liste{display:flex;gap:14px;flex-wrap:wrap;align-items:center;
+  justify-content:center}
+.partenaire{display:inline-flex;align-items:center;gap:5px}
+.drapeau{height:11px;width:auto;border-radius:1px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.35)}
+.partenaire-nom{color:#FFFFFF;font-size:.72rem;white-space:nowrap;opacity:.92}
+/* Trois colonnes de meme largeur. Les logos sont pousses aux extremites et le
+   titre reste exactement au centre, ce qu'un espaceur unique ne permettait pas
+   puisque la largeur des deux logos differe. */
+.bandeau-principal{max-width:1560px;margin:0 auto;padding:11px 22px;
+  display:flex;align-items:center;gap:18px}
+.bandeau-cote{flex:1 1 0;display:flex;align-items:center;min-width:0}
+.bandeau-cote-droite{justify-content:flex-end;gap:16px}
+.selecteur-langue{display:flex;align-items:center;gap:7px}
+.langue-etiquette{color:#FFFFFF;opacity:.65;font-size:.68rem;text-transform:uppercase;
+  letter-spacing:.9px;margin:0}
+/* Cadre blanc : le selecteur doit se lire comme un champ de saisie, pas comme
+   deux liens que rien ne distingue du reste du bandeau. */
+.langue-liste{background:#FFFFFF;color:var(--bleu);border:1px solid #FFFFFF;
+  border-radius:4px;padding:5px 26px 5px 10px;font-size:.82rem;font-weight:600;
+  font-family:inherit;cursor:pointer;appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231F3864' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 7px center;background-size:12px}
+.langue-liste:focus{outline:2px solid var(--or);outline-offset:1px}
+
+/* --------------------------------------------------------- manuel ------- */
+.choix-manuel{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:6px 0 2px}
+.choix-manuel .shiny-input-container{width:100%}
+.choix-manuel .control-label{font-size:.78rem;font-weight:600;color:var(--gris);
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:block}
+.choix-manuel .radio label{font-size:.9rem;font-weight:500}
+.manuel-note{color:var(--gris);font-size:.84rem;line-height:1.55;margin:16px 0 0;
+  padding-top:13px;border-top:1px solid var(--bordure)}
+.marque{flex:0 1 auto;text-align:center}
+.logo{width:auto;flex:0 0 auto}
+.logo-etat{height:56px}
+/* Le logo du ministere porte un texte circulaire noir qui disparaitrait sur le
+   bleu : il recoit un disque blanc, dont la forme epouse celle du logo. */
+.logo-ministere{height:52px;background:#fff;border-radius:50%;padding:3px}
+.marque strong{display:block;color:#fff;font-size:1.5rem;letter-spacing:.6px;line-height:1.15}
+.marque small{display:block;color:#B9C6DC;font-size:.78rem;letter-spacing:.2px}
+
+/* Barre d'onglets Bootstrap ramenee a l'identite du site. */
+.navbar{background:#fff!important;border:1px solid var(--bordure);
+  border-radius:var(--rayon);padding:0 8px;margin-bottom:16px;min-height:0}
+.navbar .nav-link{color:var(--gris)!important;font-weight:600;padding:12px 18px!important;
+  border-bottom:3px solid transparent}
+.navbar .nav-link.active{color:var(--bleu)!important;border-bottom-color:var(--or);
+  background:transparent!important}
+
+/* ----------------------------------------------------------- accueil ---- */
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:center;
+  background:#fff;border:1px solid var(--bordure);border-radius:var(--rayon);
+  padding:34px 36px;margin-bottom:16px;overflow:hidden}
+.hero-surtitre{display:block;color:var(--or);font-size:.74rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:1.4px;margin-bottom:9px}
+.hero h1{font-size:1.86rem;line-height:1.24;color:var(--bleu);margin:0 0 14px;
+  font-weight:700;max-width:20ch}
+.hero-texte p{color:var(--gris);font-size:.97rem;line-height:1.62;max-width:56ch;margin:0}
+.hero-actions{margin-top:22px;display:flex;gap:11px;flex-wrap:wrap}
+.btn-large{padding:11px 22px!important;font-size:.95rem!important}
+.hero-image img{width:100%;height:auto;display:block;border-radius:var(--rayon)}
+
+.bande-chiffres{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:1px;background:var(--bordure);border:1px solid var(--bordure);
+  border-radius:var(--rayon);overflow:hidden;margin-bottom:22px}
+.chiffre{background:#fff;padding:17px 19px;display:flex;flex-direction:column;gap:2px}
+.chiffre-valeur{font-size:1.62rem;font-weight:700;color:var(--bleu);line-height:1.1}
+.chiffre-libelle{font-size:.78rem;color:var(--gris);text-transform:uppercase;
+  letter-spacing:.5px}
+.chiffre-maj{background:#F8FAFC}
+.chiffre-date{font-size:.92rem;color:var(--bleu);font-weight:600}
+
+.section{margin-bottom:30px}
+.section h2{font-size:1.24rem;color:var(--bleu);font-weight:700;margin:0 0 6px;
+  padding-bottom:9px;border-bottom:2px solid var(--or);display:inline-block}
+.section-chapo{color:var(--gris);font-size:.9rem;max-width:74ch;margin:10px 0 16px}
+
+.grille-fonctions{display:grid;grid-template-columns:repeat(auto-fill,minmax(292px,1fr));
+  gap:14px;margin-top:16px}
+.carte-fonction{background:#fff;border:1px solid var(--bordure);
+  border-radius:var(--rayon);padding:19px 21px;position:relative;
+  transition:box-shadow .16s,border-color .16s}
+.carte-fonction:hover{border-color:var(--bleu-clair);
+  box-shadow:0 4px 14px rgba(31,56,100,.10)}
+.fonction-icone{color:var(--or);margin-bottom:11px;line-height:1}
+.carte-fonction h3{font-size:1rem;color:var(--bleu);margin:0 0 7px;font-weight:700}
+.carte-fonction p{color:var(--gris);font-size:.86rem;line-height:1.55;margin:0 0 12px}
+.fonction-onglet{font-size:.7rem;color:var(--bleu-clair);background:#EEF2F8;
+  border-radius:10px;padding:2px 9px;font-weight:600}
+
+.grille-liens{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));
+  gap:13px;margin-top:16px}
+.carte-lien{background:#fff;border:1px solid var(--bordure);
+  border-left:4px solid var(--bleu-clair);border-radius:var(--rayon);
+  padding:16px 18px;display:flex;flex-direction:column;gap:5px;
+  color:var(--texte);text-decoration:none;transition:border-color .16s,transform .16s}
+.carte-lien:hover{border-left-color:var(--or);text-decoration:none;
+  transform:translateX(3px);color:var(--texte)}
+.carte-lien strong{color:var(--bleu);font-size:.98rem}
+.carte-lien span{color:var(--gris);font-size:.83rem;line-height:1.45}
+.carte-lien-fleche{color:var(--bleu-clair)!important;font-size:1.1rem!important;
+  margin-top:3px}
+.carte-source{border-left-color:var(--or)}
+.etiquette{align-self:flex-start;background:#EEF2F8;color:var(--bleu-clair)!important;
+  font-size:.72rem!important;border-radius:10px;padding:2px 9px;font-weight:600;margin-top:4px}
+
+/* ------------------------------------------------------- bienvenue ------ */
+.bienvenue{position:fixed;right:22px;bottom:22px;z-index:2000;max-width:390px;
+  background:#fff;border:1px solid var(--bordure);border-left:5px solid var(--or);
+  border-radius:var(--rayon);padding:16px 19px;box-shadow:0 8px 28px rgba(0,0,0,.17);
+  opacity:0;transform:translateY(14px);transition:opacity .35s,transform .35s;
+  cursor:pointer}
+.bienvenue-visible{opacity:1;transform:translateY(0)}
+.bienvenue strong{display:block;color:var(--bleu);font-size:1rem;margin-bottom:5px}
+.bienvenue span{color:var(--gris);font-size:.85rem;line-height:1.55}
+
+/* ---------------------------------------------------------- fiche pays -- */
+.bloc-carte{display:grid;grid-template-columns:1fr 288px;gap:18px;align-items:start}
+.colonne-fiche{border-left:1px solid var(--bordure);padding-left:18px;min-height:460px}
+.fiche-invite{color:var(--gris);font-size:.85rem;text-align:center;padding:56px 8px}
+.fiche-invite-icone{color:var(--bordure);display:block;margin-bottom:12px}
+.fiche-pays{animation:apparition .22s ease-out}
+@keyframes apparition{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.fiche-drapeau{position:relative;margin-bottom:13px}
+.fiche-drapeau img{width:100%;height:auto;border-radius:4px;
+  box-shadow:0 1px 6px rgba(0,0,0,.18)}
+.fiche-code{position:absolute;right:7px;bottom:7px;background:rgba(31,56,100,.88);
+  color:#fff;font-size:.68rem;font-weight:700;letter-spacing:1px;
+  padding:2px 7px;border-radius:3px}
+.fiche-corps h4{color:var(--bleu);font-size:1.08rem;margin:0 0 11px;font-weight:700}
+.fiche-lignes{display:flex;flex-direction:column;gap:9px}
+.fiche-ligne{display:flex;flex-direction:column;gap:1px;
+  border-bottom:1px solid var(--bordure);padding-bottom:8px}
+.fiche-ligne:last-child{border-bottom:0}
+.fiche-etiquette{font-size:.71rem;color:var(--gris);text-transform:uppercase;
+  letter-spacing:.5px}
+.fiche-valeur{font-size:.9rem;color:var(--texte);font-weight:600}
+
+/* ------------------------------------------------------------ cadres ---- */
+.cadre{background:#fff;border:1px solid var(--bordure);border-radius:var(--rayon);
+  padding:16px 18px;margin-bottom:16px}
+.cadre-categories{padding-bottom:18px}
+.cadre-series{padding:12px 18px}
+.cadre-titre{font-weight:700;color:var(--bleu);font-size:.82rem;text-transform:uppercase;
+  letter-spacing:.7px;margin-bottom:12px}
+.cadre-titre-petit{font-weight:600;color:var(--gris);font-size:.76rem;
+  text-transform:uppercase;letter-spacing:.5px}
+
+/* --------------------------------------------------- tuiles categories -- */
+.tuiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.tuile{display:flex!important;flex-direction:column;align-items:flex-start;
+  justify-content:flex-start;text-align:left;gap:4px;background:#F8FAFC;
+  border:1px solid var(--bordure);border-left:4px solid var(--bordure);
+  border-radius:var(--rayon);padding:11px 13px;cursor:pointer;width:100%;
+  height:100%;min-height:74px;transition:none;color:var(--texte);
+  font-family:inherit}
+.tuile:hover{background:#EEF2F8;border-left-color:var(--bleu-clair)}
+.tuile-active{background:#EEF2F8;border-color:var(--bleu);border-left-color:var(--or);
+  box-shadow:inset 0 0 0 1px var(--bleu)}
+.tuile-libelle{font-weight:600;font-size:.87rem;line-height:1.25;white-space:normal}
+.tuile-compte{font-size:.74rem;color:var(--gris)}
+/* Une categorie sans donnee le dit, plutot que d'annoncer un nombre
+   d'indicateurs qui ne donneront rien une fois selectionnes. */
+.tuile-vide{color:#A07000;font-style:italic}
+.tuile-active .tuile-libelle{color:var(--bleu)}
+
+/* ------------------------------------------------------ barre filtres --- */
+.cadre-filtres{padding-bottom:8px}
+/* Grille plutot que flottement : les etiquettes des cinq champs s'alignent sur
+   une meme ligne de base, et les boutons ne se retrouvent plus decales vers le
+   haut quand un champ passe sur deux lignes. */
+.barre-filtres{display:grid;gap:14px 16px;align-items:end;
+  grid-template-columns:2.2fr 1fr 1.5fr 2.2fr;
+  grid-template-areas:"indicateur frequence periode pays" "actions actions actions actions"}
+.champ-indicateur{grid-area:indicateur}
+.champ-frequence{grid-area:frequence}
+.champ-periode{grid-area:periode}
+.champ-pays{grid-area:pays}
+.champ-actions{grid-area:actions;display:flex;gap:8px;align-items:center;
+  padding-top:4px;border-top:1px solid var(--bordure);margin-top:2px}
+.champ{min-width:0}
+.champ-vide{min-width:0}
+.champ .form-group,.champ .shiny-input-container{margin-bottom:0!important;width:100%}
+.champ label,.champ-vide label{font-size:.78rem;font-weight:600;color:var(--gris);
+  text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.champ-periode .shiny-input-container{width:100%}
+.champ-periode .input-daterange{display:flex;gap:6px}
+
+.btn-opesc{background:var(--bleu)!important;border-color:var(--bleu)!important;
+  color:#fff!important;font-weight:600;white-space:nowrap}
+.btn-opesc:hover{background:var(--bleu-clair)!important}
+.btn-opesc-clair{background:#fff!important;border:1px solid var(--bordure)!important;
+  color:var(--bleu)!important;font-weight:600;white-space:nowrap}
+.btn-opesc-clair:hover{background:#EEF2F8!important}
+
+.alerte{background:#FFF8E6;border-left:4px solid var(--or);padding:9px 13px;
+  margin-top:12px;border-radius:0 var(--rayon) var(--rayon) 0;font-size:.85rem}
+.alerte p{margin:0}
+
+/* ------------------------------------------------------------ jetons ---- */
+.jetons{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.jeton{background:#EEF2F8;border:1px solid var(--bordure);border-radius:12px;
+  padding:3px 8px 3px 11px;font-size:.79rem;display:inline-flex;align-items:center;gap:7px}
+.jeton-retirer{color:var(--gris)!important;text-decoration:none!important;
+  font-size:1rem;line-height:1}
+.jeton-retirer:hover{color:var(--rouge)!important}
+
+/* --------------------------------------------------------- graphique ---- */
+.entete-graphique{display:flex;justify-content:space-between;align-items:flex-end;
+  gap:16px;flex-wrap:wrap;margin-bottom:12px}
+.entete-graphique h3{margin:0;font-size:1.14rem;color:var(--bleu);font-weight:700}
+.outils{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.outils .form-group,.outils .shiny-input-container{margin-bottom:0!important}
+.outils .checkbox{margin:0!important}
+/* Hauteur portee par ce bloc et non par le graphique lui-meme, pour eviter
+   qu'il ne se redimensionne en boucle a chaque redessin. */
+.zone-graphique{position:relative;min-height:440px}
+/* La carte porte sa hauteur comme le graphique : sans hauteur determinee,
+   plotly redimensionne son parent a chaque redessin et la carte s'etire. */
+.zone-carte{position:relative;min-height:460px}
+.outils .irs{min-width:220px}
+.outils .shiny-input-container{width:auto!important}
+
+.meta{font-size:.83rem;color:var(--gris);margin:2px 0 0}
+.petit{font-size:.8rem;color:var(--gris)}
+.note{background:#F8FAFC;border-left:4px solid var(--bleu-clair);padding:9px 13px;
+  color:var(--gris);font-size:.83rem;border-radius:0 var(--rayon) var(--rayon) 0;margin:12px 0 0}
+
+/* ----------------------------------------------------------- tableau ---- */
+table.dataTable thead th{background:var(--bleu);color:#fff;border:0!important;
+  font-weight:600;font-size:.82rem}
+table.dataTable tbody td{font-size:.83rem}
+table.dataTable tbody tr:nth-child(even){background:#FAFBFD}
+
+/* -------------------------------------------------------------- pied ---- */
+.pied{background:var(--bleu);color:#B9C6DC;padding:22px;margin-top:32px;font-size:.82rem}
+.pied>div{max-width:1560px;margin:0 auto}
+.pied-mentions{margin-top:6px;color:#8FA1BE}
+
+@media(max-width:1100px){
+  .barre-filtres{grid-template-columns:1fr 1fr;
+    grid-template-areas:"indicateur indicateur" "frequence periode" "pays pays" "actions actions"}
+}
+
+@media(max-width:1100px){
+  .hero{grid-template-columns:1fr;gap:22px;padding:26px}
+  .hero-image{order:-1}
+  .bloc-carte{grid-template-columns:1fr}
+  .colonne-fiche{border-left:0;border-top:1px solid var(--bordure);
+    padding-left:0;padding-top:16px;min-height:0}
+}
+
+@media(max-width:900px){
+  .bienvenue{right:12px;left:12px;bottom:12px;max-width:none}
+  .partenaires-interne{gap:10px;padding:7px 16px}
+  .partenaire-nom{display:none}
+  .drapeau{height:16px}
+  .bandeau-principal{flex-wrap:wrap;gap:12px;justify-content:center}
+  .bandeau-cote{flex:0 0 auto}
+  .marque{order:-1;width:100%}
+  .barre-filtres{grid-template-columns:1fr;
+    grid-template-areas:"indicateur" "frequence" "periode" "pays" "actions"}
+  .logo-etat{height:44px} .logo-ministere{height:40px}
+  .champ,.champ-large,.champ-periode{flex:1 1 100%}
+  .champ-actions{width:100%}
+  .champ-actions .btn{flex:1}
+}

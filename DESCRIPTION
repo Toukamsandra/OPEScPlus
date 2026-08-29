@@ -1,0 +1,36 @@
+Package: opescplus
+Title: OPESc+, Observatoire des perspectives economiques
+Version: 1.0.0
+Authors@R: person("MINEPAT", role = c("aut", "cre"),
+                  email = "contact@minepat.gov.cm")
+Description: Plateforme de collecte, de consultation et de visualisation des
+    indicateurs economiques mondiaux. Les donnees proviennent de la Banque
+    mondiale, du Fonds monetaire international, de l'OCDE et du Growth Lab de
+    l'Universite Harvard, et sont accedees par leurs interfaces de
+    programmation publiques.
+License: file LICENSE
+Encoding: UTF-8
+LazyData: false
+Depends:
+    R (>= 4.1)
+Imports:
+    bslib,
+    config,
+    DBI,
+    DT,
+    ggplot2,
+    htmlwidgets,
+    golem (>= 0.4.0),
+    httr2,
+    jsonlite,
+    openxlsx,
+    plotly,
+    RSQLite,
+    shiny (>= 1.7.0),
+    stats,
+    tools,
+    utils
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+RoxygenNote: 7.3.2

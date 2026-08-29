@@ -1,0 +1,594 @@
+# ---------------------------------------------------------------------------
+# Module Tableau de bord.
+#
+# Enchainement impose : categorie -> indicateur -> frequence -> periode -> pays.
+# Chaque etape restreint la suivante, et chaque liste est construite a partir
+# de ce qui existe reellement en base, jamais a partir de ce que la source est
+# censee publier.
+# ---------------------------------------------------------------------------
+
+mod_tableau_bord_ui <- function(id) {
+  ns <- shiny::NS(id)
+  shiny::tagList(
+
+    # --- 1. Categories ----------------------------------------------------
+    shiny::div(class = "cadre cadre-categories",
+      shiny::div(class = "cadre-titre", "Catégories de données"),
+      shiny::uiOutput(ns("tuiles"))),
+
+    # --- 2. Barre de filtres ---------------------------------------------
+    shiny::div(class = "cadre cadre-filtres",
+      shiny::div(class = "barre-filtres",
+        shiny::div(class = "champ champ-indicateur",
+          shiny::selectizeInput(
+            ns("indicateur"), tr("Indicateur"), choices = NULL, multiple = TRUE,
+            width = "100%",
+            options = list(placeholder = tr("Choisissez un ou plusieurs indicateurs"),
+                           maxItems = CONFIG$max_series,
+                           plugins = list("remove_button")))),
+        shiny::div(class = "champ champ-frequence",
+          shiny::selectInput(ns("frequence"), tr("Fréquence"), choices = NULL, width = "100%")),
+        shiny::div(class = "champ champ-periode",
+          shiny::uiOutput(ns("periode"))),
+        shiny::div(class = "champ champ-pays",
+          shiny::selectizeInput(ns("pays"), tr("Pays"), choices = NULL, multiple = TRUE,
+                                width = "100%",
+                                options = list(placeholder = "Choisissez un ou plusieurs pays",
+                                               plugins = list("remove_button")))),
+        shiny::div(class = "champ champ-actions",
+          shiny::actionButton(ns("appliquer"), tr("Appliquer le filtre"),
+                              class = "btn-opesc", icon = shiny::icon("filter")),
+          shiny::actionButton(ns("ajouter"), tr("Ajouter au graphique"),
+                              class = "btn-opesc-clair", icon = shiny::icon("plus")))),
+      shiny::uiOutput(ns("avertissement"))),
+
+    # --- 3. Series empilees ----------------------------------------------
+    shiny::uiOutput(ns("liste_series")),
+
+    # --- 4. Graphique -----------------------------------------------------
+    shiny::div(class = "cadre",
+      shiny::div(class = "entete-graphique",
+        shiny::div(
+          shiny::h3(shiny::textOutput(ns("titre"), inline = TRUE)),
+          shiny::p(class = "meta", shiny::textOutput(ns("sous_titre"), inline = TRUE))),
+        shiny::div(class = "outils",
+          shiny::selectInput(ns("type"), NULL, width = "130px",
+            choices = stats::setNames(c("ligne", "barre", "aire"), tr(c("Courbes", "Barres", "Aires")))),
+          shiny::checkboxInput(ns("base100"), tr("Base 100"), value = FALSE),
+          shiny::uiOutput(ns("bouton_actualiser"), inline = TRUE),
+          shiny::downloadButton(ns("png"), tr("Image"), class = "btn-opesc-clair"),
+          shiny::downloadButton(ns("xlsx"), tr("Données (xlsx)"), class = "btn-opesc-clair"))),
+      shiny::div(class = "zone-graphique",
+        plotly::plotlyOutput(ns("graphique"), height = "440px")),
+      shiny::p(class = "note", shiny::textOutput(ns("note_source"), inline = TRUE))),
+
+    # --- 5. Analyse cartographique ---------------------------------------
+    shiny::div(class = "cadre",
+      shiny::div(class = "entete-graphique",
+        shiny::div(
+          shiny::h3(tr("Analyse cartographique")),
+          shiny::p(class = "meta", shiny::textOutput(ns("note_carte"), inline = TRUE))),
+        shiny::div(class = "outils",
+          shiny::uiOutput(ns("annee_carte"), inline = TRUE),
+          shiny::downloadButton(ns("carte_xlsx"), tr("Classement (xlsx)"),
+                                class = "btn-opesc-clair"))),
+      shiny::div(class = "bloc-carte",
+        shiny::div(class = "zone-carte",
+          plotly::plotlyOutput(ns("carte"), height = "460px")),
+        shiny::div(class = "colonne-fiche",
+          shiny::uiOutput(ns("fiche"))))))
+}
+
+mod_tableau_bord_server <- function(id, con) {
+  shiny::moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
+    categories <- lire_categories(con)
+    tous_pays  <- lire_pays(con)
+
+    avec_donnees <- categories$code[categories$collectes > 0]
+    etat <- shiny::reactiveValues(
+      categorie = if (length(avec_donnees)) avec_donnees[[1]] else categories$code[[1]],
+      series    = list(),   # series affichees
+      donnees   = NULL,     # tableau assemble
+      graphique = NULL)
+
+    # --- tuiles de categories -------------------------------------------
+    # Les tuiles sont construites une seule fois. Les regenerer a chaque
+    # changement de categorie remettrait a zero le compteur de clics des
+    # actionButton, ce que Shiny interprete comme un nouveau clic : les
+    # observateurs se declencheraient en boucle. La mise en evidence de la
+    # tuile active est donc faite cote client, dans www/opesc.js.
+    output$tuiles <- shiny::renderUI({
+      active <- shiny::isolate(etat$categorie)
+
+      tuiles <- lapply(seq_len(nrow(categories)), function(i) {
+        # Chaque valeur est extraite comme scalaire explicite. Passer par
+        # `categories[i, ]$code` renvoyait selon les cas un vecteur, et le
+        # `if` qui suivait echouait avec « 'length = 3' in coercion to
+        # 'logical(1)' », message d'autant plus opaque qu'il ne nomme pas la
+        # ligne fautive.
+        code    <- as.character(categories$code[[i]])
+        libelle <- tr(as.character(categories$libelle[[i]]))
+        nb      <- as.integer(categories$nb[[i]])
+        collectes <- as.integer(categories$collectes[[i]])
+
+        classe <- if (isTRUE(code == active)) "tuile tuile-active" else "tuile"
+        legende <- if (collectes == 0) {
+          sprintf("%d indicateur%s, aucun collect\u00e9", nb, if (nb > 1) "s" else "")
+        } else if (collectes < nb) {
+          sprintf("%d indicateur%s sur %d collect\u00e9%s", collectes,
+                  if (collectes > 1) "s" else "", nb, if (collectes > 1) "s" else "")
+        } else {
+          sprintf("%d indicateur%s", nb, if (nb > 1) "s" else "")
+        }
+
+        # Les deux `span` doivent etre passes DANS `label`, pas apres.
+        # La signature est actionButton(inputId, label, icon, width, ...) :
+        # places en arguments positionnels, ils etaient captes par `icon` puis
+        # par `width`. Shiny appelait alors validateCssUnit() sur une balise
+        # HTML, qui est une liste de longueur 3, d'ou le message
+        # « 'length = 3' in coercion to 'logical(1)' ».
+        shiny::actionButton(
+          inputId = ns(paste0("cat_", code)),
+          label = shiny::tagList(
+            shiny::span(class = "tuile-libelle", libelle),
+            shiny::span(class = if (collectes == 0) "tuile-compte tuile-vide"
+                                else "tuile-compte", legende)),
+          class = classe)
+      })
+
+      shiny::div(class = "tuiles", tuiles)
+    })
+
+    # Un observateur par tuile. `local()` fige la valeur de l'indice : sans lui,
+    # tous les boutons partageraient la derniere categorie de la boucle.
+    lapply(categories$code, function(code) {
+      local({
+        cc <- code
+        shiny::observeEvent(input[[paste0("cat_", cc)]], {
+          etat$categorie <- cc
+        }, ignoreInit = TRUE)
+      })
+    })
+
+    # --- cascade : categorie -> indicateurs -----------------------------
+    indicateurs_categorie <- shiny::reactive({
+      lire_indicateurs(con, etat$categorie)
+    })
+
+    shiny::observeEvent(indicateurs_categorie(), {
+      d <- indicateurs_categorie()
+      if (!nrow(d)) {
+        shiny::updateSelectizeInput(session, "indicateur", choices = character(0),
+                                    server = TRUE)
+        return()
+      }
+      # Les indicateurs deja collectes viennent en tete, et ceux qui ne le sont
+      # pas le disent. Les melanger sans distinction laissait croire a une
+      # panne alors que la donnee n'avait simplement pas encore ete recuperee.
+      d <- d[order(d$nb_observations == 0, d$libelle), ]
+      libelles <- tr(d$libelle)
+      etiquettes <- ifelse(d$nb_observations == 0,
+                           paste0(libelles, "  (", tr("non collect\u00e9"), ")"),
+                           libelles)
+      choix <- stats::setNames(d$code_interne, etiquettes)
+      shiny::updateSelectizeInput(session, "indicateur", choices = choix,
+                                  selected = choix[[1]], server = TRUE,
+                                  options = list(maxItems = CONFIG$max_series))
+    })
+
+    # Les cascades qui suivent (frequence, periode, pays) se calent sur le
+    # premier indicateur choisi. Les combiner sur plusieurs indicateurs
+    # produirait des intersections souvent vides : mieux vaut un reglage lisible
+    # quitte a ce qu'une serie secondaire soit tronquee.
+    indicateur_principal <- shiny::reactive({
+      shiny::req(length(input$indicateur) > 0)
+      input$indicateur[[1]]
+    })
+
+    indicateur_courant <- shiny::reactive({
+      d <- indicateurs_categorie()
+      ligne <- d[d$code_interne == indicateur_principal(), ]
+      shiny::req(nrow(ligne) == 1)
+      ligne
+    })
+
+    # --- cascade : indicateur -> frequences -----------------------------
+    shiny::observeEvent(input$indicateur, {
+      shiny::req(input$indicateur)
+      dispo <- frequences_disponibles(con, input$indicateur)  # union des choix
+      choix <- choix_frequences(dispo)
+      if (!length(choix)) {
+        shiny::updateSelectInput(session, "frequence",
+                                 choices = c("Aucune donnée collectée" = ""))
+        return()
+      }
+      # On propose par defaut le pas le plus large disponible : c'est celui qui
+      # se lit le mieux sur un graphique de long terme.
+      shiny::updateSelectInput(session, "frequence", choices = choix,
+                               selected = unname(choix[1]))
+    })
+
+    # --- cascade : frequence -> periode ---------------------------------
+    output$periode <- shiny::renderUI({
+      shiny::req(input$indicateur, input$frequence)
+      bornes <- etendue_periode(con, input$indicateur, input$frequence)
+      if (is.null(bornes)) {
+        # Distinguer les deux cas : l'indicateur n'a jamais ete collecte, ou il
+        # l'a ete mais pas a ce pas. Le remede n'est pas le meme.
+        n <- DBI::dbGetQuery(con,
+          "SELECT nb_observations AS n FROM indicateur WHERE code_interne = ?",
+          params = list(indicateur_principal()))$n
+        message <- if (length(n) && n[[1]] == 0) {
+          tr("Cet indicateur n'a pas encore \u00e9t\u00e9 collect\u00e9. Lancez la collecte depuis l'onglet Collectes.")
+        } else {
+          tr("Aucune donn\u00e9e \u00e0 ce pas. Choisissez une autre fr\u00e9quence.")
+        }
+        return(shiny::div(class = "champ-vide",
+                          shiny::tags$label(tr("Période")),
+                          shiny::p(class = "petit", message)))
+      }
+      shiny::dateRangeInput(
+        ns("bornes"), "Période",
+        start = max(bornes$min, seq(bornes$max, by = "-20 years", length.out = 2)[2]),
+        end = bornes$max, min = bornes$min, max = bornes$max,
+        format = "dd/mm/yyyy", language = "fr", separator = " au ", width = "100%")
+    })
+
+    # La date de debut doit rester anterieure a la date de fin. Plutot que de
+    # refuser la saisie, on la corrige et on le dit.
+    shiny::observeEvent(input$bornes, {
+      b <- input$bornes
+      shiny::req(length(b) == 2, !any(is.na(b)))
+      if (b[1] > b[2]) {
+        shiny::updateDateRangeInput(session, "bornes", start = b[2], end = b[1])
+        shiny::showNotification(
+          "La date de début était postérieure à la date de fin : les deux ont été inversées.",
+          type = "warning", duration = 6)
+      }
+    }, ignoreInit = TRUE)
+
+    # --- cascade : indicateur -> pays -----------------------------------
+    shiny::observeEvent(input$indicateur, {
+      ligne <- indicateur_courant()
+      if (ligne$dimension_pays == 0) {
+        # Un cours mondial de matiere premiere n'a pas de dimension pays :
+        # proposer une liste de pays serait un piege.
+        shiny::updateSelectizeInput(session, "pays",
+          choices = c("Cours mondial (série sans dimension pays)" = "WLD"),
+          selected = "WLD", server = TRUE)
+        return()
+      }
+      dispo <- DBI::dbGetQuery(con,
+        "SELECT DISTINCT iso3 FROM observation WHERE code_interne = ?",
+        params = list(indicateur_principal()))$iso3
+
+      # On ne propose que les pays pour lesquels l'indicateur existe reellement.
+      p <- if (length(dispo)) tous_pays[tous_pays$iso3 %in% dispo, ] else tous_pays
+      p <- p[order(p$est_agregat, p$nom), ]
+      choix <- stats::setNames(p$iso3, ifelse(p$est_agregat == 1,
+                                              paste0(p$nom, " (agrégat)"), p$nom))
+      selection <- shiny::isolate(input$pays)
+      selection <- selection[selection %in% p$iso3]
+      if (!length(selection)) {
+        selection <- if (CONFIG$pays_defaut %in% p$iso3) CONFIG$pays_defaut
+                     else utils::head(p$iso3, 1)
+      }
+      shiny::updateSelectizeInput(session, "pays", choices = choix,
+                                  selected = selection, server = TRUE)
+    })
+
+    # --- avertissements --------------------------------------------------
+    output$avertissement <- shiny::renderUI({
+      messages <- character(0)
+      if (length(input$pays) > CONFIG$max_pays) {
+        messages <- c(messages, sprintf(
+          "Vous avez choisi %d pays. Au-delà de %d courbes le graphique devient illisible ; seuls les %d premiers seront tracés.",
+          length(input$pays), CONFIG$max_pays, CONFIG$max_pays))
+      }
+      if (!length(messages)) return(NULL)
+      shiny::div(class = "alerte", lapply(messages, shiny::p))
+    })
+
+    # --- construction de la selection courante ---------------------------
+    selection_courante <- function() {
+      shiny::req(length(input$indicateur) > 0, input$frequence, input$pays)
+      pays <- utils::head(input$pays, CONFIG$max_pays)
+      lapply(input$indicateur, function(code) {
+        list(code_interne = code, frequence = input$frequence, pays = pays)
+      })
+    }
+
+    dessiner <- function() {
+      shiny::req(length(etat$series) > 0)
+      bornes <- input$bornes
+      debut <- if (length(bornes) == 2) bornes[1] else NULL
+      fin   <- if (length(bornes) == 2) bornes[2] else NULL
+
+      d <- assembler(con, etat$series, debut, fin)
+      etat$donnees <- d
+      if (is.null(d)) {
+        etat$graphique <- NULL
+        return()
+      }
+      # La mise en base 100 est imposee des que les unites different : sans
+      # elle, un pourcentage et un cours en dollars par tonne sur le meme axe
+      # ecrasent l'un des deux.
+      # Le camembert represente une repartition, pas une evolution : la mise
+      # en base 100 n'a aucun sens pour lui et le rendrait uniforme.
+      camembert <- identical(input$type, "camembert")
+      forcer <- !camembert && length(unites_distinctes(d)) > 1
+      etat$graphique <- tracer(d, type = input$type,
+                               base100 = isTRUE(input$base100) && !camembert || forcer,
+                               titre = NULL)
+
+      if (camembert && !camembert_pertinent(d)) {
+        shiny::showNotification(tr(paste(
+          "Un camembert additionne les valeurs affich\u00e9es. Sur des pourcentages,",
+          "des indices ou des rangs, le total n'a pas de sens : lisez-le avec",
+          "prudence.")), type = "warning", duration = 12)
+      }
+      if (forcer && !isTRUE(input$base100) && !camembert) {
+        shiny::updateCheckboxInput(session, "base100", value = TRUE)
+        shiny::showNotification(
+          "Les séries n'ont pas la même unité : elles sont ramenées en base 100 pour rester comparables.",
+          type = "message", duration = 8)
+      }
+    }
+
+    shiny::observeEvent(input$appliquer, {
+      etat$series <- selection_courante()
+      dessiner()
+    })
+
+    shiny::observeEvent(input$ajouter, {
+      nouvelles <- selection_courante()
+      for (s in nouvelles) ajouter_serie(s)
+      dessiner()
+    })
+
+    # Ajoute une serie si elle n'est pas deja la et si le plafond le permet.
+    # Le redessin est fait par l'appelant, une seule fois pour tout le lot.
+    ajouter_serie <- function(s) {
+      if (length(etat$series) >= CONFIG$max_series) {
+        shiny::showNotification(
+          tr("Six séries au maximum sur un même graphique."),
+          type = "warning", duration = 6)
+        return(invisible(FALSE))
+      }
+      deja <- vapply(etat$series, function(x)
+        identical(x$code_interne, s$code_interne) &&
+        identical(x$frequence, s$frequence) &&
+        identical(sort(x$pays), sort(s$pays)), logical(1))
+      if (length(deja) && any(deja)) {
+        shiny::showNotification(tr("Cette série est déjà affichée."),
+                                type = "message")
+        return(invisible(FALSE))
+      }
+      etat$series <- c(etat$series, list(s))
+      invisible(TRUE)
+    }
+
+    # --- series empilees --------------------------------------------------
+    output$liste_series <- shiny::renderUI({
+      if (!length(etat$series)) return(NULL)
+      libelles <- vapply(etat$series, function(s) {
+        l <- DBI::dbGetQuery(con,
+          "SELECT libelle FROM indicateur WHERE code_interne = ?",
+          params = list(s$code_interne))$libelle
+        sprintf("%s (%s, %s)", tr(l), tolower(libelle_frequence(s$frequence)),
+                paste(s$pays, collapse = ", "))
+      }, character(1))
+
+      shiny::div(class = "cadre cadre-series",
+        shiny::span(class = "cadre-titre-petit",
+                    sprintf(tr("S\u00e9ries affich\u00e9es (%d sur %d)"),
+                            length(libelles), CONFIG$max_series)),
+        shiny::div(class = "jetons",
+          lapply(seq_along(libelles), function(i) {
+            # Le bouton de retrait n'est plus un actionLink. Reconstruire cette
+            # liste remettait a zero le compteur de clics de chaque lien, ce
+            # que Shiny interprete comme un nouveau clic : ajouter une
+            # troisieme serie declenchait aussitot le retrait des precedentes,
+            # et le graphique restait bloque a deux courbes. Le clic passe
+            # maintenant par Shiny.setInputValue, en mode evenement, qui ne se
+            # declenche que sur une action reelle de l'utilisateur.
+            shiny::span(class = "jeton", libelles[i],
+              shiny::tags$button(
+                class = "jeton-retirer", type = "button",
+                `data-cible` = ns("retirer"), `data-serie` = i,
+                title = "Retirer cette s\u00e9rie", "\u00d7"))
+          })))
+    })
+
+    shiny::observeEvent(input$retirer, {
+      i <- suppressWarnings(as.integer(input$retirer))
+      shiny::req(!is.na(i), i >= 1, i <= length(etat$series))
+      etat$series <- etat$series[-i]
+      if (length(etat$series)) {
+        dessiner()
+      } else {
+        etat$donnees <- NULL
+        etat$graphique <- NULL
+      }
+    }, ignoreInit = TRUE)
+
+    # --- actualisation ---------------------------------------------------
+    output$bouton_actualiser <- shiny::renderUI({
+      if (!base_modifiable()) return(NULL)
+      shiny::actionButton(ns("actualiser"), "Actualiser les données",
+                          class = "btn-opesc-clair", icon = shiny::icon("rotate"))
+    })
+
+    shiny::observeEvent(input$actualiser, {
+      if (!length(etat$series)) {
+        shiny::showNotification("Appliquez d'abord un filtre.", type = "message")
+        return()
+      }
+      codes <- unique(vapply(etat$series, function(s) s$code_interne, character(1)))
+      marques <- paste(rep("?", length(codes)), collapse = ",")
+      lignes <- DBI::dbGetQuery(con, sprintf(
+        "SELECT * FROM indicateur WHERE code_interne IN (%s)", marques),
+        params = as.list(codes))
+
+      shiny::withProgress(message = "Actualisation en cours", value = 0, {
+        res <- collecter(con, lignes, declencheur = "bouton",
+          avancement = function(i, n, libelle, erreur) {
+            shiny::incProgress(1 / n, detail = sprintf("%d/%d : %s", i, n, libelle))
+          })
+        if (length(res$erreurs)) {
+          shiny::showNotification(
+            sprintf("Actualisation terminée avec %d erreur(s). Voir l'onglet Collectes.",
+                    length(res$erreurs)), type = "warning", duration = 10)
+        } else {
+          shiny::showNotification(sprintf(
+            "%d valeurs ajoutées, %d révisées.", res$creees, res$modifiees),
+            type = "message", duration = 8)
+        }
+      })
+      dessiner()
+    })
+
+    # --- sorties ----------------------------------------------------------
+    output$titre <- shiny::renderText({
+      if (is.null(etat$donnees)) return("Aucune série affichée")
+      libelles <- unique(etat$donnees$libelle)
+      if (length(libelles) == 1) libelles else
+        sprintf("%d indicateurs comparés", length(libelles))
+    })
+
+    output$sous_titre <- shiny::renderText({
+      if (is.null(etat$donnees)) {
+        return("Choisissez une catégorie, un indicateur, une fréquence, une période et un ou plusieurs pays, puis appliquez le filtre.")
+      }
+      d <- etat$donnees
+      sprintf("%s : %d observations, de %s à %s.",
+              paste(unique(d$unite), collapse = " / "), nrow(d),
+              format(min(d$date_periode), "%d/%m/%Y"),
+              format(max(d$date_periode), "%d/%m/%Y"))
+    })
+
+    output$note_source <- shiny::renderText({
+      if (is.null(etat$donnees)) return("")
+      sprintf(tr("Source : %s. Extraction du %s."),
+              paste(unique(etat$donnees$source), collapse = " ; "),
+              format(Sys.Date(), "%d/%m/%Y"))
+    })
+
+    output$graphique <- plotly::renderPlotly({
+      g <- etat$graphique
+      shiny::validate(shiny::need(!is.null(g),
+        "Aucune donnée pour cette combinaison. Élargissez la période, changez de fréquence ou vérifiez que l'indicateur a bien été collecté."))
+      tracer_interactif(g)
+    })
+
+    # --- carte ------------------------------------------------------------
+    # La carte suit le premier indicateur affiche, et non l'ensemble des
+    # series : superposer plusieurs indicateurs sur un meme aplat de couleur
+    # n'aurait aucun sens, les unites n'etant pas comparables.
+    serie_cartographiee <- shiny::reactive({
+      shiny::req(length(etat$series) > 0)
+      etat$series[[1]]
+    })
+
+    annees_disponibles <- shiny::reactive({
+      s <- serie_cartographiee()
+      annees_carte(con, s$code_interne, s$frequence)
+    })
+
+    output$annee_carte <- shiny::renderUI({
+      annees <- annees_disponibles()
+      if (!length(annees)) return(NULL)
+      shiny::sliderInput(
+        ns("annee"), NULL, min = min(annees), max = max(annees),
+        value = max(annees), step = 1, sep = "", width = "260px",
+        animate = shiny::animationOptions(interval = 900, loop = FALSE))
+    })
+
+    donnees_carte_courantes <- shiny::reactive({
+      s <- serie_cartographiee()
+      annees <- annees_disponibles()
+      shiny::req(length(annees) > 0)
+      # Tant que le curseur n'est pas rendu, on prend la derniere annee utile.
+      annee <- if (is.null(input$annee)) max(annees) else input$annee
+      donnees_carte(con, s$code_interne, s$frequence, annee)
+    })
+
+    output$carte <- plotly::renderPlotly({
+      s <- serie_cartographiee()
+      dim_pays <- DBI::dbGetQuery(con,
+        "SELECT dimension_pays AS d FROM indicateur WHERE code_interne = ?",
+        params = list(s$code_interne))$d
+      shiny::validate(shiny::need(
+        length(dim_pays) && dim_pays[[1]] == 1,
+        "Cet indicateur est un cours mondial : il n'a pas de dimension pays et ne peut pas \u00eatre cartographi\u00e9."))
+
+      d <- donnees_carte_courantes()
+      shiny::validate(shiny::need(
+        nrow(d) > 0,
+        tr("Aucune donn\u00e9e cartographiable pour cette ann\u00e9e. D\u00e9placez le curseur ou changez de fr\u00e9quence.")))
+      tracer_carte(d, surligner = s$pays, id_clic = ns("pays_clique"))
+    })
+
+    # Fiche du pays clique. `event_data` renvoie NULL tant qu'aucun clic n'a eu
+    # lieu, ce qui donne l'invite d'usage plutot qu'un cadre vide.
+    output$fiche <- shiny::renderUI({
+      clic <- input$pays_clique
+      if (is.null(clic) || !nzchar(clic)) {
+        return(shiny::div(class = "fiche-invite",
+          shiny::span(class = "fiche-invite-icone", icone("globe", 30)),
+          shiny::p(tr("Cliquez sur un pays de la carte pour afficher sa fiche : drapeau, langue officielle, r\u00e9gion et rang mondial."))))
+      }
+      d <- donnees_carte_courantes()
+      shiny::req(nrow(d) > 0)
+      i <- match(toupper(clic), d$iso3)
+      shiny::req(!is.na(i))
+      fiche_pays(con, d$iso3[[i]], d$libelle[[1]], d$unite[[1]], d$annee[[1]],
+                 d$valeur[[i]], i, nrow(d))
+    })
+
+    output$note_carte <- shiny::renderText({
+      if (!length(etat$series)) {
+        return(tr("Appliquez un filtre : la carte suit le premier indicateur affich\u00e9."))
+      }
+      d <- try(donnees_carte_courantes(), silent = TRUE)
+      if (inherits(d, "try-error") || !nrow(d)) return("")
+      sprintf(tr("%s, ann\u00e9e %d : %d pays renseign\u00e9s. \u00c9chelle born\u00e9e aux centiles 2 et 98 ; vos pays sont soulign\u00e9s."),
+              tr(d$libelle[1]), d$annee[1], nrow(d))
+    })
+
+    output$carte_xlsx <- shiny::downloadHandler(
+      filename = function() sprintf("opesc_classement_%s.xlsx", horodatage()),
+      content = function(fichier) {
+        d <- donnees_carte_courantes()
+        shiny::req(nrow(d) > 0)
+        d$rang <- seq_len(nrow(d))
+        sortie <- d[c("rang", "pays", "iso3", "region", "annee", "valeur", "unite")]
+        names(sortie) <- c("Rang", "Pays", "Code pays", "R\u00e9gion", "Ann\u00e9e",
+                           "Valeur", "Unit\u00e9")
+        wb <- openxlsx::createWorkbook()
+        openxlsx::addWorksheet(wb, "Classement")
+        openxlsx::writeData(wb, "Classement", sortie, headerStyle =
+          openxlsx::createStyle(fontColour = "#FFFFFF", fgFill = "#1F3864",
+                                textDecoration = "bold"))
+        openxlsx::freezePane(wb, "Classement", firstRow = TRUE)
+        openxlsx::setColWidths(wb, "Classement", seq_along(sortie), widths = "auto")
+        openxlsx::saveWorkbook(wb, fichier, overwrite = TRUE)
+      })
+
+    output$png <- shiny::downloadHandler(
+      filename = function() sprintf("opesc_graphique_%s.png", horodatage()),
+      content = function(fichier) {
+        shiny::req(etat$graphique)
+        ecrire_image(fichier, etat$graphique)
+      })
+
+    output$xlsx <- shiny::downloadHandler(
+      filename = function() sprintf("opesc_donnees_%s.xlsx", horodatage()),
+      content = function(fichier) {
+        shiny::req(etat$donnees)
+        ecrire_classeur(fichier, etat$donnees)
+      })
+  })
+}

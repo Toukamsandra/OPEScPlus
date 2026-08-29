@@ -1,0 +1,406 @@
+﻿fr,en
+Accueil,Home
+Tableau de bord,Dashboard
+Base de données,Database
+Collectes,Data collection
+Principaux partenaires commerciaux,Main trading partners
+Observatoire des perspectives économiques,Observatory of Economic Outlook
+Langue,Language
+Français,French
+Anglais,English
+République du Cameroun,Republic of Cameroon
+Comprendre l'économie mondiale pour éclairer la décision publique,Understanding the world economy to inform public decision-making
+Ouvrir le tableau de bord,Open the dashboard
+Consulter la base,Browse the database
+Ce que la plateforme permet,What the platform does
+Institutions,Institutions
+Sources des données,Data sources
+indicateurs,indicators
+catégories,categories
+économies,economies
+observations,observations
+Dernière actualisation,Last update
+aucune collecte,no collection yet
+Tableau de bord interactif,Interactive dashboard
+Superposition de séries,Overlaid series
+Analyse cartographique,Map analysis
+Projections,Projections
+Base de données complète,Full database
+Collecte traçable,Traceable collection
+Catégories de données,Data categories
+Indicateur,Indicator
+Fréquence,Frequency
+Période,Period
+Pays,Countries
+Appliquer le filtre,Apply filter
+Ajouter au graphique,Add to chart
+Séries affichées,Displayed series
+Retirer cette série,Remove this series
+Courbes,Lines
+Barres,Bars
+Aires,Areas
+Base 100,Base 100
+Actualiser les données,Refresh data
+Image,Image
+Données (xlsx),Data (xlsx)
+Classement (xlsx),Ranking (xlsx)
+Aucune série affichée,No series displayed
+Annuelle,Annual
+Semestrielle,Half-yearly
+Trimestrielle,Quarterly
+Mensuelle,Monthly
+Hebdomadaire,Weekly
+Journalière,Daily
+Intrajournalière,Intraday
+Cours mondial,World price
+agrégat,aggregate
+Langue officielle,Official language
+Région,Region
+Groupe de revenu,Income group
+Rang mondial,World rank
+non renseignée,not available
+"Cliquez sur un pays de la carte pour afficher sa fiche : drapeau, langue officielle, région et rang mondial.","Click a country on the map to open its profile: flag, official language, region and world rank."
+Catégorie,Category
+Indicateurs,Indicators
+Toutes,All
+Toutes les catégories,All categories
+Tous les pays,All countries
+Format long,Long format
+Tableau croisé,Cross table
+Journal des collectes,Collection log
+Actualiser,Refresh
+Tout le catalogue,Whole catalogue
+De,From
+à,to
+Valeur,Value
+Unité,Unit
+Source,Source
+Début,Start
+Fin,End
+Statut,Status
+Ajoutées,Added
+Révisées,Revised
+Erreurs,Errors
+Déclenchement,Trigger
+Bienvenue sur,Welcome to
+Appliquez d'abord un filtre.,Apply a filter first.
+Cette série est déjà affichée.,This series is already displayed.
+Télécharger le manuel,Download the manual
+Télécharger,Download
+Format,Format
+Fermer,Close
+"Le manuel présente la plateforme, détaille chaque onglet et recense les 233 indicateurs du catalogue avec leur code de collecte, leur source et leur unité.","The manual introduces the platform, details each tab and lists the 233 catalogue indicators with their collection code, source and unit."
+Camembert,Pie chart
+Choisissez un ou plusieurs indicateurs,Choose one or more indicators
+Six séries au maximum sur un même graphique.,Six series at most on one chart.
+"Un camembert additionne les valeurs affichées. Sur des pourcentages, des indices ou des rangs, le total n'a pas de sens : lisez-le avec prudence.","A pie chart sums the displayed values. For percentages, indices or ranks the total is meaningless: read it with care."
+"Aucune donnée pour cette combinaison. Élargissez la période, changez de fréquence ou vérifiez que l'indicateur a bien été collecté.","No data for this combination. Widen the period, change the frequency, or check that the indicator has been collected."
+Matières premières,Commodities
+Indicateurs du secteur réel,Real sector indicators
+Indicateurs de finance publique,Public finance indicators
+Indicateurs du secteur monétaire,Monetary sector indicators
+Indicateurs du secteur extérieur,External sector indicators
+Taux de change,Exchange rates
+Taux d'intérêt,Interest rates
+Prix et inflation,Prices and inflation
+Dette publique et extérieure,Public and external debt
+Marché du travail,Labour market
+Démographie et conditions de vie,Demography and living conditions
+Complexité économique et structure productive,Economic complexity and productive structure
+Gouvernance et climat des affaires,Governance and business environment
+"Énergie, environnement et agriculture","Energy, environment and agriculture"
+"Produit intérieur brut, prix courants","GDP, current prices"
+"Produit intérieur brut, prix constants","GDP, constant prices"
+Taux de croissance du PIB réel,GDP growth
+Taux de croissance du PIB réel (projections),Real GDP growth (projections)
+PIB nominal en devise nationale,"GDP, national currency"
+PIB nominal en dollars,"GDP, US dollars"
+"PIB par habitant, prix courants","GDP per capita, current prices"
+"PIB par habitant, prix constants","GDP per capita, constant prices"
+Croissance du PIB par habitant,GDP per capita growth
+PIB par habitant en PPA,"GDP per capita, PPP"
+PIB total en PPA,"GDP, PPP"
+Part du pays dans le PIB mondial (PPA),Share of world GDP (PPP)
+Revenu national brut par habitant (méthode Atlas),"GNI per capita, Atlas method"
+"Déflateur du PIB, variation annuelle","GDP deflator, annual change"
+Valeur ajoutée de l'agriculture,"Agriculture, value added"
+Valeur ajoutée de l'industrie,"Industry, value added"
+Valeur ajoutée de l'industrie manufacturière,"Manufacturing, value added"
+Valeur ajoutée des services,"Services, value added"
+Consommation finale des ménages,Household final consumption
+Consommation finale des administrations publiques,General government consumption
+Formation brute de capital,Gross capital formation
+Formation brute de capital fixe,Gross fixed capital formation
+Exportations de biens et services,Exports of goods and services
+Importations de biens et services,Imports of goods and services
+Épargne intérieure brute,Gross domestic savings
+Investissement total,Total investment
+Épargne nationale brute,Gross national savings
+Indice des prix à la consommation,Consumer price index
+"Inflation, prix à la consommation","Inflation, consumer prices"
+Inflation moyenne annuelle (projections),Average consumer price inflation
+Inflation en fin de période,End-of-period inflation
+Déflateur du PIB,GDP deflator
+Taux de change officiel (moyenne période),Official exchange rate
+Taux de change effectif réel,Real effective exchange rate
+Facteur de conversion PPA,PPP conversion factor
+Cours du pétrole brut (moyenne des 3 places),"Crude oil, average"
+Recettes totales des administrations publiques,General government revenue
+Dépenses totales des administrations publiques,General government expenditure
+Solde budgétaire global,General government net lending/borrowing
+Solde budgétaire primaire,General government primary balance
+Solde structurel,General government structural balance
+Recettes hors dons (administration centrale),Revenue excluding grants
+Recettes fiscales,Tax revenue
+Impôts sur les revenus et bénéfices,Taxes on income and profits
+Taxes sur les biens et services,Taxes on goods and services
+Taxes sur le commerce international,Taxes on international trade
+Dépenses totales (administration centrale),Central government expense
+Masse salariale publique,Compensation of employees
+Charges d'intérêt,Interest payments
+Subventions et transferts,Subsidies and other transfers
+Capacité ou besoin de financement,Net lending/borrowing
+Dépenses militaires,Military expenditure
+Dette brute des administrations publiques,General government gross debt
+Dette nette des administrations publiques,General government net debt
+Dette de l'administration centrale,Central government debt
+Stock de dette extérieure totale,"External debt stocks, total"
+Dette extérieure totale,External debt stocks
+Dette publique et publiquement garantie,Public and publicly guaranteed debt
+Dette extérieure à court terme,Short-term external debt
+Service de la dette extérieure,Total debt service
+Service de la dette publique,Public debt service
+Dette à court terme rapportée aux réserves,Short-term debt to reserves
+Décaissements de nouveaux prêts,Disbursements on new loans
+Transferts nets sur dette,Net transfers on debt
+Taux d'intérêt moyen des nouveaux engagements,Average interest on new commitments
+Maturité moyenne des nouveaux engagements,Average maturity on new commitments
+Élément don moyen des nouveaux engagements,Average grant element on new commitments
+Masse monétaire au sens large,Broad money
+Croissance de la masse monétaire,Broad money growth
+Crédit intérieur au secteur privé,Domestic credit to private sector
+Crédit bancaire au secteur privé,Domestic credit to private sector by banks
+Crédit intérieur net à l'État,Net domestic credit
+Taux d'intérêt débiteur,Lending interest rate
+Taux d'intérêt créditeur,Deposit interest rate
+Taux d'intérêt réel,Real interest rate
+Marge d'intermédiation bancaire,Interest rate spread
+Ratio de fonds propres sur actifs,Bank capital to assets ratio
+Prêts non performants,Bank non-performing loans
+Capitalisation boursière,Market capitalization of listed companies
+Comptes bancaires détenus (15 ans et plus),Account ownership at a financial institution
+Agences bancaires pour 100 000 adultes,Commercial bank branches
+Solde du compte courant,Current account balance
+Solde du compte courant en valeur,"Current account balance, value"
+Solde du compte courant (projections),Current account balance (projections)
+Exportations de marchandises,Merchandise exports
+Importations de marchandises,Merchandise imports
+Termes de l'échange nets,Net barter terms of trade index
+Ouverture commerciale,Trade openness
+"Investissements directs étrangers, entrées nettes","Foreign direct investment, net inflows"
+"Investissements directs étrangers, valeur","Foreign direct investment, value"
+Investissements directs à l'étranger,"Foreign direct investment, net outflows"
+Transferts des migrants reçus,Personal remittances received
+Réserves de change totales (or compris),Total reserves
+Réserves en mois d'importations,Total reserves in months of imports
+Aide publique au développement reçue,Net official development assistance received
+Part des produits manufacturés dans les exportations,Manufactures exports
+Part des produits primaires dans les exportations,Food exports
+Tarif douanier moyen appliqué,"Applied tariff rate, weighted mean"
+Taux de chômage total (estimation OIT),"Unemployment, total (ILO estimate)"
+Taux de chômage (estimation nationale),"Unemployment, total (national estimate)"
+Taux de chômage des jeunes (15-24 ans),Youth unemployment (15-24)
+Taux de chômage (projections),Unemployment rate (projections)
+"Taux d'activité, population totale",Labour force participation rate
+Taux d'activité des femmes,"Labour force participation rate, female"
+Ratio emploi sur population,Employment to population ratio
+Emploi dans l'agriculture,Employment in agriculture
+Emploi dans l'industrie,Employment in industry
+Emploi dans les services,Employment in services
+Emploi vulnérable,Vulnerable employment
+Emploi salarié,Wage and salaried workers
+Jeunes sans emploi ni études ni formation (NEET),"Youth not in education, employment or training"
+Population active totale,"Labour force, total"
+PIB par personne employée,GDP per person employed
+"Taux de pauvreté au seuil de 2,15 USD par jour",Poverty headcount at $2.15 a day
+"Taux de pauvreté au seuil de 3,65 USD par jour",Poverty headcount at $3.65 a day
+"Taux de pauvreté au seuil de 6,85 USD par jour",Poverty headcount at $6.85 a day
+Taux de pauvreté au seuil national,Poverty headcount at national lines
+"Écart de pauvreté au seuil de 2,15 USD",Poverty gap at $2.15 a day
+Indice de Gini,Gini index
+Part du revenu du décile supérieur,Income share held by highest 10%
+Part du revenu du quintile inférieur,Income share held by lowest 20%
+Consommation ou revenu moyen des 40 % les plus pauvres,"Survey mean consumption, bottom 40%"
+Couverture des programmes de protection sociale,Coverage of social protection programmes
+Indice de capital humain,Human capital index
+Population totale,"Population, total"
+Croissance démographique,Population growth
+Population âgée de 0 à 14 ans,Population ages 0-14
+Population âgée de 15 à 64 ans,Population ages 15-64
+Population âgée de 65 ans et plus,Population ages 65 and above
+Ratio de dépendance démographique,Age dependency ratio
+Indice synthétique de fécondité,"Fertility rate, total"
+Espérance de vie à la naissance,Life expectancy at birth
+Taux brut de natalité,"Birth rate, crude"
+Taux brut de mortalité,"Death rate, crude"
+Population urbaine,Urban population
+Croissance de la population urbaine,Urban population growth
+Migration nette,Net migration
+Densité de population,Population density
+"Taux net de scolarisation, primaire","School enrolment, primary (net)"
+"Taux net de scolarisation, secondaire","School enrolment, secondary (net)"
+"Taux brut de scolarisation, supérieur","School enrolment, tertiary (gross)"
+Taux d'achèvement du primaire,Primary completion rate
+Taux d'alphabétisation des adultes,Adult literacy rate
+Dépenses publiques d'éducation,Government expenditure on education
+"Ratio élèves-enseignant, primaire","Pupil-teacher ratio, primary"
+Dépenses courantes de santé,Current health expenditure
+Dépenses de santé par habitant,Current health expenditure per capita
+Dépenses de santé à la charge des ménages,Out-of-pocket health expenditure
+Mortalité infantile,"Mortality rate, infant"
+Mortalité des moins de 5 ans,"Mortality rate, under-5"
+Ratio de mortalité maternelle,Maternal mortality ratio
+Accès à l'eau potable de base,People using at least basic drinking water
+Accès à un assainissement de base,People using at least basic sanitation
+Prévalence de la sous-alimentation,Prevalence of undernourishment
+Retard de croissance chez les moins de 5 ans,"Prevalence of stunting, under-5"
+Médecins pour 1 000 habitants,"Physicians per 1,000 people"
+Accès à l'électricité,Access to electricity
+Consommation d'électricité par habitant,Electric power consumption per capita
+Consommation d'énergie primaire par habitant,Energy use per capita
+Part des énergies renouvelables,Renewable energy consumption
+Pertes de transport et distribution d'électricité,Electric power transmission and distribution losses
+Intensité énergétique du PIB,Energy intensity of GDP
+Utilisateurs d'Internet,Individuals using the Internet
+Abonnements à la téléphonie mobile,Mobile cellular subscriptions
+Abonnements haut débit fixe,Fixed broadband subscriptions
+Exportations de services TIC,ICT service exports
+"Indice de performance logistique, score global","Logistics performance index, overall"
+Trafic de fret aérien,"Air transport, freight"
+Trafic de conteneurs portuaires,Container port traffic
+Émissions de CO2 par habitant,CO2 emissions per capita
+Émissions totales de CO2,"CO2 emissions, total"
+Intensité carbone du PIB,CO2 emissions per unit of GDP
+Superficie forestière,Forest area
+Terres agricoles,Agricultural land
+Prélèvements annuels d'eau douce,Annual freshwater withdrawals
+Rentes totales des ressources naturelles,Total natural resources rents
+Rentes pétrolières,Oil rents
+Rentes minières,Mineral rents
+Épargne nette ajustée hors dommages,Adjusted net savings
+Exposition de la population aux particules fines,PM2.5 air pollution exposure
+Indice de production alimentaire,Food production index
+Indice de production végétale,Crop production index
+Indice de production animale,Livestock production index
+Rendement céréalier,Cereal yield
+Terres arables par habitant,Arable land per capita
+Consommation d'engrais,Fertilizer consumption
+Exportations de produits agricoles bruts,Agricultural raw materials exports
+Importations de produits alimentaires,Food imports
+Valeur ajoutée agricole par travailleur,Agriculture value added per worker
+Indice de complexité économique (ECI),Economic Complexity Index
+Indice de perspectives de complexité (COI),Complexity Outlook Index
+Part des produits de haute technologie dans les exportations,High-technology exports
+Efficacité des pouvoirs publics,Government effectiveness
+Qualité de la réglementation,Regulatory quality
+État de droit,Rule of law
+Maîtrise de la corruption,Control of corruption
+Stabilité politique et absence de violence,Political stability and absence of violence
+Expression et responsabilité,Voice and accountability
+"Note CPIA, gestion économique",CPIA economic management
+"Note CPIA, gestion du secteur public",CPIA public sector management
+"Note CPIA, transparence et corruption",CPIA transparency and corruption
+"Indice Business Ready, pilier réglementaire","Business Ready, regulatory pillar"
+Temps consacré aux formalités fiscales,Time to prepare and pay taxes
+Indice de tous les produits de base,Non-energy price index
+Indice des produits énergétiques,Energy price index
+Indice alimentation et boissons,Food price index
+Indice des métaux,Metals and minerals price index
+Indice des matières premières agricoles,Agricultural raw materials price index
+"Pétrole brut, Brent","Crude oil, Brent"
+"Pétrole brut, WTI","Crude oil, WTI"
+"Pétrole brut, Dubaï","Crude oil, Dubai"
+"Gaz naturel, Europe","Natural gas, Europe"
+"Charbon, Australie","Coal, Australia"
+Aluminium,Aluminium
+Cuivre,Copper
+Minerai de fer,Iron ore
+Cacao,Cocoa
+"Café, arabicas doux","Coffee, Arabica"
+"Café, robusta","Coffee, Robusta"
+Coton,Cotton
+Sucre,Sugar
+Bananes,Bananas
+Caoutchouc,Rubber
+Huile de palme,Palm oil
+Grumes de bois dur,"Logs, Cameroon"
+Sciages de bois dur,"Sawnwood, Cameroon"
+Maïs,Maize
+Blé,Wheat
+Riz,Rice
+Or,Gold
+USD courants,Current USD
+USD constants 2015,Constant 2015 USD
+% du PIB,% of GDP
+% annuel,% annual
+Indice,Index
+Personnes,People
+% de la population,% of population
+Années,Years
+USD PPA,PPP USD
+% des recettes,% of revenue
+% des dépenses,% of expenditure
+% du RNB,% of GNI
+% des exportations,% of exports
+Mds USD,USD bn
+Mds LCU,LCU bn
+Mds USD PPA,PPP USD bn
+% de l'emploi total,% of total employment
+% de la pop. active,% of labour force
+"Score -2,5 à 2,5",Score -2.5 to 2.5
+Score 1-6,Score 1-6
+Score 0-100,Score 0-100
+Indice 0-100,Index 0-100
+Indice 0-1,Index 0-1
+Score standardisé,Standardised score
+USD / tonne,USD / tonne
+USD / baril,USD / barrel
+USD / kg,USD / kg
+cents US / livre,US cents / pound
+USD / m3,USD / m3
+USD / MBtu,USD / MMBtu
+USD / once troy,USD / troy ounce
+LCU / USD,LCU / USD
+Mois,Months
+Naissances / femme,Births per woman
+Hab. / km²,People / km2
+Rang,Rank
+Pour 1 000 hab.,"Per 1,000 people"
+Pour 100 000,"Per 100,000"
+Heures / an,Hours / year
+kWh / hab.,kWh per capita
+% du territoire,% of land area
+Ratio,Ratio
+%,%
+non collecté,not collected
+%d indicateurs comparés,%d indicators compared
+"%s : %d observations, de %s à %s.","%s: %d observations, from %s to %s."
+Source : %s. Extraction du %s.,Source: %s. Retrieved on %s.
+Séries affichées (%d sur %d),Displayed series (%d of %d)
+Sélectionnez au moins un pays dans le panneau de gauche.,Select at least one country in the left panel.
+"Choisissez une catégorie, un indicateur, une fréquence, une période et un ou plusieurs pays, puis appliquez le filtre.","Choose a category, an indicator, a frequency, a period and one or more countries, then apply the filter."
+Cet indicateur n'a pas encore été collecté. Lancez la collecte depuis l'onglet Collectes.,This indicator has not been collected yet. Run a collection from the Data collection tab.
+Aucune donnée à ce pas. Choisissez une autre fréquence.,No data at this frequency. Choose another one.
+Cet indicateur est un cours mondial : il n'a pas de dimension pays et ne peut pas être cartographié.,This indicator is a world price: it has no country dimension and cannot be mapped.
+Aucune donnée cartographiable pour cette année. Déplacez le curseur ou changez de fréquence.,No mappable data for this year. Move the slider or change the frequency.
+Appliquez un filtre : la carte suit le premier indicateur affiché.,Apply a filter: the map follows the first displayed indicator.
+"%s, année %d : %d pays renseignés. Échelle bornée aux centiles 2 et 98 ; vos pays sont soulignés.","%s, year %d: %d countries with data. Scale capped at the 2nd and 98th percentiles; your countries are outlined."
+%d sur %d,%d of %d
+Le format tableur est le seul format de téléchargement proposé.,Spreadsheet is the only download format offered.
+Aucune observation ne correspond aux filtres. La base est peut-être encore vide.,No observation matches the filters. The database may still be empty.
+%s observations correspondent aux filtres. Les mille premières sont affichées ; le téléchargement porte sur la sélection complète.,%s observations match the filters. The first thousand are shown; the download covers the whole selection.
+"Chaque exécution est tracée : sans journal, une collecte silencieusement vide passe inaperçue pendant des mois.","Every run is logged: without it, a silently empty collection would go unnoticed for months."
+Une actualisation complète représente plusieurs centaines d'appels et peut durer une trentaine de minutes. Préférez une catégorie à la fois.,A full update means several hundred calls and can take about thirty minutes. Prefer one category at a time.
+Aucun indicateur dans cette portée.,No indicator in this scope.
+"OPESc+ rassemble les indicateurs économiques de l'ensemble des économies, collectés directement auprès des institutions qui les publient, et les met à disposition sous forme de séries exploitables : filtres par pays, par période et par variable, graphiques et cartes exportés en un clic, téléchargement au format tableur.","OPESc+ brings together economic indicators for every economy, collected directly from the institutions that publish them, and makes them available as workable series: filters by country, period and variable, charts and maps exported in one click, spreadsheet download."
+Toutes les données proviennent d'interfaces publiques et gratuites. Aucune n'est produite par la plateforme. Toute réutilisation doit citer la source d'origine et la date d'extraction.,"All data come from public, free interfaces. None is produced by the platform. Any reuse must cite the original source and the retrieval date."

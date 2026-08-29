@@ -1,0 +1,265 @@
+﻿code_interne,categorie,secteur,libelle,source,code_source,frequences,unite,dimension_pays,par_defaut
+C02.NY.GDP.MKTP.CD,C02,S01,"Produit intérieur brut, prix courants",Banque mondiale (WDI),NY.GDP.MKTP.CD,A,USD courants,1,0
+C02.NY.GDP.MKTP.KD,C02,S01,"Produit intérieur brut, prix constants",Banque mondiale (WDI),NY.GDP.MKTP.KD,A,USD constants 2015,1,0
+C02.NY.GDP.MKTP.KD.ZG,C02,S01,Taux de croissance du PIB réel,Banque mondiale (WDI),NY.GDP.MKTP.KD.ZG,A,%,1,1
+C02.NGDP_RPCH,C02,S01,Taux de croissance du PIB réel (projections),FMI (WEO),NGDP_RPCH,A,%,1,0
+C02.NGDP,C02,S01,PIB nominal en devise nationale,FMI (WEO),NGDP,A,Mds LCU,1,0
+C02.NGDPD,C02,S01,PIB nominal en dollars,FMI (WEO),NGDPD,A,Mds USD,1,0
+C02.NY.GDP.PCAP.CD,C02,S01,"PIB par habitant, prix courants",Banque mondiale (WDI),NY.GDP.PCAP.CD,A,USD courants,1,0
+C02.NY.GDP.PCAP.KD,C02,S01,"PIB par habitant, prix constants",Banque mondiale (WDI),NY.GDP.PCAP.KD,A,USD constants 2015,1,0
+C02.NY.GDP.PCAP.KD.ZG,C02,S01,Croissance du PIB par habitant,Banque mondiale (WDI),NY.GDP.PCAP.KD.ZG,A,%,1,0
+C02.NY.GDP.PCAP.PP.CD,C02,S01,PIB par habitant en PPA,Banque mondiale (WDI),NY.GDP.PCAP.PP.CD,A,USD PPA,1,0
+C02.PPPGDP,C02,S01,PIB total en PPA,FMI (WEO),PPPGDP,A,Mds USD PPA,1,0
+C02.PPPSH,C02,S01,Part du pays dans le PIB mondial (PPA),FMI (WEO),PPPSH,A,%,1,0
+C02.NY.GNP.PCAP.CD,C02,S01,Revenu national brut par habitant (méthode Atlas),Banque mondiale (WDI),NY.GNP.PCAP.CD,A,USD courants,1,0
+C02.NY.GDP.DEFL.KD.ZG,C02,S01,"Déflateur du PIB, variation annuelle",Banque mondiale (WDI),NY.GDP.DEFL.KD.ZG,A,%,1,0
+C02.NV.AGR.TOTL.ZS,C02,S01,Valeur ajoutée de l'agriculture,Banque mondiale (WDI),NV.AGR.TOTL.ZS,A,% du PIB,1,0
+C02.NV.IND.TOTL.ZS,C02,S01,Valeur ajoutée de l'industrie,Banque mondiale (WDI),NV.IND.TOTL.ZS,A,% du PIB,1,0
+C02.NV.IND.MANF.ZS,C02,S01,Valeur ajoutée de l'industrie manufacturière,Banque mondiale (WDI),NV.IND.MANF.ZS,A,% du PIB,1,0
+C02.NV.SRV.TOTL.ZS,C02,S01,Valeur ajoutée des services,Banque mondiale (WDI),NV.SRV.TOTL.ZS,A,% du PIB,1,0
+C02.NE.CON.PRVT.ZS,C02,S01,Consommation finale des ménages,Banque mondiale (WDI),NE.CON.PRVT.ZS,A,% du PIB,1,0
+C02.NE.CON.GOVT.ZS,C02,S01,Consommation finale des administrations publiques,Banque mondiale (WDI),NE.CON.GOVT.ZS,A,% du PIB,1,0
+C02.NE.GDI.TOTL.ZS,C02,S01,Formation brute de capital,Banque mondiale (WDI),NE.GDI.TOTL.ZS,A,% du PIB,1,0
+C02.NE.GDI.FTOT.ZS,C02,S01,Formation brute de capital fixe,Banque mondiale (WDI),NE.GDI.FTOT.ZS,A,% du PIB,1,0
+C02.NE.EXP.GNFS.ZS,C02,S01,Exportations de biens et services,Banque mondiale (WDI),NE.EXP.GNFS.ZS,A,% du PIB,1,0
+C02.NE.IMP.GNFS.ZS,C02,S01,Importations de biens et services,Banque mondiale (WDI),NE.IMP.GNFS.ZS,A,% du PIB,1,0
+C02.NY.GNS.ICTR.ZS,C02,S01,Épargne intérieure brute,Banque mondiale (WDI),NY.GNS.ICTR.ZS,A,% du PIB,1,0
+C02.NID_NGDP,C02,S01,Investissement total,FMI (WEO),NID_NGDP,A,% du PIB,1,0
+C02.NGSD_NGDP,C02,S01,Épargne nationale brute,FMI (WEO),NGSD_NGDP,A,% du PIB,1,0
+C02.DSD_NAMAIN1_DF_QNA,C02,S01,PIB trimestriel en volume,OCDE (SDMX),DSD_NAMAIN1@DF_QNA,T,Indice / volume,1,0
+C02.DSD_STES_DF_CLI,C02,S01,Indicateur composite avancé (CLI),OCDE (SDMX),DSD_STES@DF_CLI,M,Indice,1,0
+C02.DSD_STES_DF_INDSERV___AIP_IX,C02,S01,Indice de production industrielle,OCDE / FMI (IFS),DSD_STES@DF_INDSERV,M,Indice,1,0
+C08.FP.CPI.TOTL,C08,S02,Indice des prix à la consommation,Banque mondiale (WDI),FP.CPI.TOTL,A,Indice 2010 = 100,1,0
+C08.FP.CPI.TOTL.ZG,C08,S02,"Inflation, prix à la consommation",Banque mondiale (WDI),FP.CPI.TOTL.ZG,A,% annuel,1,1
+C08.PCPIPCH,C08,S02,Inflation moyenne annuelle (projections),FMI (WEO),PCPIPCH,A,%,1,0
+C08.PCPIEPCH,C08,S02,Inflation en fin de période,FMI (WEO),PCPIEPCH,A,%,1,0
+C08.PCPI_IX,C08,S02,"Indice des prix à la consommation, ensemble",FMI (base CPI),PCPI_IX,M,Indice,1,0
+C08.PCPIF_IX,C08,S02,"Indice des prix à la consommation, alimentation",FMI (base CPI),PCPIF_IX,M,Indice,1,0
+C08.DSD_PRICES_DF_PRICES_ALL,C08,S02,Inflation sous-jacente,OCDE (SDMX),DSD_PRICES@DF_PRICES_ALL,M,% annuel,1,0
+C08.PPPI_IX,C08,S02,Indice des prix à la production,FMI (IFS),PPPI_IX,M,Indice,1,0
+C08.NY.GDP.DEFL.ZS,C08,S02,Déflateur du PIB,Banque mondiale (WDI),NY.GDP.DEFL.ZS,A,Indice,1,0
+C06.PA.NUS.FCRF,C06,S02,Taux de change officiel (moyenne période),Banque mondiale (WDI),PA.NUS.FCRF,A,LCU / USD,1,1
+C06.ENDE_XDC_USD_RATE,C06,S02,"Taux de change de marché, fin de période",FMI (IFS),ENDE_XDC_USD_RATE,M,LCU / USD,1,0
+C06.PX.REX.REER,C06,S02,Taux de change effectif réel,Banque mondiale (WDI),PX.REX.REER,A,Indice 2010 = 100,1,0
+C06.ENEER_IX,C06,S02,Taux de change effectif nominal,FMI (IFS),ENEER_IX,M,Indice,1,0
+C06.PA.NUS.PPP,C06,S02,Facteur de conversion PPA,Banque mondiale (WDI),PA.NUS.PPP,A,LCU / USD int.,1,0
+C01.POILAPSP,C01,S02,Cours du pétrole brut (moyenne des 3 places),Banque mondiale (Pink Sheet),POILAPSP,"M,A",USD / baril,0,1
+C03.GGR_NGDP,C03,S03,Recettes totales des administrations publiques,FMI (Fiscal Monitor),GGR_NGDP,A,% du PIB,1,0
+C03.GGX_NGDP,C03,S03,Dépenses totales des administrations publiques,FMI (Fiscal Monitor),GGX_NGDP,A,% du PIB,1,0
+C03.GGXCNL_NGDP,C03,S03,Solde budgétaire global,FMI (Fiscal Monitor),GGXCNL_NGDP,A,% du PIB,1,1
+C03.GGXONLB_NGDP,C03,S03,Solde budgétaire primaire,FMI (Fiscal Monitor),GGXONLB_NGDP,A,% du PIB,1,0
+C03.GGSB_NPGDP,C03,S03,Solde structurel,FMI (Fiscal Monitor),GGSB_NPGDP,A,% du PIB pot.,1,0
+C03.GC.REV.XGRT.GD.ZS,C03,S03,Recettes hors dons (administration centrale),Banque mondiale (WDI),GC.REV.XGRT.GD.ZS,A,% du PIB,1,0
+C03.GC.TAX.TOTL.GD.ZS,C03,S03,Recettes fiscales,Banque mondiale (WDI),GC.TAX.TOTL.GD.ZS,A,% du PIB,1,0
+C03.GC.TAX.YPKG.RV.ZS,C03,S03,Impôts sur les revenus et bénéfices,Banque mondiale (WDI),GC.TAX.YPKG.RV.ZS,A,% des recettes,1,0
+C03.GC.TAX.GSRV.RV.ZS,C03,S03,Taxes sur les biens et services,Banque mondiale (WDI),GC.TAX.GSRV.RV.ZS,A,% des recettes,1,0
+C03.GC.TAX.INTT.RV.ZS,C03,S03,Taxes sur le commerce international,Banque mondiale (WDI),GC.TAX.INTT.RV.ZS,A,% des recettes,1,0
+C03.GC.XPN.TOTL.GD.ZS,C03,S03,Dépenses totales (administration centrale),Banque mondiale (WDI),GC.XPN.TOTL.GD.ZS,A,% du PIB,1,0
+C03.GC.XPN.COMP.ZS,C03,S03,Masse salariale publique,Banque mondiale (WDI),GC.XPN.COMP.ZS,A,% des dépenses,1,0
+C03.GC.XPN.INTP.RV.ZS,C03,S03,Charges d'intérêt,Banque mondiale (WDI),GC.XPN.INTP.RV.ZS,A,% des recettes,1,0
+C03.GC.XPN.TRFT.ZS,C03,S03,Subventions et transferts,Banque mondiale (WDI),GC.XPN.TRFT.ZS,A,% des dépenses,1,0
+C03.GC.NLD.TOTL.GD.ZS,C03,S03,Capacité ou besoin de financement,Banque mondiale (WDI),GC.NLD.TOTL.GD.ZS,A,% du PIB,1,0
+C03.MS.MIL.XPND.GD.ZS,C03,S03,Dépenses militaires,Banque mondiale (WDI),MS.MIL.XPND.GD.ZS,A,% du PIB,1,0
+C03.GFSCOFOG,C03,S03,Recettes et dépenses détaillées (COFOG),FMI (GFS),GFSCOFOG,A,% du PIB,1,0
+C03.DSD_REV_COMP_DF_RSGBL,C03,S03,Pression fiscale globale,OCDE (Revenue Statistics),DSD_REV_COMP@DF_RSGBL,A,% du PIB,1,0
+C09.GGXWDG_NGDP,C09,S04,Dette brute des administrations publiques,FMI (Fiscal Monitor),GGXWDG_NGDP,A,% du PIB,1,1
+C09.GGXWDN_NGDP,C09,S04,Dette nette des administrations publiques,FMI (Fiscal Monitor),GGXWDN_NGDP,A,% du PIB,1,0
+C09.GC.DOD.TOTL.GD.ZS,C09,S04,Dette de l'administration centrale,Banque mondiale (WDI),GC.DOD.TOTL.GD.ZS,A,% du PIB,1,0
+C09.DT.DOD.DECT.CD,C09,S04,Stock de dette extérieure totale,Banque mondiale (IDS),DT.DOD.DECT.CD,A,USD courants,1,0
+C09.DT.DOD.DECT.GN.ZS,C09,S04,Dette extérieure totale,Banque mondiale (IDS),DT.DOD.DECT.GN.ZS,A,% du RNB,1,0
+C09.DT.DOD.DPPG.CD,C09,S04,Dette publique et publiquement garantie,Banque mondiale (IDS),DT.DOD.DPPG.CD,A,USD courants,1,0
+C09.DT.DOD.DSTC.CD,C09,S04,Dette extérieure à court terme,Banque mondiale (IDS),DT.DOD.DSTC.CD,A,USD courants,1,0
+C09.DT.TDS.DECT.EX.ZS,C09,S04,Service de la dette extérieure,Banque mondiale (IDS),DT.TDS.DECT.EX.ZS,A,% des exportations,1,0
+C09.DT.TDS.DPPG.GN.ZS,C09,S04,Service de la dette publique,Banque mondiale (IDS),DT.TDS.DPPG.GN.ZS,A,% du RNB,1,0
+C09.DT.DOD.DSTC.IR.ZS,C09,S04,Dette à court terme rapportée aux réserves,Banque mondiale (IDS),DT.DOD.DSTC.IR.ZS,A,% des réserves,1,0
+C09.DT.DIS.DPPG.CD,C09,S04,Décaissements de nouveaux prêts,Banque mondiale (IDS),DT.DIS.DPPG.CD,A,USD courants,1,0
+C09.DT.NTR.DECT.CD,C09,S04,Transferts nets sur dette,Banque mondiale (IDS),DT.NTR.DECT.CD,A,USD courants,1,0
+C09.DT.INR.DPPG,C09,S04,Taux d'intérêt moyen des nouveaux engagements,Banque mondiale (IDS),DT.INR.DPPG,A,%,1,0
+C09.DT.MAT.DPPG,C09,S04,Maturité moyenne des nouveaux engagements,Banque mondiale (IDS),DT.MAT.DPPG,A,Années,1,0
+C09.DT.GRE.DPPG,C09,S04,Élément don moyen des nouveaux engagements,Banque mondiale (IDS),DT.GRE.DPPG,A,%,1,0
+C04.FM.LBL.BMNY.GD.ZS,C04,S05,Masse monétaire au sens large,Banque mondiale (WDI),FM.LBL.BMNY.GD.ZS,A,% du PIB,1,0
+C04.FM.LBL.BMNY.ZG,C04,S05,Croissance de la masse monétaire,Banque mondiale (WDI),FM.LBL.BMNY.ZG,A,% annuel,1,0
+C04.FMB_XDC,C04,S05,Monnaie et quasi-monnaie,FMI (IFS),FMB_XDC,M,Mds LCU,1,0
+C04.FS.AST.PRVT.GD.ZS,C04,S05,Crédit intérieur au secteur privé,Banque mondiale (WDI),FS.AST.PRVT.GD.ZS,A,% du PIB,1,1
+C04.FD.AST.PRVT.GD.ZS,C04,S05,Crédit bancaire au secteur privé,Banque mondiale (WDI),FD.AST.PRVT.GD.ZS,A,% du PIB,1,0
+C04.FS.AST.DOMS.GD.ZS,C04,S05,Crédit intérieur net à l'État,Banque mondiale (WDI),FS.AST.DOMS.GD.ZS,A,% du PIB,1,0
+C07.FR.INR.LEND,C07,S05,Taux d'intérêt débiteur,Banque mondiale (WDI),FR.INR.LEND,A,%,1,1
+C07.FR.INR.DPST,C07,S05,Taux d'intérêt créditeur,Banque mondiale (WDI),FR.INR.DPST,A,%,1,0
+C07.FR.INR.RINR,C07,S05,Taux d'intérêt réel,Banque mondiale (WDI),FR.INR.RINR,A,%,1,0
+C07.FR.INR.LNDP,C07,S05,Marge d'intermédiation bancaire,Banque mondiale (WDI),FR.INR.LNDP,A,Points de %,1,0
+C07.FPOLM_PA,C07,S05,Taux directeur de la banque centrale,FMI (IFS),FPOLM_PA,M,%,1,0
+C04.FB.BNK.CAPA.ZS,C04,S05,Ratio de fonds propres sur actifs,Banque mondiale (WDI),FB.BNK.CAPA.ZS,A,%,1,0
+C04.FB.AST.NPER.ZS,C04,S05,Prêts non performants,Banque mondiale (WDI),FB.AST.NPER.ZS,A,% des prêts bruts,1,0
+C04.FSKRC_PT,C04,S05,Ratio de solvabilité réglementaire,FMI (FSI),FSKRC_PT,T,%,1,0
+C04.FSKRA_PT,C04,S05,Rendement des actifs bancaires,FMI (FSI),FSKRA_PT,T,%,1,0
+C04.CM.MKT.LCAP.GD.ZS,C04,S05,Capitalisation boursière,Banque mondiale (WDI),CM.MKT.LCAP.GD.ZS,A,% du PIB,1,0
+C04.FX.OWN.TOTL.ZS,C04,S05,Comptes bancaires détenus (15 ans et plus),Banque mondiale (Findex),FX.OWN.TOTL.ZS,A,% de la population,1,0
+C04.FB.CBK.BRCH.P5,C04,S05,Agences bancaires pour 100 000 adultes,Banque mondiale (WDI),FB.CBK.BRCH.P5,A,Pour 100 000,1,0
+C05.BN.CAB.XOKA.GD.ZS,C05,S06,Solde du compte courant,Banque mondiale (WDI),BN.CAB.XOKA.GD.ZS,A,% du PIB,1,1
+C05.BN.CAB.XOKA.CD,C05,S06,Solde du compte courant en valeur,Banque mondiale (WDI),BN.CAB.XOKA.CD,A,USD courants,1,0
+C05.BCA_NGDPD,C05,S06,Solde du compte courant (projections),FMI (WEO),BCA_NGDPD,A,% du PIB,1,0
+C05.BX.GSR.GNFS.CD,C05,S06,Exportations de biens et services,Banque mondiale (WDI),BX.GSR.GNFS.CD,A,USD courants,1,0
+C05.BM.GSR.GNFS.CD,C05,S06,Importations de biens et services,Banque mondiale (WDI),BM.GSR.GNFS.CD,A,USD courants,1,0
+C05.TX.VAL.MRCH.CD.WT,C05,S06,Exportations de marchandises,Banque mondiale (WDI),TX.VAL.MRCH.CD.WT,A,USD courants,1,0
+C05.TM.VAL.MRCH.CD.WT,C05,S06,Importations de marchandises,Banque mondiale (WDI),TM.VAL.MRCH.CD.WT,A,USD courants,1,0
+C05.DOT,C05,S06,Commerce bilatéral de marchandises,FMI (DOTS),DOT,M,USD courants,1,0
+C05.TT.PRI.MRCH.XD.WD,C05,S06,Termes de l'échange nets,Banque mondiale (WDI),TT.PRI.MRCH.XD.WD,A,Indice 2015 = 100,1,0
+C05.NE.TRD.GNFS.ZS,C05,S06,Ouverture commerciale,Banque mondiale (WDI),NE.TRD.GNFS.ZS,A,% du PIB,1,0
+C05.BX.KLT.DINV.WD.GD.ZS,C05,S06,"Investissements directs étrangers, entrées nettes",Banque mondiale (WDI),BX.KLT.DINV.WD.GD.ZS,A,% du PIB,1,0
+C05.BX.KLT.DINV.CD.WD,C05,S06,"Investissements directs étrangers, valeur",Banque mondiale (WDI),BX.KLT.DINV.CD.WD,A,USD courants,1,0
+C05.BM.KLT.DINV.WD.GD.ZS,C05,S06,Investissements directs à l'étranger,Banque mondiale (WDI),BM.KLT.DINV.WD.GD.ZS,A,% du PIB,1,0
+C05.BX.TRF.PWKR.CD.DT,C05,S06,Transferts des migrants reçus,Banque mondiale (WDI),BX.TRF.PWKR.CD.DT,A,USD courants,1,0
+C05.BX.TRF.PWKR.DT.GD.ZS,C05,S06,Transferts des migrants reçus,Banque mondiale (WDI),BX.TRF.PWKR.DT.GD.ZS,A,% du PIB,1,0
+C05.FI.RES.TOTL.CD,C05,S06,Réserves de change totales (or compris),Banque mondiale (WDI),FI.RES.TOTL.CD,A,USD courants,1,0
+C05.FI.RES.TOTL.MO,C05,S06,Réserves en mois d'importations,Banque mondiale (WDI),FI.RES.TOTL.MO,A,Mois,1,0
+C05.DT.ODA.ODAT.GN.ZS,C05,S06,Aide publique au développement reçue,Banque mondiale (WDI),DT.ODA.ODAT.GN.ZS,A,% du RNB,1,0
+C05.TX.VAL.MANF.ZS.UN,C05,S06,Part des produits manufacturés dans les exportations,Banque mondiale (WDI),TX.VAL.MANF.ZS.UN,A,%,1,0
+C05.TX.VAL.FOOD.ZS.UN,C05,S06,Part des produits primaires dans les exportations,Banque mondiale (WDI),TX.VAL.FOOD.ZS.UN,A,%,1,0
+C05.TM.TAX.MRCH.WM.AR.ZS,C05,S06,Tarif douanier moyen appliqué,Banque mondiale (WDI),TM.TAX.MRCH.WM.AR.ZS,A,%,1,0
+C05.US_ConcentDiversIndices,C05,S06,Indice de concentration des exportations,CNUCED (UNCTADstat),US_ConcentDiversIndices,A,Indice 0-1,1,0
+C10.SL.UEM.TOTL.ZS,C10,S07,Taux de chômage total (estimation OIT),Banque mondiale (WDI),SL.UEM.TOTL.ZS,A,% de la pop. active,1,1
+C10.SL.UEM.TOTL.NE.ZS,C10,S07,Taux de chômage (estimation nationale),Banque mondiale (WDI),SL.UEM.TOTL.NE.ZS,A,% de la pop. active,1,0
+C10.SL.UEM.1524.ZS,C10,S07,Taux de chômage des jeunes (15-24 ans),Banque mondiale (WDI),SL.UEM.1524.ZS,A,% des 15-24 ans,1,0
+C10.DSD_LFS_DF_IALFS_UNE_M,C10,S07,Taux de chômage harmonisé,OCDE (SDMX),DSD_LFS@DF_IALFS_UNE_M,M,%,1,0
+C10.LUR,C10,S07,Taux de chômage (projections),FMI (WEO),LUR,A,%,1,0
+C10.SL.TLF.CACT.ZS,C10,S07,"Taux d'activité, population totale",Banque mondiale (WDI),SL.TLF.CACT.ZS,A,% des 15 ans et +,1,0
+C10.SL.TLF.CACT.FE.ZS,C10,S07,Taux d'activité des femmes,Banque mondiale (WDI),SL.TLF.CACT.FE.ZS,A,% des femmes 15 ans +,1,0
+C10.SL.EMP.TOTL.SP.ZS,C10,S07,Ratio emploi sur population,Banque mondiale (WDI),SL.EMP.TOTL.SP.ZS,A,% des 15 ans et +,1,0
+C10.SL.AGR.EMPL.ZS,C10,S07,Emploi dans l'agriculture,Banque mondiale (WDI),SL.AGR.EMPL.ZS,A,% de l'emploi total,1,0
+C10.SL.IND.EMPL.ZS,C10,S07,Emploi dans l'industrie,Banque mondiale (WDI),SL.IND.EMPL.ZS,A,% de l'emploi total,1,0
+C10.SL.SRV.EMPL.ZS,C10,S07,Emploi dans les services,Banque mondiale (WDI),SL.SRV.EMPL.ZS,A,% de l'emploi total,1,0
+C10.SL.EMP.VULN.ZS,C10,S07,Emploi vulnérable,Banque mondiale (WDI),SL.EMP.VULN.ZS,A,% de l'emploi total,1,0
+C10.SL.EMP.WORK.ZS,C10,S07,Emploi salarié,Banque mondiale (WDI),SL.EMP.WORK.ZS,A,% de l'emploi total,1,0
+C10.SL.UEM.NEET.ZS,C10,S07,Jeunes sans emploi ni études ni formation (NEET),Banque mondiale (WDI),SL.UEM.NEET.ZS,A,% des jeunes,1,0
+C10.SL.TLF.TOTL.IN,C10,S07,Population active totale,Banque mondiale (WDI),SL.TLF.TOTL.IN,A,Personnes,1,0
+C10.SL.GDP.PCAP.EM.KD,C10,S07,PIB par personne employée,Banque mondiale (WDI),SL.GDP.PCAP.EM.KD,A,USD PPA 2021,1,0
+C10.SDG_0831_SEX_ECO_RT_A,C10,S07,Emploi informel,OIT (ILOSTAT),SDG_0831_SEX_ECO_RT_A,A,% de l'emploi total,1,0
+C11.SI.POV.DDAY,C11,S08,"Taux de pauvreté au seuil de 2,15 USD par jour",Banque mondiale (PIP),SI.POV.DDAY,A,% de la population,1,0
+C11.SI.POV.LMIC,C11,S08,"Taux de pauvreté au seuil de 3,65 USD par jour",Banque mondiale (PIP),SI.POV.LMIC,A,% de la population,1,0
+C11.SI.POV.UMIC,C11,S08,"Taux de pauvreté au seuil de 6,85 USD par jour",Banque mondiale (PIP),SI.POV.UMIC,A,% de la population,1,0
+C11.SI.POV.NAHC,C11,S08,Taux de pauvreté au seuil national,Banque mondiale (WDI),SI.POV.NAHC,A,% de la population,1,0
+C11.SI.POV.GAPS,C11,S08,"Écart de pauvreté au seuil de 2,15 USD",Banque mondiale (PIP),SI.POV.GAPS,A,%,1,0
+C11.SI.POV.GINI,C11,S08,Indice de Gini,Banque mondiale (PIP),SI.POV.GINI,A,Indice 0-100,1,0
+C11.SI.DST.10TH.10,C11,S08,Part du revenu du décile supérieur,Banque mondiale (PIP),SI.DST.10TH.10,A,%,1,0
+C11.SI.DST.FRST.20,C11,S08,Part du revenu du quintile inférieur,Banque mondiale (PIP),SI.DST.FRST.20,A,%,1,0
+C11.SI.SPR.PC40,C11,S08,Consommation ou revenu moyen des 40 % les plus pauvres,Banque mondiale (WDI),SI.SPR.PC40,A,USD PPA / jour,1,0
+C11.per_allsp.cov_pop_tot,C11,S08,Couverture des programmes de protection sociale,Banque mondiale (ASPIRE),per_allsp.cov_pop_tot,A,% de la population,1,0
+C11.HD.HCI.OVRL,C11,S08,Indice de capital humain,Banque mondiale (WDI),HD.HCI.OVRL,A,Indice 0-1,1,0
+C11.HDI,C11,S08,Indice de développement humain,PNUD (HDR),HDI,A,Indice 0-1,1,0
+C11.SP.POP.TOTL,C11,S09,Population totale,Banque mondiale (WDI),SP.POP.TOTL,A,Personnes,1,1
+C11.SP.POP.GROW,C11,S09,Croissance démographique,Banque mondiale (WDI),SP.POP.GROW,A,% annuel,1,0
+C11.SP.POP.0014.TO.ZS,C11,S09,Population âgée de 0 à 14 ans,Banque mondiale (WDI),SP.POP.0014.TO.ZS,A,% du total,1,0
+C11.SP.POP.1564.TO.ZS,C11,S09,Population âgée de 15 à 64 ans,Banque mondiale (WDI),SP.POP.1564.TO.ZS,A,% du total,1,0
+C11.SP.POP.65UP.TO.ZS,C11,S09,Population âgée de 65 ans et plus,Banque mondiale (WDI),SP.POP.65UP.TO.ZS,A,% du total,1,0
+C11.SP.POP.DPND,C11,S09,Ratio de dépendance démographique,Banque mondiale (WDI),SP.POP.DPND,A,% des 15-64 ans,1,0
+C11.SP.DYN.TFRT.IN,C11,S09,Indice synthétique de fécondité,Banque mondiale (WDI),SP.DYN.TFRT.IN,A,Naissances / femme,1,0
+C11.SP.DYN.LE00.IN,C11,S09,Espérance de vie à la naissance,Banque mondiale (WDI),SP.DYN.LE00.IN,A,Années,1,0
+C11.SP.DYN.CBRT.IN,C11,S09,Taux brut de natalité,Banque mondiale (WDI),SP.DYN.CBRT.IN,A,Pour 1 000 hab.,1,0
+C11.SP.DYN.CDRT.IN,C11,S09,Taux brut de mortalité,Banque mondiale (WDI),SP.DYN.CDRT.IN,A,Pour 1 000 hab.,1,0
+C11.SP.URB.TOTL.IN.ZS,C11,S09,Population urbaine,Banque mondiale (WDI),SP.URB.TOTL.IN.ZS,A,% du total,1,0
+C11.SP.URB.GROW,C11,S09,Croissance de la population urbaine,Banque mondiale (WDI),SP.URB.GROW,A,% annuel,1,0
+C11.SM.POP.NETM,C11,S09,Migration nette,Banque mondiale (WDI),SM.POP.NETM,A,Personnes,1,0
+C11.EN.POP.DNST,C11,S09,Densité de population,Banque mondiale (WDI),EN.POP.DNST,A,Hab. / km²,1,0
+C11.SE.PRM.NENR,C11,S10,"Taux net de scolarisation, primaire",Banque mondiale (WDI),SE.PRM.NENR,A,%,1,0
+C11.SE.SEC.NENR,C11,S10,"Taux net de scolarisation, secondaire",Banque mondiale (WDI),SE.SEC.NENR,A,%,1,0
+C11.SE.TER.ENRR,C11,S10,"Taux brut de scolarisation, supérieur",Banque mondiale (WDI),SE.TER.ENRR,A,%,1,0
+C11.SE.PRM.CMPT.ZS,C11,S10,Taux d'achèvement du primaire,Banque mondiale (WDI),SE.PRM.CMPT.ZS,A,% du groupe d'âge,1,0
+C11.SE.ADT.LITR.ZS,C11,S10,Taux d'alphabétisation des adultes,Banque mondiale (WDI),SE.ADT.LITR.ZS,A,% des 15 ans et +,1,0
+C11.SE.XPD.TOTL.GD.ZS,C11,S10,Dépenses publiques d'éducation,Banque mondiale (WDI),SE.XPD.TOTL.GD.ZS,A,% du PIB,1,0
+C11.SE.PRM.ENRL.TC.ZS,C11,S10,"Ratio élèves-enseignant, primaire",Banque mondiale (WDI),SE.PRM.ENRL.TC.ZS,A,Ratio,1,0
+C11.SH.XPD.CHEX.GD.ZS,C11,S10,Dépenses courantes de santé,Banque mondiale (WDI),SH.XPD.CHEX.GD.ZS,A,% du PIB,1,0
+C11.SH.XPD.CHEX.PC.CD,C11,S10,Dépenses de santé par habitant,Banque mondiale (WDI),SH.XPD.CHEX.PC.CD,A,USD courants,1,0
+C11.SH.XPD.OOPC.CH.ZS,C11,S10,Dépenses de santé à la charge des ménages,Banque mondiale (WDI),SH.XPD.OOPC.CH.ZS,A,% des dép. de santé,1,0
+C11.SP.DYN.IMRT.IN,C11,S10,Mortalité infantile,Banque mondiale (WDI),SP.DYN.IMRT.IN,A,Pour 1 000 nais. viv.,1,0
+C11.SH.DYN.MORT,C11,S10,Mortalité des moins de 5 ans,Banque mondiale (WDI),SH.DYN.MORT,A,Pour 1 000 nais. viv.,1,0
+C11.SH.STA.MMRT,C11,S10,Ratio de mortalité maternelle,Banque mondiale (WDI),SH.STA.MMRT,A,Pour 100 000 nais.,1,0
+C11.SH.H2O.BASW.ZS,C11,S10,Accès à l'eau potable de base,Banque mondiale (WDI),SH.H2O.BASW.ZS,A,% de la population,1,0
+C11.SH.STA.BASS.ZS,C11,S10,Accès à un assainissement de base,Banque mondiale (WDI),SH.STA.BASS.ZS,A,% de la population,1,0
+C11.SN.ITK.DEFC.ZS,C11,S10,Prévalence de la sous-alimentation,Banque mondiale (WDI),SN.ITK.DEFC.ZS,A,% de la population,1,0
+C11.SH.STA.STNT.ZS,C11,S10,Retard de croissance chez les moins de 5 ans,Banque mondiale (WDI),SH.STA.STNT.ZS,A,% des moins de 5 ans,1,0
+C11.SH.MED.PHYS.ZS,C11,S10,Médecins pour 1 000 habitants,Banque mondiale (WDI),SH.MED.PHYS.ZS,A,Pour 1 000 hab.,1,0
+C14.EG.ELC.ACCS.ZS,C14,S11,Accès à l'électricité,Banque mondiale (WDI),EG.ELC.ACCS.ZS,A,% de la population,1,0
+C14.EG.USE.ELEC.KH.PC,C14,S11,Consommation d'électricité par habitant,Banque mondiale (WDI),EG.USE.ELEC.KH.PC,A,kWh / hab.,1,0
+C14.EG.USE.PCAP.KG.OE,C14,S11,Consommation d'énergie primaire par habitant,Banque mondiale (WDI),EG.USE.PCAP.KG.OE,A,kg équiv. pétrole,1,0
+C14.EG.FEC.RNEW.ZS,C14,S11,Part des énergies renouvelables,Banque mondiale (WDI),EG.FEC.RNEW.ZS,A,% de la conso finale,1,0
+C14.EG.ELC.LOSS.ZS,C14,S11,Pertes de transport et distribution d'électricité,Banque mondiale (WDI),EG.ELC.LOSS.ZS,A,% de la production,1,0
+C14.EG.EGY.PRIM.PP.KD,C14,S11,Intensité énergétique du PIB,Banque mondiale (WDI),EG.EGY.PRIM.PP.KD,A,MJ / USD PPA 2017,1,0
+C14.IT.NET.USER.ZS,C14,S11,Utilisateurs d'Internet,Banque mondiale (WDI),IT.NET.USER.ZS,A,% de la population,1,0
+C14.IT.CEL.SETS.P2,C14,S11,Abonnements à la téléphonie mobile,Banque mondiale (WDI),IT.CEL.SETS.P2,A,Pour 100 hab.,1,0
+C14.IT.NET.BBND.P2,C14,S11,Abonnements haut débit fixe,Banque mondiale (WDI),IT.NET.BBND.P2,A,Pour 100 hab.,1,0
+C14.BX.GSR.CCIS.ZS,C14,S11,Exportations de services TIC,Banque mondiale (WDI),BX.GSR.CCIS.ZS,A,% des exp. de services,1,0
+C14.LP.LPI.OVRL.XQ,C14,S11,"Indice de performance logistique, score global",Banque mondiale (LPI),LP.LPI.OVRL.XQ,A,Score 1-5,1,0
+C14.IS.AIR.GOOD.MT.K1,C14,S11,Trafic de fret aérien,Banque mondiale (WDI),IS.AIR.GOOD.MT.K1,A,Millions t-km,1,0
+C14.IS.SHP.GOOD.TU,C14,S11,Trafic de conteneurs portuaires,Banque mondiale (WDI),IS.SHP.GOOD.TU,A,EVP,1,0
+C14.EN.GHG.CO2.PC.CE.AR5,C14,S12,Émissions de CO2 par habitant,Banque mondiale (WDI),EN.GHG.CO2.PC.CE.AR5,A,t équiv. CO2 / hab.,1,0
+C14.EN.GHG.CO2.MT.CE.AR5,C14,S12,Émissions totales de CO2,Banque mondiale (WDI),EN.GHG.CO2.MT.CE.AR5,A,Mt équiv. CO2,1,0
+C14.EN.GHG.CO2.RT.GDP.PP.KD,C14,S12,Intensité carbone du PIB,Banque mondiale (WDI),EN.GHG.CO2.RT.GDP.PP.KD,A,kg / USD PPA,1,0
+C14.AG.LND.FRST.ZS,C14,S12,Superficie forestière,Banque mondiale (WDI),AG.LND.FRST.ZS,A,% du territoire,1,0
+C14.AG.LND.AGRI.ZS,C14,S12,Terres agricoles,Banque mondiale (WDI),AG.LND.AGRI.ZS,A,% du territoire,1,0
+C14.ER.H2O.FWTL.ZS,C14,S12,Prélèvements annuels d'eau douce,Banque mondiale (WDI),ER.H2O.FWTL.ZS,A,% des ressources,1,0
+C14.NY.GDP.TOTL.RT.ZS,C14,S12,Rentes totales des ressources naturelles,Banque mondiale (WDI),NY.GDP.TOTL.RT.ZS,A,% du PIB,1,0
+C14.NY.GDP.PETR.RT.ZS,C14,S12,Rentes pétrolières,Banque mondiale (WDI),NY.GDP.PETR.RT.ZS,A,% du PIB,1,0
+C14.NY.GDP.MINR.RT.ZS,C14,S12,Rentes minières,Banque mondiale (WDI),NY.GDP.MINR.RT.ZS,A,% du PIB,1,0
+C14.NY.ADJ.SVNG.GN.ZS,C14,S12,Épargne nette ajustée hors dommages,Banque mondiale (WDI),NY.ADJ.SVNG.GN.ZS,A,% du RNB,1,0
+C14.EN.ATM.PM25.MC.M3,C14,S12,Exposition de la population aux particules fines,Banque mondiale (WDI),EN.ATM.PM25.MC.M3,A,µg / m³,1,0
+C14.AG.PRD.FOOD.XD,C14,S13,Indice de production alimentaire,Banque mondiale (WDI),AG.PRD.FOOD.XD,A,Indice 2014-2016 = 100,1,0
+C14.AG.PRD.CROP.XD,C14,S13,Indice de production végétale,Banque mondiale (WDI),AG.PRD.CROP.XD,A,Indice 2014-2016 = 100,1,0
+C14.AG.PRD.LVSK.XD,C14,S13,Indice de production animale,Banque mondiale (WDI),AG.PRD.LVSK.XD,A,Indice 2014-2016 = 100,1,0
+C14.AG.YLD.CREL.KG,C14,S13,Rendement céréalier,Banque mondiale (WDI),AG.YLD.CREL.KG,A,kg / hectare,1,0
+C14.AG.LND.ARBL.HA.PC,C14,S13,Terres arables par habitant,Banque mondiale (WDI),AG.LND.ARBL.HA.PC,A,Hectares / hab.,1,0
+C14.AG.CON.FERT.ZS,C14,S13,Consommation d'engrais,Banque mondiale (WDI),AG.CON.FERT.ZS,A,kg / ha de terres arables,1,0
+C14.TX.VAL.AGRI.ZS.UN,C14,S13,Exportations de produits agricoles bruts,Banque mondiale (WDI),TX.VAL.AGRI.ZS.UN,A,% des exp. de march.,1,0
+C14.TM.VAL.FOOD.ZS.UN,C14,S13,Importations de produits alimentaires,Banque mondiale (WDI),TM.VAL.FOOD.ZS.UN,A,% des imp. de march.,1,0
+C14.NV.AGR.EMPL.KD,C14,S13,Valeur ajoutée agricole par travailleur,Banque mondiale (WDI),NV.AGR.EMPL.KD,A,USD constants 2015,1,0
+C14.SN.ITK.SVFI.ZS,C14,S13,Prévalence de l'insécurité alimentaire grave,FAO (FAOSTAT),SN.ITK.SVFI.ZS,A,% de la population,1,0
+C12.eci,C12,S14,Indice de complexité économique (ECI),Growth Lab Harvard (Atlas),eci,A,Score standardisé,1,0
+C12.eci_rank,C12,S14,Rang de complexité économique,Growth Lab Harvard (Atlas),eci_rank,A,Rang,1,0
+C12.coi,C12,S14,Indice de perspectives de complexité (COI),Growth Lab Harvard (Atlas),coi,A,Score standardisé,1,0
+C12.avg_distance,C12,S14,Distance moyenne au produit,Growth Lab Harvard (Atlas),avg_distance,A,Indice 0-1,1,0
+C12.diversity,C12,S14,Diversité des exportations (produits à AR > 1),Growth Lab Harvard (Atlas),diversity,A,Nombre de produits,1,0
+C12.avg_ubiquity,C12,S14,Ubiquité moyenne des produits exportés,Growth Lab Harvard (Atlas),avg_ubiquity,A,Nombre de pays,1,0
+C12.growth_proj,C12,S14,Projection de croissance à 10 ans,Growth Lab Harvard,growth_proj,A,% annualisé,1,0
+C12.pci,C12,S14,Indice de complexité des produits (PCI),Growth Lab Harvard (Atlas),pci,A,Score standardisé,1,0
+C12.eci_hs92,C12,S14,"Complexité économique, série OEC",OEC,eci_hs92,A,Score standardisé,1,0
+C12.country_product_year,C12,S14,Valeur des exportations par produit (HS 4 chiffres),Growth Lab / Comtrade,country_product_year,A,USD courants,1,0
+C12.US_ConcentDiversIndices,C12,S14,Indice de concentration des exportations (HHI),CNUCED (UNCTADstat),US_ConcentDiversIndices,A,Indice 0-1,1,0
+C12.TX.VAL.TECH.MF.ZS,C12,S14,Part des produits de haute technologie dans les exportations,Banque mondiale (WDI),TX.VAL.TECH.MF.ZS,A,% des exp. manuf.,1,0
+C13.GE.EST,C13,S15,Efficacité des pouvoirs publics,Banque mondiale (WGI),GE.EST,A,"Score -2,5 à 2,5",1,0
+C13.RQ.EST,C13,S15,Qualité de la réglementation,Banque mondiale (WGI),RQ.EST,A,"Score -2,5 à 2,5",1,0
+C13.RL.EST,C13,S15,État de droit,Banque mondiale (WGI),RL.EST,A,"Score -2,5 à 2,5",1,0
+C13.CC.EST,C13,S15,Maîtrise de la corruption,Banque mondiale (WGI),CC.EST,A,"Score -2,5 à 2,5",1,0
+C13.PV.EST,C13,S15,Stabilité politique et absence de violence,Banque mondiale (WGI),PV.EST,A,"Score -2,5 à 2,5",1,0
+C13.VA.EST,C13,S15,Expression et responsabilité,Banque mondiale (WGI),VA.EST,A,"Score -2,5 à 2,5",1,0
+C13.IQ.CPA.ECON.XQ,C13,S15,"Note CPIA, gestion économique",Banque mondiale (WDI),IQ.CPA.ECON.XQ,A,Score 1-6,1,0
+C13.IQ.CPA.PUBS.XQ,C13,S15,"Note CPIA, gestion du secteur public",Banque mondiale (WDI),IQ.CPA.PUBS.XQ,A,Score 1-6,1,0
+C13.IQ.CPA.TRAN.XQ,C13,S15,"Note CPIA, transparence et corruption",Banque mondiale (WDI),IQ.CPA.TRAN.XQ,A,Score 1-6,1,0
+C13.BREADY_REG,C13,S15,"Indice Business Ready, pilier réglementaire",Banque mondiale (B-READY),BREADY_REG,A,Score 0-100,1,0
+C13.CPI,C13,S15,Indice de perception de la corruption,Transparency International,CPI,A,Score 0-100,1,0
+C13.IC.TAX.DURS,C13,S15,Temps consacré aux formalités fiscales,Banque mondiale (WDI),IC.TAX.DURS,A,Heures / an,1,0
+C01.PALLFNFW,C01,S02,Indice de tous les produits de base,Banque mondiale (Pink Sheet),PALLFNFW,"M,A",Indice,0,0
+C01.PNRGW,C01,S02,Indice des produits énergétiques,Banque mondiale (Pink Sheet),PNRGW,"M,A",Indice,0,0
+C01.PFANDBW,C01,S02,Indice alimentation et boissons,Banque mondiale (Pink Sheet),PFANDBW,"M,A",Indice,0,0
+C01.PMETAW,C01,S02,Indice des métaux,Banque mondiale (Pink Sheet),PMETAW,"M,A",Indice,0,0
+C01.PRAWMW,C01,S02,Indice des matières premières agricoles,Banque mondiale (Pink Sheet),PRAWMW,"M,A",Indice,0,0
+C01.POILBRE,C01,S02,"Pétrole brut, Brent",Banque mondiale (Pink Sheet),POILBRE,"M,A",USD / baril,0,0
+C01.POILWTI,C01,S02,"Pétrole brut, WTI",Banque mondiale (Pink Sheet),POILWTI,"M,A",USD / baril,0,0
+C01.POILDUB,C01,S02,"Pétrole brut, Dubaï",Banque mondiale (Pink Sheet),POILDUB,"M,A",USD / baril,0,0
+C01.PNGASEU,C01,S02,"Gaz naturel, Europe",Banque mondiale (Pink Sheet),PNGASEU,"M,A",USD / MBtu,0,0
+C01.PCOALAU,C01,S02,"Charbon, Australie",Banque mondiale (Pink Sheet),PCOALAU,"M,A",USD / tonne,0,0
+C01.PALUM,C01,S02,Aluminium,Banque mondiale (Pink Sheet),PALUM,"M,A",USD / tonne,0,0
+C01.PCOPP,C01,S02,Cuivre,Banque mondiale (Pink Sheet),PCOPP,"M,A",USD / tonne,0,0
+C01.PIORECR,C01,S02,Minerai de fer,Banque mondiale (Pink Sheet),PIORECR,"M,A",USD / tonne,0,0
+C01.PCOCO,C01,S02,Cacao,Banque mondiale (Pink Sheet),PCOCO,"M,A",USD / tonne,0,1
+C01.PCOFFOTM,C01,S02,"Café, arabicas doux",Banque mondiale (Pink Sheet),PCOFFOTM,"M,A",cents US / livre,0,0
+C01.PCOFFROB,C01,S02,"Café, robusta",Banque mondiale (Pink Sheet),PCOFFROB,"M,A",cents US / livre,0,0
+C01.PCOTTIND,C01,S02,Coton,Banque mondiale (Pink Sheet),PCOTTIND,"M,A",cents US / livre,0,0
+C01.PSUGAISA,C01,S02,Sucre,Banque mondiale (Pink Sheet),PSUGAISA,"M,A",cents US / livre,0,0
+C01.PBANSOP,C01,S02,Bananes,Banque mondiale (Pink Sheet),PBANSOP,"M,A",USD / tonne,0,0
+C01.PRUBB,C01,S02,Caoutchouc,Banque mondiale (Pink Sheet),PRUBB,"M,A",cents US / livre,0,0
+C01.PPOIL,C01,S02,Huile de palme,Banque mondiale (Pink Sheet),PPOIL,"M,A",USD / tonne,0,0
+C01.PLOGSK,C01,S02,Grumes de bois dur,Banque mondiale (Pink Sheet),PLOGSK,"M,A",USD / m3,0,0
+C01.PSAWMAL,C01,S02,Sciages de bois dur,Banque mondiale (Pink Sheet),PSAWMAL,"M,A",USD / m3,0,0
+C01.PMAIZMT,C01,S02,Maïs,Banque mondiale (Pink Sheet),PMAIZMT,"M,A",USD / tonne,0,0
+C01.PWHEAMT,C01,S02,Blé,Banque mondiale (Pink Sheet),PWHEAMT,"M,A",USD / tonne,0,0
+C01.PRICENPQ,C01,S02,Riz,Banque mondiale (Pink Sheet),PRICENPQ,"M,A",USD / tonne,0,0
+C01.PGOLD,C01,S02,Or,Banque mondiale (Pink Sheet),PGOLD,"M,A",USD / once troy,0,0

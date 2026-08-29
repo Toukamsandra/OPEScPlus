@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" role="img"
+     aria-label="Donnees et analyse economique">
+  <defs>
+    <linearGradient id="fond" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1F3864"/>
+      <stop offset="1" stop-color="#2C4F8F"/>
+    </linearGradient>
+    <linearGradient id="aire" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C8A24A" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#C8A24A" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="520" height="360" rx="10" fill="url(#fond)"/>
+
+  <!-- meridiens et paralleles, evocation du globe -->
+  <g stroke="#FFFFFF" stroke-opacity=".13" fill="none" stroke-width="1">
+    <circle cx="390" cy="96" r="74"/>
+    <ellipse cx="390" cy="96" rx="30" ry="74"/>
+    <ellipse cx="390" cy="96" rx="58" ry="74"/>
+    <path d="M316 96h148M330 60h120M330 132h120"/>
+  </g>
+
+  <!-- courbe d'evolution et son aire -->
+  <path d="M52 268 L112 232 L172 246 L232 186 L292 204 L352 148 L412 162 L468 108
+           L468 300 L52 300 Z" fill="url(#aire)"/>
+  <path d="M52 268 L112 232 L172 246 L232 186 L292 204 L352 148 L412 162 L468 108"
+        fill="none" stroke="#C8A24A" stroke-width="3"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#FFFFFF">
+    <circle cx="112" cy="232" r="4"/><circle cx="232" cy="186" r="4"/>
+    <circle cx="352" cy="148" r="4"/><circle cx="468" cy="108" r="5"/>
+  </g>
+
+  <!-- histogramme au premier plan -->
+  <g fill="#FFFFFF" fill-opacity=".22">
+    <rect x="58" y="276" width="26" height="24" rx="3"/>
+    <rect x="98" y="258" width="26" height="42" rx="3"/>
+    <rect x="138" y="266" width="26" height="34" rx="3"/>
+    <rect x="178" y="240" width="26" height="60" rx="3"/>
+  </g>
+
+  <line x1="52" y1="300" x2="468" y2="300" stroke="#FFFFFF" stroke-opacity=".28"/>
+  <text x="52" y="332" fill="#B9C6DC" font-family="Segoe UI, Arial, sans-serif"
+        font-size="13" letter-spacing="1.6">OBSERVATOIRE DES PERSPECTIVES ECONOMIQUES</text>
+</svg>
