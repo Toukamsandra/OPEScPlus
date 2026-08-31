@@ -32,31 +32,40 @@ LIENS <- list(
 #' @noRd
 FONCTIONS <- list(
   list("chart", "Tableau de bord interactif",
-       paste("Choisissez une cat\u00e9gorie, un indicateur, une fr\u00e9quence, une p\u00e9riode",
-             "et un ou plusieurs pays. Chaque \u00e9tape ne propose que ce qui existe",
-             "r\u00e9ellement en base : aucun filtre ne m\u00e8ne \u00e0 un graphique vide."),
+       "Choisissez une cat\u00e9gorie, un indicateur, une fr\u00e9quence, une p\u00e9riode et un ou plusieurs pays. Chaque \u00e9tape ne propose que ce qui existe r\u00e9ellement en base : aucun filtre ne m\u00e8ne \u00e0 un graphique vide.",
        "Tableau de bord"),
   list("layers", "Superposition de s\u00e9ries",
-       paste("Jusqu'\u00e0 six s\u00e9ries sur un m\u00eame graphique. Quand les unit\u00e9s diff\u00e8rent,",
-             "elles sont ramen\u00e9es en base 100 pour rester comparables."),
+       "Jusqu'\u00e0 six s\u00e9ries sur un m\u00eame graphique. Quand les unit\u00e9s diff\u00e8rent, elles sont ramen\u00e9es en base 100 pour rester comparables.",
        "Tableau de bord"),
   list("globe", "Analyse cartographique",
-       paste("Une carte du monde pilot\u00e9e par le m\u00eame filtre, avec un curseur",
-             "d'ann\u00e9e animable. Un clic sur un pays ouvre sa fiche."),
+       "Une carte du monde pilot\u00e9e par le m\u00eame filtre, avec un curseur d'ann\u00e9e animable. Un clic sur un pays ouvre sa fiche.",
        "Tableau de bord"),
   list("trend", "Projections",
-       paste("Trois m\u00e9thodes de prolongement, avec intervalle : tendance lin\u00e9aire,",
-             "marche al\u00e9atoire avec d\u00e9rive, lissage de Holt."),
+       "Trois m\u00e9thodes de prolongement, avec intervalle : tendance lin\u00e9aire, marche al\u00e9atoire avec d\u00e9rive, lissage de Holt.",
        "Tableau de bord"),
   list("table", "Base de donn\u00e9es compl\u00e8te",
-       paste("Consultation et t\u00e9l\u00e9chargement au format tableur, en s\u00e9ries longues",
-             "ou en tableau crois\u00e9. Chaque classeur porte ses sources."),
+       "Consultation et t\u00e9l\u00e9chargement au format tableur, en s\u00e9ries longues ou en tableau crois\u00e9. Chaque classeur porte ses sources.",
        "Base de donn\u00e9es"),
   list("refresh", "Collecte tra\u00e7able",
-       paste("Actualisation \u00e0 la demande, par cat\u00e9gorie ou en totalit\u00e9, avec un",
-             "journal de chaque ex\u00e9cution."),
+       "Actualisation \u00e0 la demande, par cat\u00e9gorie ou en totalit\u00e9, avec un journal de chaque ex\u00e9cution.",
        "Collectes")
 )
+
+#' Toutes les chaines de ces structures qui passent par le dictionnaire
+#'
+#' Sert au controle de completude : ces textes ne sont pas des litteraux
+#' `tr("...")` dans le code, ils viennent de listes. Sans cette fonction, ils
+#' echappaient au controle et restaient en francais dans l'interface anglaise.
+#' @noRd
+chaines_accueil <- function() {
+  c(vapply(FONCTIONS, function(f) f[[2]], character(1)),
+    vapply(FONCTIONS, function(f) f[[3]], character(1)),
+    vapply(FONCTIONS, function(f) f[[4]], character(1)),
+    vapply(LIENS$institutions, function(l) l[[2]], character(1)),
+    vapply(LIENS$sources, function(l) l[[2]], character(1)),
+    vapply(LIENS$sources, function(l) l[[4]], character(1)),
+    CONFIG$sous_titre, CONFIG$devise, PARTENAIRES$nom)
+}
 
 mod_accueil_ui <- function(id) {
   ns <- shiny::NS(id)
@@ -65,8 +74,8 @@ mod_accueil_ui <- function(id) {
     # --- banniere ---------------------------------------------------------
     shiny::div(class = "hero",
       shiny::div(class = "hero-texte",
-        shiny::span(class = "hero-surtitre", "R\u00e9publique du Cameroun"),
-        shiny::h1("Comprendre l'\u00e9conomie mondiale pour \u00e9clairer la d\u00e9cision publique"),
+        shiny::span(class = "hero-surtitre", tr("R\u00e9publique du Cameroun")),
+        shiny::h1(tr("Comprendre l'\u00e9conomie mondiale pour \u00e9clairer la d\u00e9cision publique")),
         shiny::p(tr(paste(
           "OPESc+ rassemble les indicateurs \u00e9conomiques de l'ensemble des",
           "\u00e9conomies, collect\u00e9s directement aupr\u00e8s des institutions qui les",
@@ -81,10 +90,11 @@ mod_accueil_ui <- function(id) {
                               class = "btn-opesc-clair btn-large"),
           shiny::actionButton(ns("manuel"), tr("T\u00e9l\u00e9charger le manuel"),
                               class = "btn-opesc-clair btn-large",
-                              icon = shiny::icon("download")))),
+                              icon = shiny::icon("download"))),
+        shiny::uiOutput(ns("formulaire_manuel"))),
       shiny::div(class = "hero-image",
         shiny::img(src = "www/illustration.svg",
-                   alt = "Illustration : donn\u00e9es et analyse \u00e9conomique"))),
+                   alt = tr("Illustration : donn\u00e9es et analyse \u00e9conomique")))),
 
     # --- chiffres cles ----------------------------------------------------
     shiny::uiOutput(ns("chiffres")),
@@ -129,6 +139,8 @@ mod_accueil_ui <- function(id) {
 
 mod_accueil_server <- function(id, con, parent) {
   shiny::moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
 
     output$chiffres <- shiny::renderUI({
       n <- DBI::dbGetQuery(con, "
@@ -146,8 +158,8 @@ mod_accueil_server <- function(id, con, parent) {
       }
       shiny::div(class = "bande-chiffres",
         chiffre(n$indicateurs, tr("indicateurs")),
-        chiffre(n$categories, "cat\u00e9gories"),
-        chiffre(n$pays, "\u00e9conomies"),
+        chiffre(n$categories, tr("cat\u00e9gories")),
+        chiffre(n$pays, tr("\u00e9conomies")),
         chiffre(n$observations, tr("observations")),
         shiny::div(class = "chiffre chiffre-maj",
           shiny::span(class = "chiffre-libelle", tr("Derni\u00e8re actualisation")),
@@ -156,47 +168,58 @@ mod_accueil_server <- function(id, con, parent) {
     })
 
     # --- manuel d'utilisation --------------------------------------------
-    # Le telechargement passe par un lien statique vers un fichier livre dans
-    # inst/app/www, et non par un downloadHandler. Un bouton de telechargement
-    # place dans une fenetre modale n'etait pas relie cote client : le clic ne
-    # produisait rien, sans le moindre message. Un simple lien ne depend
-    # d'aucune liaison Shiny et fonctionne dans tous les cas.
+    # Le formulaire s'affiche dans la page, et non dans une fenetre modale.
+    # Trois mecanismes ont echoue avant celui-ci, tous pour la meme raison de
+    # fond : ils dependaient d'une liaison etablie par Shiny ou Bootstrap dans
+    # le navigateur.
     #
-    # La langue et le format sont demandes plutot que deduits de l'interface :
-    # un agent consultant la plateforme en francais peut avoir besoin de la
-    # version anglaise pour un partenaire.
-    shiny::observeEvent(input$manuel, {
-      shiny::showModal(shiny::modalDialog(
-        title = tr("T\u00e9l\u00e9charger le manuel"),
-        easyClose = TRUE, size = "m",
+    #   downloadButton en pied de fenetre modale : jamais relie, clic sans effet
+    #   sendCustomMessage : le gestionnaire etait enregistre depuis opesc.js,
+    #     charge avant le script de Shiny, donc jamais pris en compte
+    #   modalDialog : le theme Bootstrap 5 est attache a la barre d'onglets et
+    #     non a la page, si bien que le balisage de la fenetre ne correspondait
+    #     pas a la version de Bootstrap chargee et qu'elle ne s'ouvrait pas
+    #
+    # Un panneau replie dans la page et un lien vers un fichier statique ne
+    # dependent de rien : ni fenetre modale, ni JavaScript, ni liaison Shiny.
+    ouvert <- shiny::reactiveVal(FALSE)
+    shiny::observeEvent(input$manuel, ouvert(!ouvert()))
+
+    output$formulaire_manuel <- shiny::renderUI({
+      if (!ouvert()) return(NULL)
+      langue <- if (is.null(input$manuel_langue)) langue_courante() else input$manuel_langue
+      format <- if (is.null(input$manuel_format)) "pdf" else input$manuel_format
+
+      shiny::div(
+        class = "formulaire-manuel",
+        shiny::div(class = "formulaire-titre", tr("T\u00e9l\u00e9charger le manuel")),
+        shiny::p(class = "manuel-note", tr(paste(
+          "Le manuel compte une trentaine de pages. Il pr\u00e9sente la plateforme,",
+          "d\u00e9taille chaque onglet, expose la m\u00e9thode et recense les 233",
+          "indicateurs du catalogue avec leur code de collecte, leur source et",
+          "leur unit\u00e9."))),
         shiny::div(
           class = "choix-manuel",
           shiny::radioButtons(
-            ns("manuel_langue"), tr("Langue"),
+            ns("manuel_langue"), tr("Langue du manuel"),
             choices = stats::setNames(names(LANGUES), unname(LANGUES)),
-            selected = langue_courante()),
+            selected = langue, inline = TRUE),
           shiny::radioButtons(
-            ns("manuel_format"), tr("Format"),
-            choices = c("PDF" = "pdf", "Word" = "docx"), selected = "pdf")),
-        shiny::p(class = "manuel-note", tr(paste(
-          "Le manuel pr\u00e9sente la plateforme, d\u00e9taille chaque onglet et recense",
-          "les 233 indicateurs du catalogue avec leur code de collecte, leur",
-          "source et leur unit\u00e9."))),
-        footer = shiny::tagList(
-          shiny::modalButton(tr("Fermer")),
-          shiny::uiOutput(ns("lien_manuel"), inline = TRUE))))
+            ns("manuel_format"), tr("Format du fichier"),
+            choices = c("PDF" = "pdf", "Word" = "docx"),
+            selected = format, inline = TRUE)),
+        shiny::div(
+          class = "formulaire-actions",
+          shiny::tags$a(
+            class = "btn btn-opesc", role = "button",
+            href = sprintf("www/manuel/manuel_opesc_%s.%s", langue, format),
+            download = sprintf("Manuel_OPESc_%s.%s", toupper(langue), format),
+            shiny::icon("download"), " ", tr("Valider")),
+          shiny::actionLink(ns("fermer_manuel"), tr("Annuler"),
+                            class = "lien-annuler")))
     })
 
-    output$lien_manuel <- shiny::renderUI({
-      langue <- if (is.null(input$manuel_langue)) "fr" else input$manuel_langue
-      format <- if (is.null(input$manuel_format)) "pdf" else input$manuel_format
-      fichier <- sprintf("manuel_opesc_%s.%s", langue, format)
-      shiny::tags$a(
-        class = "btn btn-opesc", href = paste0("www/manuel/", fichier),
-        download = sprintf("Manuel_OPESc_%s.%s", toupper(langue), format),
-        target = "_blank",
-        shiny::icon("download"), " ", tr("T\u00e9l\u00e9charger"))
-    })
+    shiny::observeEvent(input$fermer_manuel, ouvert(FALSE))
 
     # Les boutons de la banniere basculent d'onglet plutot que de faire
     # defiler : la navigation reste celle de la barre, sans duplication.
@@ -204,7 +227,7 @@ mod_accueil_server <- function(id, con, parent) {
       shiny::updateNavbarPage(parent, "onglets", selected = "Tableau de bord")
     })
     shiny::observeEvent(input$vers_base, {
-      shiny::updateNavbarPage(parent, "onglets", selected = "Base de donn\u00e9es")
+      shiny::updateNavbarPage(parent, "onglets", selected = tr("Base de donn\u00e9es"))
     })
   })
 }

@@ -47,7 +47,18 @@ body{background:var(--fond);color:var(--texte);margin:0}
 .langue-liste:focus{outline:2px solid var(--or);outline-offset:1px}
 
 /* --------------------------------------------------------- manuel ------- */
+/* Formulaire replie dans la page, sans fenetre modale : celle-ci dependait du
+   balisage Bootstrap et ne s'ouvrait pas. */
+.formulaire-manuel{margin-top:20px;padding:20px 22px;background:#F8FAFC;
+  border:1px solid var(--bordure);border-left:4px solid var(--or);
+  border-radius:var(--rayon);animation:apparition .2s ease-out}
+.formulaire-titre{font-weight:700;color:var(--bleu);font-size:1rem;margin-bottom:6px}
+.formulaire-manuel .manuel-note{border-top:0;padding-top:0;margin:0 0 14px}
+.formulaire-actions{display:flex;align-items:center;gap:16px;margin-top:4px}
+.lien-annuler{color:var(--gris)!important;font-size:.86rem;text-decoration:none!important}
+.lien-annuler:hover{color:var(--rouge)!important;text-decoration:underline!important}
 .choix-manuel{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:6px 0 2px}
+.choix-manuel .radio-inline{margin-right:14px;font-size:.9rem}
 .choix-manuel .shiny-input-container{width:100%}
 .choix-manuel .control-label{font-size:.78rem;font-weight:600;color:var(--gris);
   text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:block}

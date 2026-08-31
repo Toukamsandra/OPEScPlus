@@ -8,9 +8,9 @@
 
 CONFIG <- list(
   nom          = "OPESc+",
-  sous_titre   = "Observatoire des perspectives economiques",
+  sous_titre   = "Observatoire des perspectives \u00e9conomiques",
   ministere    = "MINEPAT",
-  devise       = "Republique du Cameroun : Paix, Travail, Patrie",
+  devise       = "R\u00e9publique du Cameroun : Paix, Travail, Patrie",
   pays_defaut  = "CMR",
   max_series   = 6L,      # nombre de courbes superposables
   max_pays     = 8L,
@@ -66,22 +66,3 @@ PARTENAIRES <- data.frame(
            "Espagne", "Belgique", "Tchad", "Nig\u00e9ria", "\u00c9tats-Unis"),
   stringsAsFactors = FALSE
 )
-
-# Texte de presentation affiche sous le bandeau.
-PRESENTATION <- list(
-  titre = "Donn\u00e9es \u00e9conomiques mondiales, comparables et actualis\u00e9es",
-  chapo = paste(
-    "OPESc+ rassemble les indicateurs \u00e9conomiques de l'ensemble des",
-    "\u00e9conomies, collect\u00e9s directement aupr\u00e8s des institutions qui les",
-    "publient, et les met \u00e0 disposition sous forme de s\u00e9ries exploitables."),
-  points = list(
-    c("Quatorze cat\u00e9gories",
-      "Des mati\u00e8res premi\u00e8res aux finances publiques, de la monnaie au secteur ext\u00e9rieur."),
-    c("Quatre sources de r\u00e9f\u00e9rence",
-      "Banque mondiale, Fonds mon\u00e9taire international, OCDE, Growth Lab de l'Universit\u00e9 Harvard."),
-    c("Filtres en cascade",
-      "Cat\u00e9gorie, indicateur, fr\u00e9quence, p\u00e9riode, pays. Chaque \u00e9tape se limite \u00e0 ce qui existe en base."),
-    c("Graphique et carte",
-      "Comparaison entre pays, superposition de s\u00e9ries, projection, export en image et en tableur."))
-)
-

@@ -404,3 +404,56 @@ Une actualisation complète représente plusieurs centaines d'appels et peut dur
 Aucun indicateur dans cette portée.,No indicator in this scope.
 "OPESc+ rassemble les indicateurs économiques de l'ensemble des économies, collectés directement auprès des institutions qui les publient, et les met à disposition sous forme de séries exploitables : filtres par pays, par période et par variable, graphiques et cartes exportés en un clic, téléchargement au format tableur.","OPESc+ brings together economic indicators for every economy, collected directly from the institutions that publish them, and makes them available as workable series: filters by country, period and variable, charts and maps exported in one click, spreadsheet download."
 Toutes les données proviennent d'interfaces publiques et gratuites. Aucune n'est produite par la plateforme. Toute réutilisation doit citer la source d'origine et la date d'extraction.,"All data come from public, free interfaces. None is produced by the platform. Any reuse must cite the original source and the retrieval date."
+Observatoire des perspectives économiques du MINEPAT. Les données mises à disposition proviennent des institutions statistiques internationales de référence. Nous vous souhaitons d'y trouver matière à vos analyses.,Observatory of Economic Outlook of MINEPAT. The data made available come from the reference international statistical institutions. We hope you find in them material for your analysis.
+Langue du manuel,Manual language
+Format du fichier,File format
+Valider,Confirm
+Annuler,Cancel
+"Le manuel compte une trentaine de pages. Il présente la plateforme, détaille chaque onglet, expose la méthode et recense les 233 indicateurs du catalogue avec leur code de collecte, leur source et leur unité.","The manual runs to about thirty pages. It introduces the platform, details each tab, sets out the method and lists the 233 catalogue indicators with their collection code, source and unit."
+"République du Cameroun : Paix, Travail, Patrie","Republic of Cameroon: Peace, Work, Fatherland"
+"Choisissez une catégorie, un indicateur, une fréquence, une période et un ou plusieurs pays. Chaque étape ne propose que ce qui existe réellement en base : aucun filtre ne mène à un graphique vide.","Choose a category, an indicator, a frequency, a period and one or more countries. Each step offers only what actually exists in the database: no filter leads to an empty chart."
+"Jusqu'à six séries sur un même graphique. Quand les unités diffèrent, elles sont ramenées en base 100 pour rester comparables.","Up to six series on one chart. When units differ, they are rebased to 100 to stay comparable."
+"Une carte du monde pilotée par le même filtre, avec un curseur d'année animable. Un clic sur un pays ouvre sa fiche.","A world map driven by the same filter, with an animatable year slider. Clicking a country opens its profile."
+"Trois méthodes de prolongement, avec intervalle : tendance linéaire, marche aléatoire avec dérive, lissage de Holt.","Three extension methods, each with an interval: linear trend, random walk with drift, Holt smoothing."
+"Consultation et téléchargement au format tableur, en séries longues ou en tableau croisé. Chaque classeur porte ses sources.","Browsing and spreadsheet download, in long format or as a cross table. Every workbook carries its sources."
+"Actualisation à la demande, par catégorie ou en totalité, avec un journal de chaque exécution.","On-demand updates, by category or in full, with a log of every run."
+"Ministère de l'Économie, de la Planification et de l'Aménagement du Territoire","Ministry of Economy, Planning and Regional Development"
+"L'observatoire d'origine, dont OPESc+ prolonge les travaux","The original observatory, whose work OPESc+ extends"
+Institut national de la statistique,National Institute of Statistics
+"Indicateurs du développement dans le monde, dette, gouvernance, pauvreté","World Development Indicators, debt, governance, poverty"
+"Perspectives de l'économie mondiale, finances publiques, prix des produits de base","World Economic Outlook, public finance, commodity prices"
+Atlas de la complexité économique,Atlas of Economic Complexity
+"Comptes nationaux trimestriels, prix, emploi","Quarterly national accounts, prices, employment"
+156 indicateurs,156 indicators
+49 indicateurs,49 indicators
+2 indicateurs,2 indicators
+à rebrancher,to be reconnected
+ (agrégat), (aggregate)
+Actualisation terminée avec %d erreur(s). Voir l'onglet Collectes.,Update finished with %d error(s). See the Data collection tab.
+Année,Year
+Armoiries de la République du Cameroun,Arms of the Republic of Cameroon
+Aucune collecte enregistrée.,No collection recorded.
+Aucune donnée,No data
+Aucune donnée collectée,No data collected
+Aucune donnée.,No data.
+Cours mondial (série sans dimension pays),World price (series without country dimension)
+"Données : Banque mondiale, Fonds monétaire international, OCDE, ","Data: World Bank, International Monetary Fund, OECD, "
+"Growth Lab (Université Harvard), CNUCED, OIT, FAO. ","Growth Lab (Harvard University), UNCTAD, ILO, FAO. "
+Illustration : données et analyse économique,Illustration: data and economic analysis
+La base est en lecture seule : la collecte n'est pas disponible sur ce déploiement.,The database is read-only: collection is not available on this deployment.
+La date de début était postérieure à la date de fin : les deux ont été inversées.,The start date came after the end date: the two have been swapped.
+Les séries n'ont pas la même unité : elles sont ramenées en base 100 pour rester comparables.,The series do not share a unit: they are rebased to 100 to stay comparable.
+Précédent,Previous
+Toute la catégorie,The whole category
+Toute réutilisation doit citer la source d'origine et la date d'extraction.,Any reuse must cite the original source and the retrieval date.
+Vous avez choisi %d pays. Au-delà de %d courbes le graphique devient illisible ; seuls les %d premiers seront tracés.,You selected %d countries. Beyond %d curves the chart becomes unreadable; only the first %d will be drawn.
+Pays-Bas,Netherlands
+Chine,China
+Inde,India
+Italie,Italy
+France,France
+Espagne,Spain
+Belgique,Belgium
+Tchad,Chad
+Nigéria,Nigeria
+États-Unis,United States

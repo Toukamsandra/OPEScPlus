@@ -1,5 +1,161 @@
 # Journal des versions
 
+## OPEScGolem_V17 (août 2026)
+
+**`impossible de trouver la fonction "ns"`**
+
+Le module Accueil n'avait jamais récupéré `ns` de sa session, contrairement aux
+trois autres. Mon formulaire l'utilisait : le rendu échouait dès l'ouverture.
+
+**La cause de fond des textes non traduits**
+
+Vos deux exemples avaient perdu leur `tr()`. C'est la quatrième fois, et j'ai
+enfin compris pourquoi : mes remplacements de bloc ciblaient la forme échappée
+`\u00e9` alors que le fichier contenait des accents littéraux, ou l'inverse.
+Quand le motif ne correspond à rien, le remplacement ne fait rien, **sans
+erreur**. Le `tr()` disparaissait donc à l'occasion d'une réécriture voisine.
+
+J'ai écrit un détecteur qui repère les littéraux accentués situés hors de toute
+portée `tr()`. Un texte portant des accents est presque toujours destiné à
+l'utilisateur : les requêtes SQL, les classes de style et les adresses n'en
+comportent pas. Le détecteur a trouvé 36 textes oubliés, tous enveloppés.
+
+Ce détecteur devient un test. Il échouera désormais dès qu'un texte visible
+perdra sa traduction, au lieu de laisser la régression passer.
+
+Un second test vérifie que tout module appelant `ns()` l'a bien défini.
+
+**Ce qui est exclu du contrôle, et pourquoi**
+
+Les messages de `i18n.R`, `connecteurs.R`, `collecte.R` et `bd.R` vont à la
+console et non à l'écran. Les constantes de `config.R` et les listes de
+`mod_accueil.R` sont évaluées au chargement du paquet, avant même que `tr()`
+n'existe : les envelopper là provoquerait une erreur au démarrage. Leurs textes
+passent par le dictionnaire au moment du rendu, et `chaines_accueil()` les
+énumère pour un test dédié.
+
+La constante `PRESENTATION`, devenue inutile depuis que le bloc a migré vers
+l'onglet Accueil, est supprimée.
+
+Dictionnaire : 458 entrées.
+
+## OPEScGolem_V16 (août 2026)
+
+**Le téléchargement du manuel : quatrième mécanisme, et le bon**
+
+Trois tentatives ont échoué avant celle-ci, toutes pour la même raison de fond,
+que je n'avais pas vue : chacune dépendait d'une liaison établie par Shiny ou
+par Bootstrap dans le navigateur.
+
+| Mécanisme | Cause de l'échec |
+|---|---|
+| `downloadButton` en pied de fenêtre modale | jamais relié côté client |
+| `sendCustomMessage` | gestionnaire enregistré depuis `opesc.js`, chargé avant le script de Shiny |
+| `modalDialog` | thème Bootstrap 5 attaché à la barre d'onglets et non à la page, balisage incompatible |
+
+Le formulaire s'affiche maintenant **dans la page**, replié sous les boutons de
+la bannière. Langue et format en boutons radio, « Valider » est un lien vers un
+fichier statique. Ni fenêtre modale, ni JavaScript, ni liaison Shiny : rien qui
+puisse ne pas être branché.
+
+**Traduction : les textes venus des listes**
+
+Le point que je n'avais pas traité. Les descriptions des six cartes de
+fonctionnalités, celles des liens et le sous-titre de la plateforme ne sont pas
+des littéraux `tr("...")` dans le code : ils viennent des structures
+`FONCTIONS`, `LIENS` et `CONFIG`. Mon contrôle de complétude, fondé sur une
+expression régulière, ne les voyait pas, et ils restaient donc en français dans
+l'interface anglaise.
+
+S'y ajoutait une faute d'accents : le sous-titre était écrit « Observatoire des
+perspectives economiques », sans accent, et ne correspondait à aucune clé du
+dictionnaire.
+
+Ces textes sont désormais écrits d'un seul tenant plutôt que composés par
+`paste`, ce qui les rend lisibles. Une fonction `chaines_accueil()` les
+énumère, et un test vérifie qu'aucune n'échappe au dictionnaire.
+
+Dictionnaire : 429 entrées. Les seules chaînes non traduites sont les noms
+propres d'institutions, qui ne se traduisent pas.
+
+**Contrôle**
+
+`verifier_manuels()` liste les quatre fichiers, leur présence et leur taille.
+
+## OPEScGolem_V14 (août 2026)
+
+**Manuel refait selon la charte d'OPESc 4.2**
+
+Le manuel adopte la présentation du document que vous m'avez transmis :
+page de garde, table des matières, liste des tableaux, résumé exécutif avec
+principes numérotés, chapitres, encadrés sur fond clair à filet doré, annexes
+lettrées, glossaire et références.
+
+Il compte trente pages en français et vingt-neuf en anglais, exactement la
+limite que vous aviez fixée. Onze chapitres couvrent la présentation générale,
+la prise en main, chacun des quatre onglets, la méthodologie, les limites, un
+mode opératoire rapide et une foire aux questions. Quatre annexes suivent : le
+catalogue des 233 indicateurs, le référentiel des fréquences, le glossaire et
+les références.
+
+Dix-huit tableaux sont numérotés et repris dans la liste des tableaux. Onze
+encadrés signalent les points sur lesquels un usage inattentif conduirait à une
+lecture fausse : le camembert qui additionne des pourcentages, la base 100
+imposée, les cascades qui suivent le premier indicateur, ce que les projections
+ne sont pas.
+
+**Le téléchargement du manuel**
+
+Un formulaire demande la langue et le format, et le bouton « Valider » lance le
+téléchargement. Le déclenchement passe par un message envoyé au navigateur, qui
+va chercher un fichier statique : un bouton de téléchargement Shiny placé dans
+une fenêtre modale n'était pas relié côté client, ce qui explique que le clic
+restait sans effet.
+
+**Message d'accueil**
+
+Il n'était traduit que sur ses deux premiers mots. Titre et corps passent
+maintenant par le dictionnaire.
+
+Le dictionnaire compte 411 entrées. Le test de complétude reconnaît désormais
+les deux formes employées dans le code, `tr("...")` et `tr(paste(...))` : il
+ignorait la seconde et laissait donc passer les textes longs.
+
+## OPEScGolem_V13 (août 2026)
+
+**Lecture du classeur des cours mondiaux**
+
+Le fichier se téléchargeait bien, mais aucun des 28 codes n'était trouvé. Deux
+erreurs, toutes deux dans ma lecture du classeur.
+
+La ligne d'en-tête était déduite d'un décalage fixe par rapport à la première
+ligne de données. Le classeur ne respecte pas ce décalage, et il n'est pas le
+même d'une feuille à l'autre. On parcourt désormais les trente premières lignes
+de chaque feuille et on retient celle qui contient le plus de codes recherchés.
+Le fichier peut donc gagner ou perdre une ligne de titre sans rien casser.
+
+Surtout, je ne lisais que la première feuille dont le nom contient « month ».
+Or le classeur sépare les cours et les indices en deux feuilles : les cinq
+indices de prix ne pouvaient pas être trouvés, quoi qu'il arrive. Toutes les
+feuilles mensuelles sont maintenant parcourues et leurs séries fusionnées.
+
+L'algorithme a été vérifié sur un classeur reproduisant la structure du Pink
+Sheet, avec deux feuilles aux décalages d'en-tête différents : les cinq séries
+sont retrouvées avec leur unité et leur plage de périodes.
+
+**Diagnostic**
+
+`inspecter_classeur_produits()` affiche, feuille par feuille, les douze
+premières lignes telles qu'elles sont lues. Si la collecte échoue encore, cette
+sortie montre exactement où se trouvent les codes.
+
+`codes_produits_de_base()` liste les séries reconnues avec leur unité et leur
+nombre d'observations.
+
+Et quand aucune série n'est reconnue, le message d'erreur indique désormais
+combien de codes ont été trouvés sur chaque feuille, plutôt que de renvoyer à
+une fonction sans rien dire de ce qui a été vu.
+
 ## OPEScGolem_V12 (août 2026)
 
 **Traduction complète**

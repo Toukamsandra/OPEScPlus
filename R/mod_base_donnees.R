@@ -10,7 +10,7 @@ mod_base_donnees_ui <- function(id) {
         shiny::div(
           shiny::h3(tr("Base de données")),
           shiny::p(class = "meta",
-            "Le format tableur est le seul format de téléchargement proposé.")),
+            tr("Le format tableur est le seul format de téléchargement proposé."))),
         shiny::div(class = "outils",
           shiny::downloadButton(ns("long"), tr("Format long"), class = "btn-opesc"),
           shiny::downloadButton(ns("large"), tr("Tableau croisé"), class = "btn-opesc-clair"))),
@@ -21,7 +21,7 @@ mod_base_donnees_ui <- function(id) {
         shiny::div(class = "champ champ-large",
           shiny::selectizeInput(ns("indicateurs"), tr("Indicateurs"), choices = NULL,
             multiple = TRUE, width = "100%",
-            options = list(placeholder = "Toute la catégorie",
+            options = list(placeholder = tr("Toute la catégorie"),
                            plugins = list("remove_button")))),
         shiny::div(class = "champ champ-large",
           shiny::selectizeInput(ns("pays"), tr("Pays"), choices = NULL, multiple = TRUE,
@@ -44,7 +44,7 @@ mod_base_donnees_server <- function(id, con) {
 
     categories <- lire_categories(con)
     shiny::updateSelectInput(session, "categorie",
-      choices = c("Toutes les catégories" = "",
+      choices = c(tr("Toutes les catégories") = "",
                   stats::setNames(categories$code, categories$libelle)))
 
     shiny::observe({
@@ -58,7 +58,7 @@ mod_base_donnees_server <- function(id, con) {
       p <- lire_pays(con)
       shiny::updateSelectizeInput(session, "pays",
         choices = stats::setNames(p$iso3, ifelse(p$est_agregat == 1,
-                                                 paste0(p$nom, " (agrégat)"), p$nom)),
+                                                 paste0(p$nom, tr(" (agrégat)")), p$nom)),
         server = TRUE)
     })
 
@@ -111,23 +111,23 @@ mod_base_donnees_server <- function(id, con) {
 
     output$compte <- shiny::renderText({
       n <- nrow(donnees())
-      if (!n) return("Aucune observation ne correspond aux filtres. La base est peut-être encore vide.")
+      if (!n) return(tr("Aucune observation ne correspond aux filtres. La base est peut-être encore vide."))
       sprintf("%s observations correspondent aux filtres. Les mille premières sont affichées ; le téléchargement porte sur la sélection complète.",
               format(n, big.mark = " "))
     })
 
     output$tableau <- DT::renderDT({
       d <- utils::head(donnees(), 1000)
-      shiny::validate(shiny::need(nrow(d) > 0, "Aucune donnée."))
+      shiny::validate(shiny::need(nrow(d) > 0, tr("Aucune donnée.")))
       affichage <- d[c("pays", "libelle", "frequence", "date_periode", "valeur", "unite", "source")]
       affichage$frequence <- libelle_frequence(affichage$frequence)
-      names(affichage) <- c("Pays", "Indicateur", "Fréquence", "Période", "Valeur", "Unité", "Source")
+      names(affichage) <- c("Pays", "Indicateur", tr("Fréquence"), tr("Période"), "Valeur", tr("Unité"), "Source")
       DT::datatable(affichage, rownames = FALSE, filter = "top",
         options = list(pageLength = 25, scrollX = TRUE, dom = "tip",
                        language = list(url = NULL,
-                         paginate = list(previous = "Précédent", `next` = "Suivant"),
+                         paginate = list(previous = tr("Précédent"), `next` = "Suivant"),
                          info = "_START_ à _END_ sur _TOTAL_",
-                         emptyTable = "Aucune donnée"))) |>
+                         emptyTable = tr("Aucune donnée")))) |>
         DT::formatRound("Valeur", digits = 3)
     })
 

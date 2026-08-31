@@ -122,3 +122,38 @@ chemin_manuel <- function(langue = "fr", format = "pdf") {
   format <- match.arg(format, c("pdf", "docx"))
   app_sys(sprintf("extdata/manuel/manuel_opesc_%s.%s", langue, format))
 }
+
+#' Verifie que les manuels sont bien en place
+#'
+#' Le telechargement pointe vers un fichier servi depuis inst/app/www. S'il
+#' manque, le navigateur recoit une erreur 404 sans le moindre message a
+#' l'ecran, ce qui donne l'impression que le bouton ne fait rien.
+#'
+#' @examples
+#' \dontrun{
+#' verifier_manuels()
+#' }
+#' @export
+verifier_manuels <- function() {
+  combinaisons <- expand.grid(langue = names(LANGUES),
+                              format = c("pdf", "docx"),
+                              stringsAsFactors = FALSE)
+  combinaisons$fichier <- sprintf("manuel_opesc_%s.%s",
+                                  combinaisons$langue, combinaisons$format)
+  combinaisons$chemin <- vapply(combinaisons$fichier, function(f) {
+    app_sys(file.path("app/www/manuel", f))
+  }, character(1), USE.NAMES = FALSE)
+  combinaisons$present <- nzchar(combinaisons$chemin) & file.exists(combinaisons$chemin)
+  combinaisons$taille_ko <- ifelse(combinaisons$present,
+                                   round(file.size(combinaisons$chemin) / 1024), NA)
+  combinaisons$adresse <- file.path("www/manuel", combinaisons$fichier)
+
+  if (all(combinaisons$present)) {
+    message("Les quatre manuels sont en place. Si le t\u00e9l\u00e9chargement ne d\u00e9marre pas, ",
+            "ouvrez directement http://127.0.0.1:PORT/www/manuel/manuel_opesc_fr.pdf ",
+            "en rempla\u00e7ant PORT par celui affich\u00e9 au lancement.")
+  } else {
+    message("Manuels manquants. Placez-les dans inst/app/www/manuel/ du projet.")
+  }
+  combinaisons[c("fichier", "present", "taille_ko", "adresse")]
+}

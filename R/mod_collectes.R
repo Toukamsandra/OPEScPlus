@@ -9,10 +9,10 @@ mod_collectes_ui <- function(id) {
       shiny::div(
         shiny::h3(tr("Journal des collectes")),
         shiny::p(class = "meta",
-          "Chaque exécution est tracée : sans journal, une collecte silencieusement vide passe inaperçue pendant des mois.")),
+          tr("Chaque exécution est tracée : sans journal, une collecte silencieusement vide passe inaperçue pendant des mois."))),
       shiny::uiOutput(ns("commandes"))),
     shiny::p(class = "note",
-      "Une actualisation complète représente plusieurs centaines d'appels et peut durer une trentaine de minutes. Préférez une catégorie à la fois."),
+      tr("Une actualisation complète représente plusieurs centaines d'appels et peut durer une trentaine de minutes. Préférez une catégorie à la fois.")),
     DT::DTOutput(ns("journal")))
 }
 
@@ -31,13 +31,13 @@ mod_collectes_server <- function(id, con) {
     output$commandes <- shiny::renderUI({
       if (!base_modifiable()) {
         return(shiny::div(class = "alerte",
-          shiny::p("La base est en lecture seule : la collecte n'est pas disponible sur ce déploiement.")))
+          shiny::p(tr("La base est en lecture seule : la collecte n'est pas disponible sur ce déploiement."))))
       }
       shiny::div(class = "outils",
         shiny::selectInput(ns("portee"), NULL, width = "260px",
           choices = c("Tout le catalogue" = "",
                       stats::setNames(categories$code,
-                                      paste("Catégorie :", categories$libelle)))),
+                                      tr(paste("Catégorie :", categories$libelle))))),
         shiny::actionButton(ns("lancer"), tr("Actualiser"), class = "btn-opesc",
                             icon = shiny::icon("rotate")))
     })
@@ -48,7 +48,7 @@ mod_collectes_server <- function(id, con) {
       lignes <- if (is.null(input$portee) || input$portee == "")
         lire_indicateurs(con) else lire_indicateurs(con, input$portee)
       if (!nrow(lignes)) {
-        shiny::showNotification("Aucun indicateur dans cette portée.", type = "warning")
+        shiny::showNotification(tr("Aucun indicateur dans cette portée."), type = "warning")
         return()
       }
       shiny::withProgress(message = "Collecte en cours", value = 0, {
@@ -66,7 +66,7 @@ mod_collectes_server <- function(id, con) {
     output$journal <- DT::renderDT({
       rafraichir()
       d <- lire_journal(con)
-      shiny::validate(shiny::need(nrow(d) > 0, "Aucune collecte enregistrée."))
+      shiny::validate(shiny::need(nrow(d) > 0, tr("Aucune collecte enregistrée.")))
       affichage <- data.frame(
         Début = d$debut, Fin = d$fin, Déclenchement = d$declencheur,
         Statut = d$statut, Indicateurs = d$nb_indicateurs,

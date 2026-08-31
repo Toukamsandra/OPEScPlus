@@ -255,13 +255,21 @@ adresse_pink_sheet <- function() {
   liens[[1]]
 }
 
-#' Telecharge et met en forme le classeur des cours mondiaux
+#' Telecharge le classeur et en extrait les series recherchees
 #'
-#' La mise en forme est deduite de la position des donnees et non d'un numero
-#' de ligne fixe : on cherche la premiere ligne dont la colonne des periodes
-#' ressemble a 1960M01, puis on remonte de trois lignes pour trouver, dans
-#' l'ordre, les libelles, les unites et les codes. Ajouter une ligne de titre
-#' ne casse donc rien.
+#' Deux corrections par rapport a la version precedente, apprises d'une
+#' collecte qui n'a rien trouve :
+#'
+#' 1. La ligne d'en-tete n'est plus deduite d'un decalage fixe par rapport aux
+#'    donnees. On parcourt les premieres lignes de chaque feuille et on retient
+#'    celle qui contient le plus de codes recherches. Le classeur peut donc
+#'    gagner ou perdre une ligne de titre sans rien casser.
+#' 2. Toutes les feuilles mensuelles sont parcourues, et non la premiere
+#'    trouvee. Le classeur separe les cours et les indices en deux feuilles :
+#'    ne lire que la premiere condamnait la moitie du catalogue.
+#'
+#' @return liste nommee par code, chaque element portant periodes, valeurs et
+#'   unite.
 #' @noRd
 classeur_produits <- function() {
   if (!is.null(.cache_flux$produits)) return(.cache_flux$produits)
@@ -272,58 +280,93 @@ classeur_produits <- function() {
            fichier)
 
   feuilles <- openxlsx::getSheetNames(fichier)
-  feuille <- feuilles[grepl("month", feuilles, ignore.case = TRUE)][1]
-  if (is.na(feuille)) feuille <- feuilles[[1]]
+  retenues <- feuilles[grepl("month|mensuel", feuilles, ignore.case = TRUE)]
+  if (!length(retenues)) retenues <- feuilles
 
-  brut <- openxlsx::read.xlsx(fichier, sheet = feuille, colNames = FALSE,
-                              skipEmptyRows = FALSE, skipEmptyCols = FALSE)
-  colonne_a <- trimws(as.character(brut[[1]]))
-  lignes_donnees <- which(grepl("^\\d{4}[Mm]\\d{1,2}$", colonne_a))
-  if (!length(lignes_donnees)) {
-    stop("Colonne de p\u00e9riodes introuvable dans le classeur des cours mondiaux.",
+  cibles <- unname(CODES_PINK_SHEET)
+  series <- list()
+  journal <- list()
+
+  for (nom in retenues) {
+    brut <- tryCatch(
+      openxlsx::read.xlsx(fichier, sheet = nom, colNames = FALSE,
+                          skipEmptyRows = FALSE, skipEmptyCols = FALSE),
+      error = function(e) NULL)
+    if (is.null(brut) || !nrow(brut) || !ncol(brut)) next
+
+    # Ligne d'en-tete : celle qui porte le plus de codes recherches.
+    hauteur <- min(30L, nrow(brut))
+    scores <- vapply(seq_len(hauteur), function(i) {
+      sum(trimws(as.character(unlist(brut[i, ]))) %in% cibles)
+    }, integer(1))
+    journal[[nom]] <- max(scores)
+    if (max(scores) < 1L) next
+    h <- which.max(scores)
+
+    codes <- trimws(as.character(unlist(brut[h, ])))
+    unites <- if (h > 1L) trimws(as.character(unlist(brut[h - 1L, ])))
+              else rep("", length(codes))
+    corps <- brut[seq.int(h + 1L, nrow(brut)), , drop = FALSE]
+
+    # Colonne des periodes : celle dont les valeurs suivent la forme 1960M01.
+    est_periode <- vapply(corps, function(x) {
+      v <- trimws(as.character(x))
+      v <- v[!is.na(v) & nzchar(v)]
+      length(v) > 0 && mean(grepl("^\\d{4}[MmQq]\\d{1,2}$", v)) > 0.8
+    }, logical(1))
+    if (!any(est_periode)) next
+
+    periodes <- trimws(as.character(corps[[which(est_periode)[[1]]]]))
+    garde <- grepl("^\\d{4}[Mm]\\d{1,2}$", periodes)
+    if (!any(garde)) next
+    corps <- corps[garde, , drop = FALSE]
+    periodes <- periodes[garde]
+
+    for (j in which(codes %in% cibles)) {
+      series[[codes[[j]]]] <- list(
+        periodes = periodes,
+        valeurs = corps[[j]],
+        unite = if (is.na(unites[[j]])) "" else unites[[j]])
+    }
+  }
+
+  if (!length(series)) {
+    stop("Aucune serie reconnue dans le classeur. Codes trouves par feuille : ",
+         paste(sprintf("%s = %d", names(journal), unlist(journal)), collapse = ", "),
+         ". Utilisez inspecter_classeur_produits() pour voir sa structure.",
          call. = FALSE)
   }
-  depart <- min(lignes_donnees)
-  if (depart < 4L) stop("En-t\u00eates du classeur introuvables.", call. = FALSE)
 
-  ligne <- function(i) trimws(as.character(unlist(brut[i, ])))
-  codes  <- ligne(depart - 1L)
-  unites <- ligne(depart - 2L)
-
-  corps <- brut[lignes_donnees, , drop = FALSE]
-  names(corps) <- ifelse(is.na(codes) | !nzchar(codes),
-                         paste0("col", seq_along(codes)), codes)
-  attr(corps, "unites") <- stats::setNames(unites, names(corps))
-  attr(corps, "periodes") <- colonne_a[lignes_donnees]
-
-  .cache_flux$produits <- corps
-  corps
+  attr(series, "feuilles") <- journal
+  .cache_flux$produits <- series
+  series
 }
 
 #' Connecteur des cours mondiaux de produits de base
 #' @noRd
 connecteur_produits_de_base <- function(code_source, debut = NULL, fin = NULL) {
-  d <- classeur_produits()
+  series <- classeur_produits()
 
   code <- CODES_PINK_SHEET[[code_source]]
   if (is.null(code) || is.na(code)) {
-    stop(sprintf("Aucune correspondance pour %s. Compl\u00e9tez CODES_PINK_SHEET.",
+    stop(sprintf("Aucune correspondance pour %s. Completez CODES_PINK_SHEET.",
                  code_source), call. = FALSE)
   }
-  i <- match(code, names(d))
-  if (is.na(i)) {
+  serie <- series[[code]]
+  if (is.null(serie)) {
     stop(sprintf("Code %s absent du classeur. Utilisez codes_produits_de_base().",
                  code), call. = FALSE)
   }
 
   # Le classeur ecrit 1960M01 la ou la plateforme attend 1960-01.
-  periodes <- sub("^(\\d{4})[Mm](\\d{1,2})$", "\\1-\\2", attr(d, "periodes"))
+  periodes <- sub("^(\\d{4})[Mm](\\d{1,2})$", "\\1-\\2", serie$periodes)
   periodes <- sub("^(\\d{4})-(\\d)$", "\\1-0\\2", periodes)
   dates <- periodes_vers_dates(periodes)
 
   r <- data.frame(
     iso3 = "WLD", date_periode = dates$date_periode, frequence = dates$frequence,
-    valeur = suppressWarnings(as.numeric(gsub("[^0-9.eE+-]", "", d[[i]]))),
+    valeur = suppressWarnings(as.numeric(gsub("[^0-9.eE+-]", "",
+                                              as.character(serie$valeurs)))),
     stringsAsFactors = FALSE)
   r <- r[!is.na(r$date_periode) & !is.na(r$valeur), ]
 
@@ -336,14 +379,70 @@ connecteur_produits_de_base <- function(code_source, debut = NULL, fin = NULL) {
   # Banque mondiale et ne pourrait pas etre compare sur un meme graphique.
   if (nrow(r)) r <- rbind(r, agreger_en_annuel(r))
 
-  # L'unite est lue dans le classeur plutot que devinee : les deux
-  # nomenclatures n'expriment pas les memes cours dans les memes unites, et une
-  # unite fausse sur un graphique est pire qu'une unite absente.
-  unite <- attr(d, "unites")[[names(d)[i]]]
-  if (!is.null(unite) && !is.na(unite) && nzchar(unite)) {
-    attr(r, "unite") <- unite
-  }
+  # L'unite est lue dans le classeur plutot que devinee : les nomenclatures
+  # n'expriment pas les memes cours dans les memes unites.
+  if (nzchar(serie$unite)) attr(r, "unite") <- serie$unite
   r
+}
+
+#' Affiche la structure du classeur des cours mondiaux
+#'
+#' A utiliser quand la collecte ne trouve aucun code : montre, pour chaque
+#' feuille, les premieres lignes telles qu'elles sont lues, ce qui permet de
+#' voir ou se trouvent reellement les codes.
+#'
+#' @param lignes nombre de lignes a afficher par feuille.
+#'
+#' @examples
+#' \dontrun{
+#' inspecter_classeur_produits()
+#' }
+#' @export
+inspecter_classeur_produits <- function(lignes = 12L) {
+  fichier <- tempfile(fileext = ".xlsx")
+  on.exit(unlink(fichier), add = TRUE)
+  writeBin(httr2::resp_body_raw(appel(adresse_pink_sheet(), list(), pause = 0.5)),
+           fichier)
+
+  feuilles <- openxlsx::getSheetNames(fichier)
+  cat("Feuilles du classeur :", paste(feuilles, collapse = " | "), "\n\n")
+
+  for (nom in feuilles) {
+    brut <- tryCatch(
+      openxlsx::read.xlsx(fichier, sheet = nom, colNames = FALSE,
+                          skipEmptyRows = FALSE, skipEmptyCols = FALSE,
+                          rows = seq_len(lignes)),
+      error = function(e) NULL)
+    cat("=== ", nom, " ===\n", sep = "")
+    if (is.null(brut) || !nrow(brut)) { cat("  (vide)\n\n"); next }
+    for (i in seq_len(nrow(brut))) {
+      v <- trimws(as.character(unlist(brut[i, ])))
+      v <- v[!is.na(v) & nzchar(v)]
+      cat(sprintf("  %2d : %s\n", i, substr(paste(utils::head(v, 10), collapse = " | "), 1, 150)))
+    }
+    cat("\n")
+  }
+  invisible(NULL)
+}
+
+#' Liste les cours disponibles dans le classeur mondial
+#'
+#' Indique, pour chaque serie reconnue, son unite et le nombre d'observations.
+#'
+#' @examples
+#' \dontrun{
+#' codes_produits_de_base()
+#' }
+#' @export
+codes_produits_de_base <- function() {
+  series <- classeur_produits()
+  data.frame(
+    code = names(series),
+    unite = vapply(series, function(x) x$unite, character(1), USE.NAMES = FALSE),
+    observations = vapply(series, function(x) sum(!is.na(x$valeurs)),
+                          integer(1), USE.NAMES = FALSE),
+    au_catalogue = names(series) %in% CODES_PINK_SHEET,
+    stringsAsFactors = FALSE, row.names = NULL)
 }
 
 #' Moyenne annuelle d'une serie mensuelle

@@ -21,7 +21,7 @@ app_ui <- function(request) {
         shiny::div(
           class = "bandeau-cote",
           shiny::img(src = "www/armoiries_cameroun.png", class = "logo logo-etat",
-                     alt = "Armoiries de la R\u00e9publique du Cameroun")),
+                     alt = tr("Armoiries de la R\u00e9publique du Cameroun"))),
         shiny::div(
           class = "marque",
           shiny::strong(CONFIG$nom),
@@ -47,9 +47,9 @@ app_ui <- function(request) {
       shiny::div(shiny::strong(CONFIG$nom), " : ", CONFIG$sous_titre),
       shiny::div(
         class = "pied-mentions",
-        "Donn\u00e9es : Banque mondiale, Fonds mon\u00e9taire international, OCDE, ",
-        "Growth Lab (Universit\u00e9 Harvard), CNUCED, OIT, FAO. ",
-        "Toute r\u00e9utilisation doit citer la source d'origine et la date d'extraction.")))
+        tr("Donn\u00e9es : Banque mondiale, Fonds mon\u00e9taire international, OCDE, "),
+        tr("Growth Lab (Universit\u00e9 Harvard), CNUCED, OIT, FAO. "),
+        tr("Toute r\u00e9utilisation doit citer la source d'origine et la date d'extraction."))))
 }
 
 #' Bandeau des principaux partenaires commerciaux
@@ -73,9 +73,9 @@ bandeau_partenaires <- function() {
             class = "partenaire", title = PARTENAIRES$nom[[i]],
             shiny::img(
               class = "drapeau", src = url_drapeau(iso2, 40),
-              alt = PARTENAIRES$nom[[i]],
+              alt = tr(PARTENAIRES$nom[[i]]),
               onerror = "this.style.display='none'"),
-            shiny::span(class = "partenaire-nom", PARTENAIRES$nom[[i]]))
+            shiny::span(class = "partenaire-nom", tr(PARTENAIRES$nom[[i]])))
         }))))
 }
 
@@ -86,24 +86,30 @@ bandeau_partenaires <- function() {
 #' plusieurs fois par jour.
 #' @noRd
 message_bienvenue <- function() {
+  # Le message entier passe par le dictionnaire, titre comme corps. La version
+  # precedente n'en traduisait que les deux premiers mots, le reste restant en
+  # francais dans une interface anglaise.
+  titre <- sprintf("%s %s", tr("Bienvenue sur"), CONFIG$nom)
+  corps <- tr(paste(
+    "Observatoire des perspectives \u00e9conomiques du MINEPAT. Les donn\u00e9es mises",
+    "\u00e0 disposition proviennent des institutions statistiques internationales de",
+    "r\u00e9f\u00e9rence. Nous vous souhaitons d'y trouver mati\u00e8re \u00e0 vos analyses."))
+
   shiny::tags$script(shiny::HTML(sprintf(
     "document.addEventListener('DOMContentLoaded', function () {
        setTimeout(function () {
          var n = document.createElement('div');
          n.className = 'bienvenue';
-         n.innerHTML = %s;
+         n.innerHTML = '<strong>' + %s + '</strong><span>' + %s + '</span>';
          document.body.appendChild(n);
          setTimeout(function () { n.classList.add('bienvenue-visible'); }, 60);
          setTimeout(function () { n.classList.remove('bienvenue-visible'); }, 11000);
          setTimeout(function () { n.remove(); }, 12000);
          n.addEventListener('click', function () { n.remove(); });
        }, 500);
-     });", jsonlite::toJSON(paste0(
-       "<strong>", tr("Bienvenue sur"), " ", CONFIG$nom, "</strong>",
-       "<span>", CONFIG$sous_titre, " du ", CONFIG$ministere, ". ",
-       "Les donn\u00e9es mises \u00e0 disposition proviennent des institutions ",
-       "statistiques internationales de r\u00e9f\u00e9rence. Nous vous souhaitons ",
-       "d'y trouver mati\u00e8re \u00e0 vos analyses.</span>"), auto_unbox = TRUE))))
+     });",
+    jsonlite::toJSON(titre, auto_unbox = TRUE),
+    jsonlite::toJSON(corps, auto_unbox = TRUE))))
 }
 
 #' Theme visuel

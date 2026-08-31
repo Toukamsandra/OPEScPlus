@@ -13,7 +13,7 @@ mod_tableau_bord_ui <- function(id) {
 
     # --- 1. Categories ----------------------------------------------------
     shiny::div(class = "cadre cadre-categories",
-      shiny::div(class = "cadre-titre", "Catégories de données"),
+      shiny::div(class = "cadre-titre", tr("Catégories de données")),
       shiny::uiOutput(ns("tuiles"))),
 
     # --- 2. Barre de filtres ---------------------------------------------
@@ -201,7 +201,7 @@ mod_tableau_bord_server <- function(id, con) {
       choix <- choix_frequences(dispo)
       if (!length(choix)) {
         shiny::updateSelectInput(session, "frequence",
-                                 choices = c("Aucune donnée collectée" = ""))
+                                 choices = c(tr("Aucune donnée collectée") = ""))
         return()
       }
       # On propose par defaut le pas le plus large disponible : c'est celui qui
@@ -230,7 +230,7 @@ mod_tableau_bord_server <- function(id, con) {
                           shiny::p(class = "petit", message)))
       }
       shiny::dateRangeInput(
-        ns("bornes"), "Période",
+        ns("bornes"), tr("Période"),
         start = max(bornes$min, seq(bornes$max, by = "-20 years", length.out = 2)[2]),
         end = bornes$max, min = bornes$min, max = bornes$max,
         format = "dd/mm/yyyy", language = "fr", separator = " au ", width = "100%")
@@ -244,7 +244,7 @@ mod_tableau_bord_server <- function(id, con) {
       if (b[1] > b[2]) {
         shiny::updateDateRangeInput(session, "bornes", start = b[2], end = b[1])
         shiny::showNotification(
-          "La date de début était postérieure à la date de fin : les deux ont été inversées.",
+          tr("La date de début était postérieure à la date de fin : les deux ont été inversées."),
           type = "warning", duration = 6)
       }
     }, ignoreInit = TRUE)
@@ -256,7 +256,7 @@ mod_tableau_bord_server <- function(id, con) {
         # Un cours mondial de matiere premiere n'a pas de dimension pays :
         # proposer une liste de pays serait un piege.
         shiny::updateSelectizeInput(session, "pays",
-          choices = c("Cours mondial (série sans dimension pays)" = "WLD"),
+          choices = c(tr("Cours mondial (série sans dimension pays)") = "WLD"),
           selected = "WLD", server = TRUE)
         return()
       }
@@ -268,7 +268,7 @@ mod_tableau_bord_server <- function(id, con) {
       p <- if (length(dispo)) tous_pays[tous_pays$iso3 %in% dispo, ] else tous_pays
       p <- p[order(p$est_agregat, p$nom), ]
       choix <- stats::setNames(p$iso3, ifelse(p$est_agregat == 1,
-                                              paste0(p$nom, " (agrégat)"), p$nom))
+                                              paste0(p$nom, tr(" (agrégat)")), p$nom))
       selection <- shiny::isolate(input$pays)
       selection <- selection[selection %in% p$iso3]
       if (!length(selection)) {
@@ -284,7 +284,7 @@ mod_tableau_bord_server <- function(id, con) {
       messages <- character(0)
       if (length(input$pays) > CONFIG$max_pays) {
         messages <- c(messages, sprintf(
-          "Vous avez choisi %d pays. Au-delà de %d courbes le graphique devient illisible ; seuls les %d premiers seront tracés.",
+          tr("Vous avez choisi %d pays. Au-delà de %d courbes le graphique devient illisible ; seuls les %d premiers seront tracés."),
           length(input$pays), CONFIG$max_pays, CONFIG$max_pays))
       }
       if (!length(messages)) return(NULL)
@@ -332,7 +332,7 @@ mod_tableau_bord_server <- function(id, con) {
       if (forcer && !isTRUE(input$base100) && !camembert) {
         shiny::updateCheckboxInput(session, "base100", value = TRUE)
         shiny::showNotification(
-          "Les séries n'ont pas la même unité : elles sont ramenées en base 100 pour rester comparables.",
+          tr("Les séries n'ont pas la même unité : elles sont ramenées en base 100 pour rester comparables."),
           type = "message", duration = 8)
       }
     }
@@ -398,7 +398,7 @@ mod_tableau_bord_server <- function(id, con) {
               shiny::tags$button(
                 class = "jeton-retirer", type = "button",
                 `data-cible` = ns("retirer"), `data-serie` = i,
-                title = "Retirer cette s\u00e9rie", "\u00d7"))
+                title = tr("Retirer cette s\u00e9rie"), "\u00d7"))
           })))
     })
 
@@ -417,7 +417,7 @@ mod_tableau_bord_server <- function(id, con) {
     # --- actualisation ---------------------------------------------------
     output$bouton_actualiser <- shiny::renderUI({
       if (!base_modifiable()) return(NULL)
-      shiny::actionButton(ns("actualiser"), "Actualiser les données",
+      shiny::actionButton(ns("actualiser"), tr("Actualiser les données"),
                           class = "btn-opesc-clair", icon = shiny::icon("rotate"))
     })
 
@@ -439,7 +439,7 @@ mod_tableau_bord_server <- function(id, con) {
           })
         if (length(res$erreurs)) {
           shiny::showNotification(
-            sprintf("Actualisation terminée avec %d erreur(s). Voir l'onglet Collectes.",
+            sprintf(tr("Actualisation terminée avec %d erreur(s). Voir l'onglet Collectes."),
                     length(res$erreurs)), type = "warning", duration = 10)
         } else {
           shiny::showNotification(sprintf(
@@ -452,7 +452,7 @@ mod_tableau_bord_server <- function(id, con) {
 
     # --- sorties ----------------------------------------------------------
     output$titre <- shiny::renderText({
-      if (is.null(etat$donnees)) return("Aucune série affichée")
+      if (is.null(etat$donnees)) return(tr("Aucune série affichée"))
       libelles <- unique(etat$donnees$libelle)
       if (length(libelles) == 1) libelles else
         sprintf("%d indicateurs comparés", length(libelles))
@@ -460,7 +460,7 @@ mod_tableau_bord_server <- function(id, con) {
 
     output$sous_titre <- shiny::renderText({
       if (is.null(etat$donnees)) {
-        return("Choisissez une catégorie, un indicateur, une fréquence, une période et un ou plusieurs pays, puis appliquez le filtre.")
+        return(tr("Choisissez une catégorie, un indicateur, une fréquence, une période et un ou plusieurs pays, puis appliquez le filtre."))
       }
       d <- etat$donnees
       sprintf("%s : %d observations, de %s à %s.",
@@ -479,7 +479,7 @@ mod_tableau_bord_server <- function(id, con) {
     output$graphique <- plotly::renderPlotly({
       g <- etat$graphique
       shiny::validate(shiny::need(!is.null(g),
-        "Aucune donnée pour cette combinaison. Élargissez la période, changez de fréquence ou vérifiez que l'indicateur a bien été collecté."))
+        tr("Aucune donnée pour cette combinaison. Élargissez la période, changez de fréquence ou vérifiez que l'indicateur a bien été collecté.")))
       tracer_interactif(g)
     })
 
@@ -522,7 +522,7 @@ mod_tableau_bord_server <- function(id, con) {
         params = list(s$code_interne))$d
       shiny::validate(shiny::need(
         length(dim_pays) && dim_pays[[1]] == 1,
-        "Cet indicateur est un cours mondial : il n'a pas de dimension pays et ne peut pas \u00eatre cartographi\u00e9."))
+        tr("Cet indicateur est un cours mondial : il n'a pas de dimension pays et ne peut pas \u00eatre cartographi\u00e9.")))
 
       d <- donnees_carte_courantes()
       shiny::validate(shiny::need(
@@ -565,8 +565,8 @@ mod_tableau_bord_server <- function(id, con) {
         shiny::req(nrow(d) > 0)
         d$rang <- seq_len(nrow(d))
         sortie <- d[c("rang", "pays", "iso3", "region", "annee", "valeur", "unite")]
-        names(sortie) <- c("Rang", "Pays", "Code pays", "R\u00e9gion", "Ann\u00e9e",
-                           "Valeur", "Unit\u00e9")
+        names(sortie) <- c("Rang", "Pays", "Code pays", tr("R\u00e9gion"), tr("Ann\u00e9e"),
+                           "Valeur", tr("Unit\u00e9"))
         wb <- openxlsx::createWorkbook()
         openxlsx::addWorksheet(wb, "Classement")
         openxlsx::writeData(wb, "Classement", sortie, headerStyle =
