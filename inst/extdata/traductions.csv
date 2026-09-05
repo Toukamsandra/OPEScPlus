@@ -457,3 +457,183 @@ Belgique,Belgium
 Tchad,Chad
 Nigéria,Nigeria
 États-Unis,United States
+Recherche,Search
+Recherche orientée,Guided search
+Rechercher,Search
+Sujet recherché,Topic
+Exemples,Examples
+"Saisissez un sujet, par exemple dette publique ou cours du cacao. La recherche interroge d'abord le catalogue de la plateforme, puis propose des liens vers un ensemble fermé de sources de référence. Chaque lien mène à la recherche du terme sur le site visé : aucun résultat hors sujet, aucune source dont l'autorité n'est pas établie.","Enter a topic, for example public debt or cocoa prices. The search first queries the platform catalogue, then offers links to a closed set of reference sources. Each link runs the search on the target site: no off-topic result, and no source whose authority is not established."
+Dans la base de la plateforme,In the platform database
+Ces indicateurs sont déjà collectés : la donnée est disponible sans quitter la plateforme.,These indicators are already collected: the data is available without leaving the platform.
+Sources de référence pour ce sujet,Reference sources for this topic
+Sources de référence,Reference sources
+Autres sources fiables,Other trusted sources
+Sujet rattaché à : %s.,Topic matched to: %s.
+"Aucun rattachement thématique reconnu : l'ensemble des sources est proposé, chacune interrogée sur votre terme.","No thematic match recognised: all sources are offered, each queried on your term."
+%d observations,%d observations
+Jusqu'à six indicateurs peuvent être tracés ensemble.,Up to six indicators can be plotted together.
+"Ces séries sont déjà affichées. Choisissez un autre indicateur, une autre fréquence ou d'autres pays, puis cliquez de nouveau sur Ajouter.","These series are already displayed. Choose another indicator, frequency or countries, then click Add again."
+Données,Data
+Publications,Publications
+Actualité,News
+"Sujet, indicateur, pays ou actualité","Topic, indicator, country or news"
+Aucun type de résultat sélectionné. Cochez au moins une case.,No result type selected. Tick at least one box.
+"Aucun rattachement thématique reconnu : toutes les sources retenues sont proposées, chacune interrogée sur votre terme.","No thematic match recognised: all selected sources are offered, each queried on your term."
+"Communiqués, revues de programme et déclarations.","Press releases, programme reviews and statements."
+"Communiqués de presse, notes et annonces de financement.","Press releases, notes and funding announcements."
+Communiqués et analyses de conjoncture.,Press releases and economic outlook analysis.
+"Commerce mondial, matières premières, développement.","World trade, commodities, development."
+Actualité économique et opérations en Afrique.,Economic news and operations in Africa.
+"Actualité économique africaine, secteur par secteur.","African economic news, sector by sector."
+"Économie camerounaise, entreprises, finances publiques.","Cameroonian economy, business, public finance."
+"Quotidien national, communication officielle.","National daily, official communication."
+Décisions de politique monétaire et communiqués du comité.,Monetary policy decisions and committee statements.
+"Rapports pays, études sectorielles et notes de politique économique.","Country reports, sector studies and policy notes."
+"Perspectives économiques en Afrique, données et rapports pays.","African Economic Outlook, country data and reports."
+Matières premières commodityPrice,Commodity prices (commodityPrice)
+"Indice des produits, pays à revenu faible et intermédiaire",Low and Middle Income Commodity Index (World Bank)
+Indice des produits agricoles,Agriculture
+Indice de tous les métaux,All Metals Index
+Fruits hors agrumes,Non-Citrus Fruit
+Orge,Barley
+Viande bovine,Beef
+Indice des boissons,Beverages index
+Indice des céréales,Cereal index
+Légumineuses,Legumes
+Chrome,Chromium
+Indice du charbon,Coal index
+"Charbon, Afrique du Sud",Coal
+Indice du café,Coffee index
+Huile de coco,Coconut Oil
+Phosphate diammonique,Diammonium phosphate
+Indice des métaux de la transition énergétique,Energy Transition Metal Index
+Indice de tous les produits hors or,Commodities for Index: All
+Indice des métaux hors or,All Metals EX GOLD Index
+Indice des engrais,Fertlizer
+Indice alimentaire,Food index
+Farine de poisson,Fish Meal
+Arachides,Groundnuts
+Indice du bois dur,Hardwood index
+Cuirs et peaux,Hides
+Indice des matières industrielles,Industrial Materials index
+Viande ovine,Lamb
+Plomb,Lead
+Molybdène,Molybdenum
+Grumes,Soft Logs
+"Grumes, Cameroun",Hard Logs
+Manganèse,Manganese
+Indice des viandes,Meat Index
+Lait,Dairy Products
+Indice des produits hors combustibles,Non-Fuel index
+Indice du gaz naturel,Natural gas index
+"Gaz naturel, Japon",LNG
+"Gaz naturel, États-Unis",Natural Gas
+Avoine,Oats
+"Pétrole brut, moyenne des trois places",APSP crude oil($/bbl)
+Huile d'olive,Olive Oil
+Oranges,Orange
+Platine,Platinum
+Indice des métaux précieux,Precious Metals Price Index
+Viande porcine,Swine
+Potasse,Potassium Fertilizer
+Volaille,Poultry
+Terres rares,Rare Earth Elements
+Huile de colza,Rapeseed Oil
+Saumon,Fish
+"Sciages, Malaisie",Hard Sawnwood
+Sciages,Soft Sawnwood
+Indice des produits de la mer,Seafood index
+Crevettes,Shrimp
+Silicium,Silicon
+Argent,Silver
+Tourteau de soja,Soybean Meal
+Bois tendre,Softwood index
+Huile de soja,Soybeans Oil
+Sorgho,Sorghum
+Soja,Soybeans
+Indice du sucre,Sugar index
+"Sucre, États-Unis",Sugar
+Huile de tournesol,Sunflower Oil
+Thé,Tea
+"Thé, Inde",Tea
+"Thé, Mombasa",Tea
+"Thé, Sri Lanka",Tea
+Indice du bois,Timber index
+Étain,Tin
+Tomates,Vegetables
+Urée,Urea
+Indice des huiles végétales,Vegetable oil index
+Indice de la laine,Wool index
+"Laine, fibre grossière",Wool
+"Laine, fibre fine",Wool
+%d indicateur%s sur %d avec données,%d indicator%s of %d with data
+"%d indicateur%s, aucune donnée","%d indicator%s, no data"
+%d observations importées. Elles sont disponibles dans le tableau de bord.,%d observations imported. They are available in the dashboard.
+%d sources interrogées sur %s,%d sources queried for %s
+Aucun fichier,No file
+Choisissez d'abord un fichier.,Choose a file first.
+Disponible dans la plateforme,Available in the platform
+"Déposez un fichier téléchargé depuis un portail statistique. Les séries qu'il contient rejoignent la catégorie choisie et deviennent utilisables comme les autres, dans le tableau de bord comme dans la base.","Drop a file downloaded from a statistical portal. The series it holds join the chosen category and become usable like any other, in the dashboard as in the database."
+Fichier,File
+Importation en cours,Import in progress
+Importer,Import
+Importer un fichier,Import a file
+Parcourir,Browse
+Sujet : %s,Topic: %s
+sans données,no data
+Échec de l'import : %s,Import failed: %s
+"Aucun résultat sur les sources retenues. Reformulez, ou consultez les sources ci-dessous.","No result on the selected sources. Rephrase, or browse the sources below."
+Interroger directement les sources,Query the sources directly
+Sources à interroger sur ce sujet,Sources to query on this topic
+"La recherche sur le web n'est pas configurée : la plateforme propose ici les sources à interroger. Pour obtenir directement des résultats, déclarez un moteur de recherche programmable restreint à ces domaines. Voir domaines_pour_moteur().","Web search is not configured: the platform lists the sources to query. To get results directly, set up a programmable search engine restricted to these domains. See domaines_pour_moteur()."
+Tout,All
+Images,Images
+Vidéos,Videos
+"Recherchez un sujet, un indicateur, un pays ou une actualité. Les résultats proviennent d'un ensemble fermé de sources institutionnelles : aucun résultat hors sujet, aucune source dont l'autorité n'est pas établie.","Search a topic, an indicator, a country or news. Results come from a closed set of institutional sources: no off-topic result, and no source whose authority is not established."
+Aucun résultat sur les sources retenues pour cet onglet.,No result on the selected sources for this tab.
+Sources de référence sur ce sujet%s,Reference sources on this topic%s
+"La recherche sur le web n'est pas configurée : seuls les accès aux sources sont proposés. Pour obtenir des résultats, des images et des actualités, déclarez un moteur de recherche programmable. Voir domaines_pour_moteur().","Web search is not configured: only access to the sources is offered. To get results, images and news, set up a programmable search engine. See domaines_pour_moteur()."
+Recherche sur le web,Web search
+"Le moteur ci-dessous est restreint aux sources de référence de la plateforme. Il apporte ses propres onglets : tout, images, actualités.","The engine below is restricted to the platform's reference sources. It brings its own tabs: all, images, news."
+La recherche sur le web n'est pas configurée : seuls les accès aux sources sont proposés. Voir configurer_recherche().,Web search is not configured: only access to the sources is offered. See configurer_recherche().
+"Les résultats du web s'affichent dans le moteur intégré, plus bas. Ajoutez une clef d'API pour que la plateforme les mette elle-même en forme, avec ses propres onglets.","Web results appear in the embedded engine below. Add an API key so the platform formats them itself, with its own tabs."
+"Le manuel compte trente pages. Il présente la plateforme, détaille les cinq onglets, expose la méthode et recense les 341 indicateurs des quinze catégories avec leur code de collecte et leur unité.","The manual runs to thirty pages. It introduces the platform, details the five tabs, sets out the method and lists the 341 indicators of the fifteen categories with their collection code and unit."
+"GoogleOPESc+, recherche orientée","GoogleOPESc+, guided search"
+"Une recherche restreinte à trente-cinq sources institutionnelles choisies : données, publications et actualité. La définition de la notion et vos propres indicateurs s'affichent en tête.","A search restricted to thirty-five chosen institutional sources: data, publications and news. The definition of the notion and your own indicators appear first."
+Reconnexion en cours,Reconnecting
+%d observations effacées.,%d observations deleted.
+%d observations vont être effacées. Cliquez de nouveau sur Supprimer pour confirmer.,%d observations will be deleted. Click Delete again to confirm.
+Cette catégorie ne contient aucune donnée.,This category holds no data.
+Compléter conserve ce qui est en base et ajoute ou corrige les périodes du fichier. Remplacer efface d'abord chaque série concernée : à retenir quand le nouveau fichier fait autorité sur l'ancien.,Complete keeps what is in the database and adds or corrects the file's periods. Replace first clears each affected series: use it when the new file supersedes the old one.
+Compléter les données existantes,Complete existing data
+"L'effacement porte sur les observations d'une catégorie. Les indicateurs restent au catalogue, prêts à être réalimentés. Cette opération est irréversible : la base n'est pas versionnée.","Deletion covers the observations of a category. The indicators stay in the catalogue, ready to be refilled. This operation is irreversible: the database is not versioned."
+La connexion à la plateforme a été interrompue. Vos données sont intactes : rechargez la page pour reprendre.,The connection to the platform was interrupted. Your data is intact: reload the page to continue.
+Remplacer les données existantes,Replace existing data
+Supprimer,Delete
+Supprimer des données,Delete data
+Avant d'utiliser les matières premières,Before using commodity prices
+La base des cours mondiaux doit être téléchargée puis importée dans la plateforme. Elle ne peut pas être récupérée automatiquement : le site du Fonds monétaire international ne le permet pas.,The world price database must be downloaded and then imported into the platform. It cannot be retrieved automatically: the International Monetary Fund site does not allow it.
+Cliquez ici pour télécharger la base des matières premières,Click here to download the commodity price database
+Télécharger la base,Download the database
+"Sur la page qui s'affiche, allez dans la rubrique « Prix des matières premières » et cliquez sur « Accéder à la base de données ».","On the page that opens, go to the Commodity prices section and click Access the database."
+Cliquez sur « Voir données ».,Click View data.
+"Allez dans « Explorateur de données », définissez la période et choisissez les quinze dernières années.","Go to Data explorer, set the period and choose the last fifteen years."
+"Cliquez sur « Postulez », puis sur « Télécharger ».","Click Apply, then Download."
+"Choisissez de télécharger l'ensemble de données sur la page, et non les données complètes.","Choose to download the dataset shown on the page, not the complete data."
+Importer dans la plateforme,Import into the platform
+Ouvrez l'onglet « Collectes ».,Open the Data collection tab.
+"Dans la rubrique « Importer un fichier », cliquez sur « Parcourir » et choisissez le fichier téléchargé.","In the Import a file section, click Browse and choose the downloaded file."
+"Dans « Catégorie », choisissez « Matières premières commodityPrice ».","Under Category, choose Commodity prices (commodityPrice)."
+"Cliquez sur « Importer », puis revenez ici.","Click Import, then come back here."
+Une base est déjà livrée avec la plateforme. Ces étapes servent à la mettre à jour ou à étendre la période couverte.,A database already ships with the platform. These steps serve to update it or extend the period covered.
+base à télécharger puis à importer avant utilisation,database to download and import before use
+Marche à suivre,How to proceed
+"Rubrique « Prix des matières premières », puis « Accéder à la base de données ».","Commodity prices section, then Access the database."
+"Dans « Explorateur de données », choisissez les quinze dernières années.","In Data explorer, choose the last fifteen years."
+"Cliquez sur « Postulez », puis « Télécharger ».","Click Apply, then Download."
+"Choisissez l'ensemble de données sur la page, non les données complètes.","Choose the dataset shown on the page, not the complete data."
+"Rubrique « Importer un fichier », cliquez sur « Parcourir ».","Import a file section, click Browse."
+Catégorie : « Matières premières commodityPrice ».,Category: Commodity prices (commodityPrice).
+"Le manuel présente la plateforme, détaille les cinq onglets, expose la méthode et recense les %d indicateurs des %d catégories avec leur code de collecte et leur unité.","The manual introduces the platform, details the five tabs, sets out the method and lists the %d indicators of the %d categories with their collection code and unit."
+L'année de début (%d) est postérieure à l'année de fin (%d). La première doit être inférieure à la seconde.,The start year (%d) is later than the end year (%d). The first must be earlier than the second.
+"Cette plateforme est publiée en lecture seule. Les données y sont figées à la date de publication : la collecte et l'import restent des opérations locales, menées sur le poste qui alimente la base.","This platform is published read-only. The data is frozen as at the publication date: collection and import remain local operations, carried out on the machine that feeds the database."

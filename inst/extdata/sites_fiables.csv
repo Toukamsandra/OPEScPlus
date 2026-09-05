@@ -1,0 +1,36 @@
+﻿nom,organisme,type,categories,gabarit,description
+"Banque mondiale, données ouvertes",Banque mondiale,donnees,C02 C03 C05 C09 C10 C11 C14,https://data.worldbank.org/indicator?tab=all&q={q},"Indicateurs du développement dans le monde, plus de 1 400 séries."
+"Banque mondiale, marchés de produits de base",Banque mondiale,donnees,C01,https://www.worldbank.org/en/research/commodity-markets,Pink Sheet mensuel et perspectives des cours mondiaux.
+"FMI, données",Fonds monétaire international,donnees,C01 C03 C04 C05 C06 C07 C08 C09,https://data.imf.org/en/Search-Results?q={q},"Perspectives de l'économie mondiale, finances publiques, prix des produits de base."
+"OCDE, données",OCDE,donnees,C02 C08 C10 C13,https://www.oecd.org/en/search.html?q={q},"Comptes nationaux trimestriels, prix, emploi, gouvernance."
+CNUCED,CNUCED,donnees,C05 C12 C01,https://unctadstat.unctad.org/datacentre/,"Commerce international, concentration des exportations, transport maritime."
+Atlas de la complexité économique,"Growth Lab, Harvard",donnees,C12 C05,https://atlas.hks.harvard.edu/explore?searchTerm={q},"Structure productive, complexité économique, espace des produits."
+Organisation mondiale du commerce,OMC,donnees,C05,https://www.wto.org/cgi-bin/search.pl?q={q},"Statistiques du commerce, tarifs, différends commerciaux."
+Banque des règlements internationaux,BRI,donnees,C04 C06 C07 C09,https://www.bis.org/search/?q={q},"Statistiques bancaires, dette, taux de change effectifs."
+ILOSTAT,Organisation internationale du travail,donnees,C10,https://ilostat.ilo.org/data/,"Emploi, chômage, informalité, salaires."
+FAOSTAT,FAO,donnees,C14 C01,https://www.fao.org/faostat/en/#search/{q},"Production agricole, sécurité alimentaire, prix à la production."
+Agence internationale de l'énergie,AIE,donnees,C14,https://www.iea.org/search?q={q},"Énergie, électricité, émissions liées à l'énergie."
+Our World in Data,Our World in Data,donnees,C11 C14 C02,https://ourworldindata.org/search?q={q},"Séries longues et visualisations, avec sources documentées."
+Observatoire mondial de la santé,OMS,donnees,C11,https://www.who.int/data/gho/search?q={q},"Santé, mortalité, dépenses de santé."
+Institut de statistique de l'UNESCO,UNESCO,donnees,C11,https://uis.unesco.org/en/search-results?keys={q},"Éducation, scolarisation, dépenses d'éducation."
+Institut national de la statistique,INS Cameroun,donnees,C02 C08 C10 C11,https://ins-cameroun.cm/?s={q},"Comptes nationaux, prix, enquêtes ménages du Cameroun."
+BEAC,Banque des États de l'Afrique centrale,donnees,C04 C06 C07 C08,https://www.beac.int/?s={q},"Monnaie, crédit, change et inflation en zone CEMAC."
+Caisse autonome d'amortissement,CAA Cameroun,donnees,C09,https://www.caa.cm/?s={q},"Dette publique du Cameroun, titres publics, service de la dette."
+"Banque mondiale, documents et rapports",Banque mondiale,publication,C02 C03 C09 C13,https://documents.worldbank.org/en/publication/documents-reports/documentlist?qterm={q},"Rapports pays, études sectorielles et notes de politique économique."
+"FMI, bibliothèque en ligne",Fonds monétaire international,publication,C03 C04 C05 C08 C09,https://www.elibrary.imf.org/search?q1={q},"Rapports au titre de l'article IV, documents de travail et études."
+"FMI, Moniteur des finances publiques",Fonds monétaire international,publication,C03 C09,https://www.imf.org/en/Publications/FM,Situation et perspectives des finances publiques dans le monde.
+Rapport sur le développement humain,PNUD,publication,C11 C13,https://hdr.undp.org/search?keys={q},Indice de développement humain et indices dérivés.
+Transparency International,Transparency International,publication,C13,https://www.transparency.org/en/search?q={q},"Perception de la corruption, intégrité publique."
+Banque africaine de développement,BAD,publication,C02 C03 C09 C14,https://www.afdb.org/en/search?keys={q},"Perspectives économiques en Afrique, données et rapports pays."
+Commission de la CEMAC,CEMAC,publication,C02 C03 C05,https://www.cemac.int/?s={q},Surveillance multilatérale et convergence régionale.
+MINEPAT,MINEPAT,publication,C02 C03 C13,https://www.minepat.gov.cm/?s={q},"Planification, programmation et aménagement du territoire."
+Ministère des Finances,MINFI,publication,C03 C09,https://www.minfi.gov.cm/?s={q},"Budget, dette publique, exécution budgétaire."
+"FMI, actualités",Fonds monétaire international,actualite,C02 C03 C05 C08 C09,https://www.imf.org/en/Search#q={q}&sort=relevancy,"Communiqués, revues de programme et déclarations."
+"Banque mondiale, communiqués",Banque mondiale,actualite,C02 C03 C09 C11 C14,https://www.worldbank.org/en/search?q={q},"Communiqués de presse, notes et annonces de financement."
+"OCDE, salle de presse",OCDE,actualite,C02 C08 C10 C13,https://www.oecd.org/en/search.html?f%5B0%5D=type%3Anews&q={q},Communiqués et analyses de conjoncture.
+"CNUCED, actualités",CNUCED,actualite,C05 C01 C12,https://unctad.org/search?keys={q},"Commerce mondial, matières premières, développement."
+"BAD, actualités",BAD,actualite,C02 C03 C14,https://www.afdb.org/en/news-and-events/search?keys={q},Actualité économique et opérations en Afrique.
+Agence Ecofin,Agence Ecofin,actualite,C01 C02 C05 C09 C14,https://www.agenceecofin.com/recherche?searchword={q},"Actualité économique africaine, secteur par secteur."
+Investir au Cameroun,Investir au Cameroun,actualite,C01 C02 C03 C05 C09,https://www.investiraucameroun.com/recherche?searchword={q},"Économie camerounaise, entreprises, finances publiques."
+Cameroon Tribune,Cameroon Tribune,actualite,C02 C03 C13,https://www.cameroon-tribune.cm/?s={q},"Quotidien national, communication officielle."
+"BEAC, actualités",BEAC,actualite,C04 C06 C07 C08,https://www.beac.int/?s={q},Décisions de politique monétaire et communiqués du comité.

@@ -12,6 +12,25 @@ mod_tableau_bord_ui <- function(id) {
   shiny::tagList(
 
     # --- 1. Categories ----------------------------------------------------
+    # --- 0. Marche a suivre pour les matieres premieres -------------------
+    # La base des cours ne peut pas etre collectee automatiquement : la page du
+    # Fonds monetaire international construit son lien de telechargement en
+    # JavaScript. La marche a suivre a donc sa place ici, mais repliee : elle
+    # ne concerne qu'un premier usage, et deployee elle repoussait les
+    # categories sous la ligne de flottaison.
+    shiny::div(class = "cadre bandeau-marche",
+      shiny::div(class = "marche-ligne",
+        shiny::span(class = "marche-icone", icone("download", 18)),
+        shiny::div(class = "marche-texte",
+          shiny::strong(tr("Mati\u00e8res premi\u00e8res")),
+          shiny::span(tr("base \u00e0 t\u00e9l\u00e9charger puis \u00e0 importer avant utilisation"))),
+        shiny::tags$a(class = "marche-bouton", target = "_blank", rel = "noopener",
+                      href = "https://www.imf.org/en/research/commodity-prices",
+                      tr("T\u00e9l\u00e9charger la base")),
+        shiny::actionLink(ns("voir_marche"), tr("Marche \u00e0 suivre"),
+                          class = "marche-bascule")),
+      shiny::uiOutput(ns("detail_marche"))),
+
     shiny::div(class = "cadre cadre-categories",
       shiny::div(class = "cadre-titre", tr("Catégories de données")),
       shiny::uiOutput(ns("tuiles"))),
@@ -25,7 +44,9 @@ mod_tableau_bord_ui <- function(id) {
             width = "100%",
             options = list(placeholder = tr("Choisissez un ou plusieurs indicateurs"),
                            maxItems = CONFIG$max_series,
-                           plugins = list("remove_button")))),
+                           plugins = list("remove_button"))),
+          shiny::p(class = "petit indication",
+                   tr("Jusqu'\u00e0 six indicateurs peuvent \u00eatre trac\u00e9s ensemble."))),
         shiny::div(class = "champ champ-frequence",
           shiny::selectInput(ns("frequence"), tr("Fréquence"), choices = NULL, width = "100%")),
         shiny::div(class = "champ champ-periode",
@@ -99,6 +120,38 @@ mod_tableau_bord_server <- function(id, con) {
     # actionButton, ce que Shiny interprete comme un nouveau clic : les
     # observateurs se declencheraient en boucle. La mise en evidence de la
     # tuile active est donc faite cote client, dans www/opesc.js.
+    # --- marche a suivre, deployee a la demande --------------------------
+    marche_ouverte <- shiny::reactiveVal(FALSE)
+    shiny::observeEvent(input$voir_marche, marche_ouverte(!marche_ouverte()))
+
+    output$detail_marche <- shiny::renderUI({
+      if (!marche_ouverte()) return(NULL)
+      etape <- function(numero, titre, points) {
+        shiny::div(class = "marche-etape",
+          shiny::div(class = "marche-numero", numero),
+          shiny::div(
+            shiny::strong(titre),
+            shiny::tags$ol(class = "marche-liste",
+                           lapply(points, shiny::tags$li))))
+      }
+      shiny::div(class = "marche-detail",
+        shiny::div(class = "marche-colonnes",
+          etape("1", tr("T\u00e9l\u00e9charger la base"), list(
+            tr("Rubrique \u00ab Prix des mati\u00e8res premi\u00e8res \u00bb, puis \u00ab Acc\u00e9der \u00e0 la base de donn\u00e9es \u00bb."),
+            tr("Cliquez sur \u00ab Voir donn\u00e9es \u00bb."),
+            tr("Dans \u00ab Explorateur de donn\u00e9es \u00bb, choisissez les quinze derni\u00e8res ann\u00e9es."),
+            tr("Cliquez sur \u00ab Postulez \u00bb, puis \u00ab T\u00e9l\u00e9charger \u00bb."),
+            tr("Choisissez l'ensemble de donn\u00e9es sur la page, non les donn\u00e9es compl\u00e8tes."))),
+          etape("2", tr("Importer dans la plateforme"), list(
+            tr("Ouvrez l'onglet \u00ab Collectes \u00bb."),
+            tr("Rubrique \u00ab Importer un fichier \u00bb, cliquez sur \u00ab Parcourir \u00bb."),
+            tr("Cat\u00e9gorie : \u00ab Mati\u00e8res premi\u00e8res commodityPrice \u00bb."),
+            tr("Cliquez sur \u00ab Importer \u00bb, puis revenez ici.")))),
+        shiny::p(class = "marche-note", tr(paste(
+          "Une base est d\u00e9j\u00e0 livr\u00e9e avec la plateforme. Ces \u00e9tapes servent \u00e0 la",
+          "mettre \u00e0 jour ou \u00e0 \u00e9tendre la p\u00e9riode couverte."))))
+    })
+
     output$tuiles <- shiny::renderUI({
       active <- shiny::isolate(etat$categorie)
 
@@ -115,9 +168,9 @@ mod_tableau_bord_server <- function(id, con) {
 
         classe <- if (isTRUE(code == active)) "tuile tuile-active" else "tuile"
         legende <- if (collectes == 0) {
-          sprintf("%d indicateur%s, aucun collect\u00e9", nb, if (nb > 1) "s" else "")
+          sprintf(tr("%d indicateur%s, aucune donn\u00e9e"), nb, if (nb > 1) "s" else "")
         } else if (collectes < nb) {
-          sprintf("%d indicateur%s sur %d collect\u00e9%s", collectes,
+          sprintf(tr("%d indicateur%s sur %d avec donn\u00e9es"), collectes,
                   if (collectes > 1) "s" else "", nb, if (collectes > 1) "s" else "")
         } else {
           sprintf("%d indicateur%s", nb, if (nb > 1) "s" else "")
@@ -170,12 +223,16 @@ mod_tableau_bord_server <- function(id, con) {
       d <- d[order(d$nb_observations == 0, d$libelle), ]
       libelles <- tr(d$libelle)
       etiquettes <- ifelse(d$nb_observations == 0,
-                           paste0(libelles, "  (", tr("non collect\u00e9"), ")"),
+                           paste0(libelles, "  (", tr("sans donn\u00e9es"), ")"),
                            libelles)
       choix <- stats::setNames(d$code_interne, etiquettes)
+      # `options` n'est pas transmis ici. Le passer a `updateSelectizeInput`
+      # reinitialise le composant cote navigateur, qui perd alors son caractere
+      # multiple : le champ redevenait mono-selection des le premier
+      # chargement, et il devenait impossible de choisir deux indicateurs.
+      # Les options sont posees une fois pour toutes a la creation du champ.
       shiny::updateSelectizeInput(session, "indicateur", choices = choix,
-                                  selected = choix[[1]], server = TRUE,
-                                  options = list(maxItems = CONFIG$max_series))
+                                  selected = choix[[1]], server = TRUE)
     })
 
     # Les cascades qui suivent (frequence, periode, pays) se calent sur le
@@ -201,7 +258,7 @@ mod_tableau_bord_server <- function(id, con) {
       choix <- choix_frequences(dispo)
       if (!length(choix)) {
         shiny::updateSelectInput(session, "frequence",
-                                 choices = c(tr("Aucune donnée collectée") = ""))
+                                 choices = stats::setNames("", tr("Aucune donnée collectée")))
         return()
       }
       # On propose par defaut le pas le plus large disponible : c'est celui qui
@@ -256,7 +313,7 @@ mod_tableau_bord_server <- function(id, con) {
         # Un cours mondial de matiere premiere n'a pas de dimension pays :
         # proposer une liste de pays serait un piege.
         shiny::updateSelectizeInput(session, "pays",
-          choices = c(tr("Cours mondial (série sans dimension pays)") = "WLD"),
+          choices = stats::setNames("WLD", tr("Cours mondial (série sans dimension pays)")),
           selected = "WLD", server = TRUE)
         return()
       }
@@ -344,30 +401,44 @@ mod_tableau_bord_server <- function(id, con) {
 
     shiny::observeEvent(input$ajouter, {
       nouvelles <- selection_courante()
-      for (s in nouvelles) ajouter_serie(s)
+      ajoutees <- sum(vapply(nouvelles, ajouter_serie, logical(1)))
+
+      # Un seul message, et seulement si rien n'a pu etre ajoute. La version
+      # precedente signalait chaque doublon separement, si bien qu'ajouter un
+      # second indicateur affichait un avertissement alors que l'ajout avait
+      # bien eu lieu.
+      if (ajoutees == 0L) {
+        shiny::showNotification(tr(paste(
+          "Ces s\u00e9ries sont d\u00e9j\u00e0 affich\u00e9es. Choisissez un autre indicateur, une",
+          "autre fr\u00e9quence ou d'autres pays, puis cliquez de nouveau sur Ajouter.")),
+          type = "message", duration = 9)
+        return()
+      }
       dessiner()
     })
 
     # Ajoute une serie si elle n'est pas deja la et si le plafond le permet.
     # Le redessin est fait par l'appelant, une seule fois pour tout le lot.
+    # Rend TRUE si la serie a ete ajoutee, FALSE sinon. La valeur est utilisee
+    # par l'appelant pour decider s'il faut redessiner et quoi afficher.
     ajouter_serie <- function(s) {
       if (length(etat$series) >= CONFIG$max_series) {
         shiny::showNotification(
           tr("Six séries au maximum sur un même graphique."),
           type = "warning", duration = 6)
-        return(invisible(FALSE))
+        return(FALSE)
       }
       deja <- vapply(etat$series, function(x)
         identical(x$code_interne, s$code_interne) &&
         identical(x$frequence, s$frequence) &&
         identical(sort(x$pays), sort(s$pays)), logical(1))
-      if (length(deja) && any(deja)) {
-        shiny::showNotification(tr("Cette série est déjà affichée."),
-                                type = "message")
-        return(invisible(FALSE))
-      }
+      # Aucun message ici : c'est l'appelant qui decide quoi dire, une seule
+      # fois, apres avoir traite tout le lot. Signaler chaque doublon
+      # separement affichait un avertissement alors que l'ajout avait bien eu
+      # lieu pour les autres series.
+      if (length(deja) && any(deja)) return(FALSE)
       etat$series <- c(etat$series, list(s))
-      invisible(TRUE)
+      TRUE
     }
 
     # --- series empilees --------------------------------------------------

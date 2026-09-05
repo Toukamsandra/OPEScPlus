@@ -143,8 +143,11 @@ body{background:var(--fond);color:var(--texte);margin:0}
 .bienvenue{position:fixed;right:22px;bottom:22px;z-index:2000;max-width:390px;
   background:#fff;border:1px solid var(--bordure);border-left:5px solid var(--or);
   border-radius:var(--rayon);padding:16px 19px;box-shadow:0 8px 28px rgba(0,0,0,.17);
-  opacity:0;transform:translateY(14px);transition:opacity .35s,transform .35s;
+  opacity:0;visibility:hidden;transform:translateY(14px);
+  transition:opacity .32s,transform .32s,visibility 0s linear .32s;
   cursor:pointer}
+.bienvenue-visible{visibility:visible;transition:opacity .32s,transform .32s,
+  visibility 0s}
 .bienvenue-visible{opacity:1;transform:translateY(0)}
 .bienvenue strong{display:block;color:var(--bleu);font-size:1rem;margin-bottom:5px}
 .bienvenue span{color:var(--gris);font-size:.85rem;line-height:1.55}
@@ -171,6 +174,113 @@ body{background:var(--fond);color:var(--texte);margin:0}
   letter-spacing:.5px}
 .fiche-valeur{font-size:.9rem;color:var(--texte);font-weight:600}
 
+/* --------------------------------------------------------- recherche ---- */
+.cadre-recherche{border-left:4px solid var(--or)}
+/* Moteur integre. Sa mise en forme lui appartient : on se borne a lui donner
+   de l'air et a accorder ses liens a la charte. */
+.cadre-widget{margin-top:16px}
+.cadre-widget .gcse-search{margin-top:14px}
+.cadre-widget .gsc-control-cse{padding:0!important;background:transparent!important;
+  border:0!important;font-family:inherit!important}
+.cadre-widget .gs-title{font-family:inherit!important}
+.barre-recherche{display:flex;gap:10px;align-items:stretch;margin:14px 0 4px}
+.barre-recherche .shiny-input-container{flex:1 1 auto;margin-bottom:0!important}
+.barre-recherche input[type=text]{height:44px;font-size:1rem;margin-top:0;
+  border-radius:22px;padding-left:18px}
+.barre-recherche .btn{white-space:nowrap;padding:0 24px;border-radius:22px}
+
+.filtres-recherche{margin-top:10px}
+.filtres-recherche .shiny-input-container{margin-bottom:0!important;width:auto}
+.filtres-recherche .checkbox-inline{margin-right:18px;font-size:.87rem;
+  color:var(--gris);font-weight:600}
+.indication{margin:5px 0 0;font-size:.76rem;color:var(--gris);font-style:italic}
+.suggestions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.suggestion{background:#EEF2F8;border:1px solid var(--bordure);border-radius:12px;
+  padding:3px 11px;font-size:.82rem;color:var(--bleu-clair)!important;
+  text-decoration:none!important}
+.suggestion:hover{background:var(--bleu);color:#fff!important;border-color:var(--bleu)}
+
+/* Resultats presentes en liste ordonnee, a la maniere d'un moteur de
+   recherche : le classement fait le travail, l'oeil descend une seule
+   colonne. */
+.cadre-resultats{padding:22px 26px;border-radius:0 0 var(--rayon) var(--rayon)}
+.resultats-entete{display:flex;justify-content:space-between;flex-wrap:wrap;
+  gap:10px;padding-bottom:11px;border-bottom:1px solid var(--bordure);
+  margin-bottom:16px}
+.resultats-compte{color:var(--gris);font-size:.84rem}
+.resultats-sujet{color:var(--bleu);font-size:.84rem;font-weight:600}
+
+.bloc-interne{background:#F4F9F5;border:1px solid #CFE6D6;
+  border-left:4px solid var(--vert);border-radius:var(--rayon);
+  padding:14px 16px;margin-bottom:20px}
+.bloc-interne-titre{font-size:.72rem;font-weight:700;color:var(--vert);
+  text-transform:uppercase;letter-spacing:.8px;margin-bottom:9px}
+.resultat-interne{padding:5px 0;border-bottom:1px solid #DFEDE3}
+.resultat-interne:last-child{border-bottom:0}
+.resultat-interne strong{color:var(--bleu);font-size:.9rem;display:block}
+.resultat-meta{color:var(--gris);font-size:.78rem}
+
+.liste-resultats{display:flex;flex-direction:column;gap:20px;position:relative}
+.resultat{max-width:74ch}
+.resultat-premier{background:#F8FAFC;border-left:3px solid var(--or);
+  padding:12px 16px;margin-left:-16px;border-radius:0 var(--rayon) var(--rayon) 0}
+.resultat-fil{display:flex;align-items:center;gap:9px;margin-bottom:3px}
+.resultat-fil span:first-child{color:var(--gris);font-size:.78rem}
+.resultat-type{background:#EEF2F8;color:var(--bleu-clair);font-size:.68rem;
+  border-radius:9px;padding:1px 8px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.4px}
+.resultat-titre{display:block;color:var(--bleu-clair)!important;font-size:1.08rem;
+  line-height:1.35;text-decoration:none!important;margin-bottom:3px}
+.resultat-titre:hover{text-decoration:underline!important}
+.resultat-extrait{color:var(--gris);font-size:.87rem;line-height:1.5;margin:0}
+.resultat-url{color:var(--vert);font-size:.78rem}
+/* Propositions de completion, sous le champ. */
+.zone-saisie{position:relative}
+.propositions{position:absolute;left:0;right:0;top:52px;z-index:40;
+  background:#fff;border:1px solid var(--bordure);border-radius:var(--rayon);
+  box-shadow:0 6px 20px rgba(0,0,0,.12);padding:6px 0;max-height:300px;
+  overflow-y:auto}
+.proposition{display:block;padding:8px 18px;color:var(--texte)!important;
+  font-size:.92rem;text-decoration:none!important}
+.proposition:hover{background:#EEF2F8;color:var(--bleu)!important}
+
+/* Barre d'onglets, a la maniere d'un moteur de recherche. */
+.onglets-recherche{display:flex;gap:4px;border-bottom:1px solid var(--bordure);
+  margin-bottom:0;padding:0 4px;background:#fff;
+  border-radius:var(--rayon) var(--rayon) 0 0}
+.onglet-recherche{padding:12px 20px;color:var(--gris)!important;font-size:.94rem;
+  font-weight:600;text-decoration:none!important;border-bottom:3px solid transparent;
+  margin-bottom:-1px}
+.onglet-recherche:hover{color:var(--bleu)!important}
+.onglet-actif{color:var(--bleu)!important;border-bottom-color:var(--or)}
+
+/* Definition de la notion recherchee. */
+.bloc-definition{background:#FBF8F0;border:1px solid #E8DCC0;
+  border-left:4px solid var(--or);border-radius:var(--rayon);
+  padding:16px 19px;margin-bottom:20px}
+.definition-entete{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;
+  margin-bottom:7px}
+.definition-terme{font-size:1.1rem;font-weight:700;color:var(--bleu)}
+.definition-categorie{font-size:.72rem;color:#8A6D1F;background:#F2E7CC;
+  border-radius:9px;padding:2px 9px;font-weight:600}
+.definition-texte{color:var(--texte);font-size:.93rem;line-height:1.6;margin:0;
+  max-width:78ch}
+
+/* Grille d'images. */
+.grille-images{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:12px}
+.vignette{display:block;text-decoration:none!important;border:1px solid var(--bordure);
+  border-radius:var(--rayon);overflow:hidden;background:#fff}
+.vignette:hover{border-color:var(--bleu-clair);box-shadow:0 3px 10px rgba(0,0,0,.10)}
+.vignette img{width:100%;height:130px;object-fit:cover;display:block;background:#EEF2F8}
+.vignette-legende{display:block;padding:8px 10px;font-size:.78rem;
+  color:var(--texte);line-height:1.35;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
+.separateur-resultats{margin:26px 0 16px;padding-top:16px;
+  border-top:1px solid var(--bordure);font-size:.72rem;font-weight:700;
+  color:var(--gris);text-transform:uppercase;letter-spacing:.8px}
+
 /* ------------------------------------------------------------ cadres ---- */
 .cadre{background:#fff;border:1px solid var(--bordure);border-radius:var(--rayon);
   padding:16px 18px;margin-bottom:16px}
@@ -181,23 +291,87 @@ body{background:var(--fond);color:var(--texte);margin:0}
 .cadre-titre-petit{font-weight:600;color:var(--gris);font-size:.76rem;
   text-transform:uppercase;letter-spacing:.5px}
 
+/* ------------------------------------------------ marche a suivre ------- */
+/* Une seule ligne au repos : l'avertissement, le bouton de telechargement et
+   le lien qui deploie les etapes. Deploye en permanence, ce bloc repoussait
+   les categories sous la ligne de flottaison alors qu'il ne sert qu'au
+   premier usage. */
+.bandeau-marche{background:#FDFAF3;border:1px solid #E8DCC0;
+  border-left:4px solid var(--or);padding:12px 18px}
+.marche-ligne{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.marche-icone{color:var(--or);flex:0 0 auto;line-height:1}
+.marche-texte{flex:1 1 auto;min-width:220px;line-height:1.4}
+.marche-texte strong{color:var(--bleu);font-size:.92rem;margin-right:7px}
+.marche-texte span{color:var(--gris);font-size:.86rem}
+.marche-bouton{flex:0 0 auto;background:var(--bleu);color:#fff!important;
+  font-weight:600;font-size:.84rem;padding:7px 16px;border-radius:18px;
+  text-decoration:none!important;white-space:nowrap}
+.marche-bouton:hover{background:var(--bleu-clair);color:#fff!important}
+.marche-bouton::after{content:"\2197";margin-left:6px}
+.marche-bascule{flex:0 0 auto;color:var(--bleu-clair)!important;font-size:.84rem;
+  font-weight:600;text-decoration:none!important;white-space:nowrap}
+.marche-bascule:hover{text-decoration:underline!important}
+
+.marche-detail{margin-top:14px;padding-top:14px;border-top:1px solid #E8DCC0;
+  animation:apparition .2s ease-out}
+.marche-colonnes{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.marche-etape{display:flex;gap:11px;align-items:flex-start}
+.marche-numero{flex:0 0 auto;width:22px;height:22px;border-radius:50%;
+  background:var(--or);color:#fff;font-weight:700;font-size:.78rem;
+  display:flex;align-items:center;justify-content:center;margin-top:1px}
+.marche-etape strong{display:block;color:var(--bleu);font-size:.88rem;
+  margin-bottom:5px}
+.marche-liste{margin:0;padding-left:16px;color:var(--texte);font-size:.83rem;
+  line-height:1.55}
+.marche-liste li{margin-bottom:3px}
+.marche-note{margin:13px 0 0;color:var(--gris);font-size:.8rem;font-style:italic}
+
+@media(max-width:900px){
+  .marche-colonnes{grid-template-columns:1fr;gap:14px}
+}
+
 /* --------------------------------------------------- tuiles categories -- */
+/* Les tuiles sont des boutons Shiny, donc des elements `.btn`. Bootstrap leur
+   applique ses propres couleurs sur les etats :hover, :focus et :active, ce
+   qui rendait le libelle blanc sur fond clair au moment du clic, donc
+   illisible. Toutes les couleurs sont donc fixees explicitement pour chaque
+   etat, et la tuile retenue passe en bleu plein avec un texte blanc : le
+   contraste ne depend plus d'une nuance de gris. */
 .tuiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
-.tuile{display:flex!important;flex-direction:column;align-items:flex-start;
-  justify-content:flex-start;text-align:left;gap:4px;background:#F8FAFC;
-  border:1px solid var(--bordure);border-left:4px solid var(--bordure);
-  border-radius:var(--rayon);padding:11px 13px;cursor:pointer;width:100%;
-  height:100%;min-height:74px;transition:none;color:var(--texte);
-  font-family:inherit}
-.tuile:hover{background:#EEF2F8;border-left-color:var(--bleu-clair)}
-.tuile-active{background:#EEF2F8;border-color:var(--bleu);border-left-color:var(--or);
-  box-shadow:inset 0 0 0 1px var(--bleu)}
+
+.tuile,
+.tuile:link,
+.tuile:visited{display:flex!important;flex-direction:column;align-items:flex-start;
+  justify-content:flex-start;text-align:left;gap:4px;
+  background:#F8FAFC!important;border:1px solid var(--bordure)!important;
+  border-left:4px solid var(--bordure)!important;border-radius:var(--rayon);
+  padding:11px 13px;cursor:pointer;width:100%;height:100%;min-height:78px;
+  transition:none;color:var(--texte)!important;font-family:inherit;
+  box-shadow:none!important}
+
+.tuile:hover,
+.tuile:focus{background:#EEF2F8!important;
+  border-left-color:var(--bleu-clair)!important;color:var(--texte)!important}
+.tuile:focus-visible{outline:2px solid var(--or);outline-offset:2px}
+
+/* Etat retenu : bleu plein, texte blanc, filet dore. Lisible sans ambiguite,
+   y compris pendant le clic. */
+.tuile.tuile-active,
+.tuile.tuile-active:hover,
+.tuile.tuile-active:focus,
+.tuile.tuile-active:active{background:var(--bleu)!important;
+  border-color:var(--bleu)!important;border-left-color:var(--or)!important;
+  color:#FFFFFF!important;box-shadow:0 2px 8px rgba(31,56,100,.24)!important}
+
 .tuile-libelle{font-weight:600;font-size:.87rem;line-height:1.25;white-space:normal}
 .tuile-compte{font-size:.74rem;color:var(--gris)}
 /* Une categorie sans donnee le dit, plutot que d'annoncer un nombre
    d'indicateurs qui ne donneront rien une fois selectionnes. */
 .tuile-vide{color:#A07000;font-style:italic}
-.tuile-active .tuile-libelle{color:var(--bleu)}
+
+.tuile.tuile-active .tuile-libelle{color:#FFFFFF}
+.tuile.tuile-active .tuile-compte{color:#C7D2E4}
+.tuile.tuile-active .tuile-vide{color:var(--or);font-style:italic}
 
 /* ------------------------------------------------------ barre filtres --- */
 .cadre-filtres{padding-bottom:8px}
@@ -300,3 +474,49 @@ table.dataTable tbody tr:nth-child(even){background:#FAFBFD}
   .champ-actions{width:100%}
   .champ-actions .btn{flex:1}
 }
+
+/* ------------------------------------------------- etats de connexion ---- */
+/* Shiny estompe les sorties pendant leur recalcul. A trente pour cent
+   d'opacite, un graphique qui se redessine semblait s'eteindre. La valeur est
+   relevee, et une transition adoucit le passage. */
+.recalculating{opacity:.72!important;transition:opacity .2s ease-in-out}
+
+/* Connexion perdue. Shiny voile la page en gris sans un mot, ce qui se prend
+   pour une mise en veille de l'ecran. Le voile est remplace par un message
+   explicite et un bouton de reprise. */
+#shiny-disconnected-overlay{background:rgba(27,31,36,.55)!important;
+  opacity:1!important}
+#shiny-disconnected-overlay::after{content:attr(data-message);
+  position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+  background:#fff;color:var(--texte);border-left:5px solid var(--or);
+  border-radius:var(--rayon);padding:22px 28px;max-width:420px;
+  font-family:inherit;font-size:.95rem;line-height:1.55;
+  box-shadow:0 10px 34px rgba(0,0,0,.28)}
+
+/* ------------------------------------------------- etat de la connexion -- */
+/* Shiny attenue une sortie pendant son recalcul, jusqu'a un tiers d'opacite.
+   Sur un graphique ou une carte, l'effet se lit comme une mise en veille de la
+   page. L'attenuation est donc retiree, et remplacee par un liseré discret en
+   haut de la zone concernee : l'information demeure, sans que le contenu
+   devienne illisible. */
+.recalculating,
+.shiny-output-error,
+.shiny-bound-output.recalculating{opacity:1!important}
+
+.zone-graphique.recalculating::before,
+.zone-carte.recalculating::before,
+.liste-resultats.recalculating::before{content:"";position:absolute;top:0;left:0;
+  right:0;height:3px;background:linear-gradient(90deg,var(--or),var(--bleu-clair),
+  var(--or));background-size:200% 100%;animation:defilement 1.1s linear infinite;
+  border-radius:2px;z-index:5}
+@keyframes defilement{from{background-position:0 0}to{background-position:200% 0}}
+
+/* Voile de deconnexion : moins sombre, et accompagne d'un message. La page
+   se recharge d'elle-meme, il n'y a rien a faire. */
+#shiny-disconnected-overlay{background-color:rgba(31,56,100,.10)!important;
+  opacity:1!important}
+/* Le message est ecrit par le script, qui le lit dans un element rendu par R :
+   il suit ainsi la langue de l'interface. */
+.bandeau-reconnexion{position:fixed;left:50%;top:24px;transform:translateX(-50%);
+  z-index:3000;background:var(--bleu);color:#fff;font-size:.86rem;font-weight:600;
+  padding:9px 18px;border-radius:20px;box-shadow:0 4px 14px rgba(0,0,0,.22)}

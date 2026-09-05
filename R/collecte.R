@@ -169,20 +169,36 @@ initialiser_base <- function(con, avec_pays = TRUE) {
     # apparaitraient dans les listes du tableau de bord et ne renverraient
     # jamais rien, ce qui ressemble a une panne. Ils se reactiveront d'eux-memes
     # le jour ou le connecteur correspondant sera ajoute au registre.
-    catalogue$actif <- as.integer(catalogue$source %in% names(REGISTRE) &
-                                 !catalogue$code_source %in% NON_VALIDES)
+    # Un indicateur est actif s'il peut etre alimente, ou s'il l'est deja.
+    #
+    # La seconde condition est essentielle : les series venues d'un import
+    # manuel n'ont pas de connecteur, et la premiere regle seule les aurait
+    # rendues invisibles alors que leurs donnees sont en base. Une donnee
+    # presente est utilisable, quelle que soit la facon dont elle est arrivee.
+    deja_en_base <- DBI::dbGetQuery(con, "
+      SELECT DISTINCT code_interne FROM observation")$code_interne
+
+    catalogue$actif <- as.integer(
+      (catalogue$source %in% names(REGISTRE) |
+       catalogue$code_interne %in% deja_en_base) &
+      !catalogue$code_source %in% NON_VALIDES)
     catalogue$derniere_collecte <- NA_character_
     catalogue$nb_observations <- 0L
     if (nrow(ancien)) {
-      # Un rechargement du catalogue ne doit pas effacer l'historique de collecte.
+      # Un rechargement du catalogue ne doit pas effacer l'historique.
       i <- match(catalogue$code_interne, ancien$code_interne)
       ok <- !is.na(i)
       catalogue$derniere_collecte[ok] <- ancien$derniere_collecte[i[ok]]
-      catalogue$nb_observations[ok] <- ancien$nb_observations[i[ok]]
     }
     DBI::dbExecute(con, "DELETE FROM indicateur")
     DBI::dbAppendTable(con, "indicateur", catalogue)
   })
+
+  # Le compteur est recalcule depuis les observations plutot que recopie.
+  # Recopier le faisait deriver des qu'un code interne changeait : les cours
+  # importes restaient marques comme non collectes alors que leurs donnees
+  # etaient bien en base.
+  rafraichir_compteurs(con)
 
   inactifs <- catalogue[catalogue$actif == 0, ]
   if (nrow(inactifs)) {
@@ -201,6 +217,13 @@ initialiser_base <- function(con, avec_pays = TRUE) {
   }
 
   if (avec_pays) charger_pays(con)
+
+  # Les cours de produits de base sont livres avec la plateforme sous forme de
+  # fichier, et charges ici. Ils ne se collectent pas : le portail du FMI ne
+  # laisse pas telecharger ce jeu par programme. Il n'y a donc aucune raison de
+  # demander a l'utilisateur de lancer une commande d'import : la donnee est
+  # dans le paquet, elle est chargee au meme titre que le catalogue.
+  charger_fichier_livre(con)
   invisible(nrow(catalogue) - nrow(inactifs))
 }
 
@@ -245,7 +268,7 @@ charger_pays <- function(con) {
 #' facade : c'est ce qui permet de la tester et de l'appeler aussi bien depuis
 #' cron que depuis une console R.
 #'
-#' @param categorie code de categorie, par exemple `"C01"`.
+#' @param categorie code de categorie, par exemple `"C15"`.
 #' @param source libelle exact de la source, par exemple `"Banque mondiale (WDI)"`.
 #' @param code code de collecte d'un indicateur precis.
 #' @param defaut limiter aux indicateurs proposes d'emblee.
@@ -317,3 +340,224 @@ preparer_base <- function(avec_pays = TRUE) {
               DBI::dbGetQuery(con, "SELECT COUNT(*) AS n FROM pays")$n))
   invisible(n)
 }
+
+#' Ecrit un lot d'observations pour un indicateur
+#'
+#' Extraite du moteur de collecte pour servir aussi a l'import manuel : les
+#' deux voies doivent ecrire de facon identique, sans quoi une donnee importee
+#' se comporterait autrement qu'une donnee collectee.
+#' @noRd
+ecrire_observations <- function(con, code_interne, d) {
+  if (is.null(d) || !nrow(d)) return(invisible(0L))
+  d$code_interne <- code_interne
+  d$annee <- as.integer(format(d$date_periode, "%Y"))
+  d$date_periode <- format(d$date_periode, "%Y-%m-%d")
+  d <- d[!duplicated(d[c("code_interne", "iso3", "frequence", "date_periode")]), ]
+
+  DBI::dbWithTransaction(con, {
+    DBI::dbWriteTable(con, "obs_tmp",
+      d[c("code_interne", "iso3", "frequence", "date_periode", "annee", "valeur")],
+      temporary = TRUE, overwrite = TRUE)
+    DBI::dbExecute(con, "
+      INSERT INTO observation (code_interne, iso3, frequence, date_periode, annee, valeur)
+      SELECT code_interne, iso3, frequence, date_periode, annee, valeur FROM obs_tmp
+      WHERE 1
+      ON CONFLICT (code_interne, iso3, frequence, date_periode)
+      DO UPDATE SET valeur = excluded.valeur")
+    DBI::dbExecute(con, "DROP TABLE IF EXISTS obs_tmp")
+  })
+
+  n <- DBI::dbGetQuery(con,
+    "SELECT COUNT(*) AS n FROM observation WHERE code_interne = ?",
+    params = list(code_interne))$n
+  DBI::dbExecute(con, "
+    UPDATE indicateur SET derniere_collecte = ?, nb_observations = ?
+    WHERE code_interne = ?",
+    params = list(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), n, code_interne))
+  invisible(nrow(d))
+}
+
+#' Recalcule les compteurs d'observations
+#'
+#' Le nombre d'observations et la date de derniere collecte sont stockes dans
+#' la table des indicateurs pour eviter un comptage a chaque affichage. Cette
+#' redondance peut deriver : rechargement du catalogue, changement de code
+#' interne, import manuel. Cette fonction remet la colonne en accord avec les
+#' observations, qui font foi.
+#'
+#' @param con connexion ouverte, ou NULL pour en ouvrir une.
+#'
+#' @examples
+#' \dontrun{
+#' rafraichir_compteurs()
+#' }
+#' @export
+rafraichir_compteurs <- function(con = NULL) {
+  ferme <- FALSE
+  if (is.null(con)) { con <- connexion(); ferme <- TRUE }
+  if (ferme) on.exit(DBI::dbDisconnect(con), add = TRUE)
+
+  DBI::dbExecute(con, "
+    UPDATE indicateur
+    SET nb_observations = COALESCE(
+      (SELECT COUNT(*) FROM observation o
+       WHERE o.code_interne = indicateur.code_interne), 0)")
+
+  # Un indicateur qui a des observations mais pas de date de collecte vient
+  # d'un import manuel : on lui en donne une, sans quoi l'interface
+  # continuerait de le presenter comme jamais alimente.
+  DBI::dbExecute(con, "
+    UPDATE indicateur SET derniere_collecte = ?
+    WHERE nb_observations > 0 AND (derniere_collecte IS NULL OR derniere_collecte = '')",
+    params = list(format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
+
+  n <- DBI::dbGetQuery(con, "
+    SELECT COUNT(*) AS avec FROM indicateur WHERE nb_observations > 0")$avec
+  message(sprintf("%d indicateurs portent des observations.", n))
+  invisible(n)
+}
+
+#' Charge le fichier de cours livre avec la plateforme
+#'
+#' Le jeu de donnees des prix des produits de base ne peut pas etre interroge
+#' par programme : la page du FMI construit son lien de telechargement en
+#' JavaScript. Le fichier est donc distribue avec le paquet et charge ici.
+#'
+#' Le chargement n'a lieu que si la categorie est vide, pour ne pas ecraser des
+#' donnees plus recentes que l'utilisateur aurait importees lui-meme.
+#'
+#' @param con connexion ouverte.
+#' @param forcer si TRUE, recharge meme si des donnees sont deja presentes.
+#' @noRd
+charger_fichier_livre <- function(con, forcer = FALSE, categorie = "C15") {
+  chemin <- app_sys("extdata/commodityprice.csv")
+  if (!nzchar(chemin) || !file.exists(chemin)) return(invisible(0L))
+
+  deja <- DBI::dbGetQuery(con, "
+    SELECT COUNT(*) AS n FROM observation o
+    JOIN indicateur i ON i.code_interne = o.code_interne
+    WHERE i.categorie = ?", params = list(categorie))$n
+  if (deja > 0 && !forcer) return(invisible(0L))
+
+  message("Chargement des cours de produits de base livres avec la plateforme...")
+  n <- tryCatch(
+    charger_cours_livres(con, chemin, categorie = categorie),
+    error = function(e) {
+      message("  echec : ", conditionMessage(e))
+      0L
+    })
+  invisible(n)
+}
+
+#' Collecte tout ce qui n'a pas encore de donnees
+#'
+#' Passe en revue les indicateurs actifs sans observation et tente de les
+#' alimenter. Pour les cours de produits de base, le connecteur essaie
+#' successivement le paquet imf.data, des requetes ciblees, le flux entier du
+#' FMI, puis le classeur Pink Sheet de la Banque mondiale : quatre voies pour
+#' une meme donnee, ce qui est beaucoup, mais aucune n'a tenu seule.
+#'
+#' Les indicateurs sans connecteur ne sont pas oublies en silence : ils sont
+#' recenses en fin d'execution, avec le fournisseur qui leur manque.
+#'
+#' @param categorie limiter a une categorie, NULL pour tout le catalogue.
+#' @param debut annee de depart transmise aux connecteurs.
+#' @param pause secondes d'attente entre deux indicateurs, pour ne pas
+#'   saturer les serveurs interroges.
+#'
+#' @examples
+#' \dontrun{
+#' collecter_manquants()
+#' collecter_manquants(categorie = "C15")
+#' }
+#' @export
+collecter_manquants <- function(categorie = NULL, debut = NULL, pause = 0.3) {
+  con <- connexion()
+  on.exit(DBI::dbDisconnect(con), add = TRUE)
+
+  rafraichir_compteurs(con)
+
+  requete <- "SELECT * FROM indicateur WHERE actif = 1 AND nb_observations = 0"
+  params <- list()
+  if (!is.null(categorie)) {
+    requete <- paste(requete, "AND categorie = ?")
+    params <- list(categorie)
+  }
+  d <- DBI::dbGetQuery(con, paste(requete, "ORDER BY categorie, libelle"),
+                       params = params)
+
+  # Ceux dont la source n'a pas de connecteur ne peuvent rien recevoir : les
+  # tenter serait perdre du temps et remplir le journal d'echecs previsibles.
+  sans_voie <- d[!d$source %in% names(REGISTRE), ]
+  d <- d[d$source %in% names(REGISTRE), ]
+
+  if (!nrow(d)) {
+    cat("Aucun indicateur alimentable n'est en attente.\n")
+  } else {
+    cat(sprintf("%d indicateurs sans donnees, a collecter.\n\n", nrow(d)))
+    depart <- Sys.time()
+    avancement <- function(i, n, libelle, erreur) {
+      ecoule <- as.numeric(difftime(Sys.time(), depart, units = "secs"))
+      entete <- sprintf("[%3d/%d] %s (reste ~%s)", i, n,
+                        format(.POSIXct(ecoule, tz = "UTC"), "%H:%M:%S"),
+                        format(.POSIXct(ecoule / i * (n - i), tz = "UTC"), "%H:%M:%S"))
+      if (is.null(erreur)) {
+        cat(sprintf("%s  %s\n", entete, substr(libelle, 1, 52)))
+      } else {
+        cat(sprintf("%s  %s  ECHEC : %s\n", entete, substr(libelle, 1, 38),
+                    substr(erreur, 1, 80)))
+      }
+      if (pause > 0) Sys.sleep(pause)
+    }
+    res <- collecter(con, d, declencheur = "rattrapage", debut = debut,
+                     avancement = avancement)
+    cat(sprintf("\nTermine (%s) : %d valeurs ajoutees, %d revisees.\n",
+                res$statut, res$creees, res$modifiees))
+  }
+
+  # Rattrapage par le fichier livre, pour les cours restes vides.
+  restants <- DBI::dbGetQuery(con, "
+    SELECT COUNT(*) AS n FROM indicateur
+    WHERE actif = 1 AND nb_observations = 0 AND categorie = 'C15'")$n
+  if (restants > 0) {
+    cat(sprintf("\n%d cours de produits de base restent vides. ", restants))
+    cat("Chargement du fichier livre.\n")
+    tryCatch(charger_fichier_livre(con, forcer = FALSE, categorie = "C15"),
+             error = function(e) message("  ", conditionMessage(e)))
+  }
+
+  rafraichir_compteurs(con)
+  bilan_collecte(con, sans_voie)
+}
+
+#' Etat du catalogue apres une collecte
+#' @noRd
+bilan_collecte <- function(con, sans_voie) {
+  d <- DBI::dbGetQuery(con, "
+    SELECT c.code, c.libelle,
+           COUNT(i.code_interne) AS indicateurs,
+           SUM(CASE WHEN i.nb_observations > 0 THEN 1 ELSE 0 END) AS avec_donnees
+    FROM categorie c
+    LEFT JOIN indicateur i ON i.categorie = c.code AND i.actif = 1
+    GROUP BY c.code, c.libelle, c.ordre ORDER BY c.ordre")
+
+  cat("\nEtat du catalogue :\n")
+  for (i in seq_len(nrow(d))) {
+    manque <- d$indicateurs[[i]] - d$avec_donnees[[i]]
+    cat(sprintf("  %-4s %-46s %3d/%3d%s\n", d$code[[i]],
+                substr(d$libelle[[i]], 1, 46),
+                d$avec_donnees[[i]], d$indicateurs[[i]],
+                if (manque > 0) sprintf("  (%d sans donnees)", manque) else ""))
+  }
+
+  if (nrow(sans_voie)) {
+    cat(sprintf("\n%d indicateurs restent hors d'atteinte, faute de connecteur :\n",
+                nrow(sans_voie)))
+    for (s in sort(unique(sans_voie$source))) {
+      cat(sprintf("  %-32s %d indicateurs\n", s, sum(sans_voie$source == s)))
+    }
+    cat("Ces fournisseurs demandent chacun un connecteur specifique.\n")
+  }
+  invisible(d)
+}
+

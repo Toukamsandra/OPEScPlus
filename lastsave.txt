@@ -1,0 +1,1160 @@
+
+R version 4.5.3 (2026-03-11 ucrt) -- "Reassured Reassurer"
+Copyright (C) 2026 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R est un logiciel libre livré sans AUCUNE GARANTIE.
+Vous pouvez le redistribuer sous certaines conditions.
+Tapez 'license()' ou 'licence()' pour plus de détails.
+
+R est un projet collaboratif avec de nombreux contributeurs.
+Tapez 'contributors()' pour plus d'information et
+'citation()' pour la façon de le citer dans les publications.
+
+Tapez 'demo()' pour des démonstrations, 'help()' pour l'aide
+en ligne ou 'help.start()' pour obtenir l'aide au format HTML.
+Tapez 'q()' pour quitter R.
+
+> setwd("C:\\Users\\user\\Documents\\OPEScGolem_V2\\opescplus")
+> pkgload::load_all()
+ℹ Loading opescplus
+> library(httr2)
+> 
+> AG <- paste("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
++             "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
+> 
+> essai <- function(url) {
++   t0 <- Sys.time()
++   r <- tryCatch(
++     req_perform(req_timeout(req_headers(request(url), `User-Agent` = AG), 45)),
++     error = function(e) e)
++   s <- round(as.numeric(difftime(Sys.time(), t0, units = "secs")), 1)
++   if (inherits(r, "error")) {
++     cat("ECHEC apres", s, "s :", substr(conditionMessage(r), 1, 120), "\n\n")
++     return(invisible(NULL))
++   }
++   cat("OK", resp_status(r), "en", s, "s,", length(resp_body_raw(r)), "octets\n")
++   cat(substr(resp_body_string(r), 1, 600), "\n\n")
++   invisible(r)
++ }
+> 
+> b <- "https://api.imf.org/external/sdmx/3.0"
+> 
+> cat("=== 1. Le flux PCPS existe-t-il ?\n")
+=== 1. Le flux PCPS existe-t-il ?
+> essai(paste0(b, "/structure/dataflow/IMF.RES/PCPS"))
+OK 200 en 1.9 s, 1083 octets
+{"data":{"dataflows":[{"annotations":[{"id":"dataEngineSettings","value":"{\"historySettingType\":\"FULL_HISTORY\"}"},{"id":"origin","value":"INTEGRATION"},{"id":"DataEngine","title":"timeseries_v2"},{"id":"isFinal"},{"id":"lastUpdatedAt","value":"2025-06-16T17:59:44.643694Z"}],"id":"PCPS","name":"Primary Commodity Price System (PCPS)","names":{"en":"Primary Commodity Price System (PCPS)"},"description":"Indices of market prices for fuel and non-fuel commodities, and actual market prices for fuel and non-fuel commodities.","descriptions":{"en":"Indices of market prices for fuel and non-fuel co 
+
+> 
+> cat("=== 2. Sa structure, pour connaitre l'ordre des dimensions\n")
+=== 2. Sa structure, pour connaitre l'ordre des dimensions
+> essai(paste0(b, "/structure/datastructure/IMF.RES/PCPS?references=none"))
+Error in `resp_body_raw()`:
+! Can't retrieve empty body.
+Run `rlang::last_trace()` to see where the error occurred.
+> 
+> cat("=== 3. Une seule annee de donnees\n")
+=== 3. Une seule annee de donnees
+> essai(paste0(b, "/data/dataflow/IMF.RES/PCPS/+/*?startPeriod=2024&endPeriod=2024&format=csv"))
+OK 200 en 10.2 s, 7742678 octets
+{"meta":{},"data":{"dataSets":[{"structure":0,"action":"Replace","series":{"0:0:0:0":{"attributes":[0,null,null],"observations":{"0":["42.60640867415968",null,0],"1":["41.91948746463852",null,0],"2":["38.11447483976737",null,0],"3":["40.11732473638064",null,0],"4":["49.99637401983847",null,0],"5":["64.175057550848",null,0],"6":["71.84448962407131",null,0],"7":["92.72308699058275",null,0],"8":["108.5136038806413",null,0],"9":["131.4123338731951",null,0],"10":["104.1822732150368",null,0],"11":["130.0293744712682",null,0],"12":["154.5037199427575",null,0],"13":["137.9885591718958",null,0],"14":[" 
+
+> run_app()
+Le chargement a nécessité le package : shiny
+
+Listening on http://127.0.0.1:5049
+
+
+> pkgload::load_all()
+ℹ Loading opescplus
+> run_app()
+
+Listening on http://127.0.0.1:5049
+
+
+> pkgload::load_all()
+ℹ Loading opescplus
+> run_app()
+
+Listening on http://127.0.0.1:5049
+Avis : The 'plotly_click' event tied a source ID of 'carte' is not registered. In order to obtain this event data, please add `event_register(p, 'plotly_click')` to the plot (`p`) that you wish to obtain event data from.
+
+
+> pkgload::load_all()
+ℹ Loading opescplus
+Message d'avis :
+Objects listed as exports, but not present in namespace:
+• explorer_champs_atlas
+• explorer_flux_fmi 
+> collecter_en_lot(categorie = "C01")
+27 indicateurs a collecter.
+
+[  1/27] 00:00:08 (reste ~00:03:50)  Aluminium  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[  2/27] 00:00:16 (reste ~00:03:29)  Bananes  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[  3/27] 00:00:24 (reste ~00:03:17)  Blé  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[  4/27] 00:00:32 (reste ~00:03:05)  Cacao  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[  5/27] 00:00:39 (reste ~00:02:55)  Café, arabicas doux  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[  6/27] 00:00:47 (reste ~00:02:46)  Café, robusta  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[  7/27] 00:00:55 (reste ~00:02:38)  Caoutchouc  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[  8/27] 00:01:02 (reste ~00:02:29)  Charbon, Australie  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[  9/27] 00:01:10 (reste ~00:02:21)  Coton  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 10/27] 00:01:18 (reste ~00:02:12)  Cours du pétrole brut (moyenne des 3 pla  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 11/27] 00:01:25 (reste ~00:02:04)  Cuivre  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 12/27] 00:01:33 (reste ~00:01:56)  Gaz naturel, Europe  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 13/27] 00:01:41 (reste ~00:01:48)  Grumes de bois dur  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 14/27] 00:01:48 (reste ~00:01:40)  Huile de palme  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 15/27] 00:01:56 (reste ~00:01:33)  Indice alimentation et boissons  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 16/27] 00:02:03 (reste ~00:01:25)  Indice de tous les produits de base  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 17/27] 00:02:11 (reste ~00:01:17)  Indice des matières premières agricoles  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 18/27] 00:02:19 (reste ~00:01:09)  Indice des métaux  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 19/27] 00:02:26 (reste ~00:01:01)  Indice des produits énergétiques  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 20/27] 00:02:34 (reste ~00:00:54)  Maïs  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 21/27] 00:02:42 (reste ~00:00:46)  Minerai de fer  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 22/27] 00:02:49 (reste ~00:00:38)  Pétrole brut, Brent  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 23/27] 00:02:57 (reste ~00:00:30)  Pétrole brut, Dubaï  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 24/27] 00:03:04 (reste ~00:00:23)  Pétrole brut, WTI  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 25/27] 00:03:12 (reste ~00:00:15)  Riz  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 26/27] 00:03:20 (reste ~00:00:07)  Sciages de bois dur  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+[ 27/27] 00:03:27 (reste ~00:00:00)  Sucre  ECHEC : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/mo
+
+Termine (echec) : 0 valeurs ajoutees, 0 revisees.
+
+Erreurs :
+PALUM : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PBANSOP : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PWHEAMT : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PCOCO : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PCOFFOTM : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PCOFFROB : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PRUBB : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PCOALAU : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PCOTTIND : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+POILAPSP : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PCOPP : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PNGASEU : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PLOGSK : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PPOIL : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PFANDBW : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PALLFNFW : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PRAWMW : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PMETAW : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PNRGW : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PMAIZMT : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PIORECR : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+POILBRE : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+POILDUB : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+POILWTI : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PRICENPQ : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PSAWMAL : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+PSUGAISA : Echec apres 3 tentatives sur https://www.imf.org/-/media/files/research/commodityprices/monthly/external-data.xlsx : HTTP 403 Forbidden.
+
+> > pkgload::load_all()
+ℹ Loading opescplus
+> preparer_base()
+24 indicateurs desactives, faute de connecteur pour : CNUCED (UNCTADstat), FAO (FAOSTAT), FMI (base CPI), FMI (DOTS), FMI (FSI), FMI (GFS), FMI (IFS), OCDE (Revenue Statistics), OCDE (SDMX), OCDE / FMI (IFS), OEC, OIT (ILOSTAT), PNUD (HDR), Transparency International
+7 indicateurs desactives, code non valide a la recette : avg_distance, avg_ubiquity, country_product_year, diversity, eci_rank, growth_proj, pci
+233 indicateurs actifs charges dans C:\Users\user\AppData\Roaming/R/data/R/opescplus/opesc.sqlite
+295 entites geographiques
+> collecter_en_lot(categorie = "C01")
+28 indicateurs a collecter.
+
+[  1/28] 00:00:03 (reste ~00:01:44)  Aluminium  ECHEC : Code ALUMINUM absent du classeur. Utilisez codes_produits_de_base().
+[  2/28] 00:00:04 (reste ~00:00:52)  Bananes  ECHEC : Code BANANA_EU absent du classeur. Utilisez codes_produits_de_base().
+[  3/28] 00:00:04 (reste ~00:00:33)  Blé  ECHEC : Code WHEAT_US_HRW absent du classeur. Utilisez codes_produits_de_base().
+[  4/28] 00:00:04 (reste ~00:00:24)  Cacao  ECHEC : Code COCOA absent du classeur. Utilisez codes_produits_de_base().
+[  5/28] 00:00:04 (reste ~00:00:18)  Café, arabicas doux  ECHEC : Code COFFEE_ARABIC absent du classeur. Utilisez codes_produits_de_base().
+[  6/28] 00:00:04 (reste ~00:00:14)  Café, robusta  ECHEC : Code COFFEE_ROBUS absent du classeur. Utilisez codes_produits_de_base().
+[  7/28] 00:00:04 (reste ~00:00:12)  Caoutchouc  ECHEC : Code RUBBER_TSR20 absent du classeur. Utilisez codes_produits_de_base().
+[  8/28] 00:00:04 (reste ~00:00:10)  Charbon, Australie  ECHEC : Code COAL_AUS absent du classeur. Utilisez codes_produits_de_base().
+[  9/28] 00:00:04 (reste ~00:00:08)  Coton  ECHEC : Code COTTON_A_INDX absent du classeur. Utilisez codes_produits_de_base().
+[ 10/28] 00:00:04 (reste ~00:00:07)  Cours du pétrole brut (moyenne des 3 pla  ECHEC : Code CRUDE_PETRO absent du classeur. Utilisez codes_produits_de_base().
+[ 11/28] 00:00:04 (reste ~00:00:06)  Cuivre  ECHEC : Code COPPER absent du classeur. Utilisez codes_produits_de_base().
+[ 12/28] 00:00:04 (reste ~00:00:05)  Gaz naturel, Europe  ECHEC : Code NGAS_EUR absent du classeur. Utilisez codes_produits_de_base().
+[ 13/28] 00:00:04 (reste ~00:00:04)  Grumes de bois dur  ECHEC : Code LOGS_CMR absent du classeur. Utilisez codes_produits_de_base().
+[ 14/28] 00:00:04 (reste ~00:00:04)  Huile de palme  ECHEC : Code PALM_OIL absent du classeur. Utilisez codes_produits_de_base().
+[ 15/28] 00:00:04 (reste ~00:00:03)  Indice alimentation et boissons  ECHEC : Code iFOOD absent du classeur. Utilisez codes_produits_de_base().
+[ 16/28] 00:00:04 (reste ~00:00:03)  Indice de tous les produits de base  ECHEC : Code iNONENERGY absent du classeur. Utilisez codes_produits_de_base().
+[ 17/28] 00:00:04 (reste ~00:00:02)  Indice des matières premières agricoles  ECHEC : Code iOTHERRAWMAT absent du classeur. Utilisez codes_produits_de_base().
+[ 18/28] 00:00:04 (reste ~00:00:02)  Indice des métaux  ECHEC : Code iMETMIN absent du classeur. Utilisez codes_produits_de_base().
+[ 19/28] 00:00:04 (reste ~00:00:01)  Indice des produits énergétiques  ECHEC : Code iENERGY absent du classeur. Utilisez codes_produits_de_base().
+[ 20/28] 00:00:04 (reste ~00:00:01)  Maïs  ECHEC : Code MAIZE absent du classeur. Utilisez codes_produits_de_base().
+[ 21/28] 00:00:04 (reste ~00:00:01)  Minerai de fer  ECHEC : Code IRON_ORE absent du classeur. Utilisez codes_produits_de_base().
+[ 22/28] 00:00:04 (reste ~00:00:01)  Or  ECHEC : Code GOLD absent du classeur. Utilisez codes_produits_de_base().
+[ 23/28] 00:00:04 (reste ~00:00:00)  Pétrole brut, Brent  ECHEC : Code CRUDE_BRENT absent du classeur. Utilisez codes_produits_de_base().
+[ 24/28] 00:00:04 (reste ~00:00:00)  Pétrole brut, Dubaï  ECHEC : Code CRUDE_DUBAI absent du classeur. Utilisez codes_produits_de_base().
+[ 25/28] 00:00:04 (reste ~00:00:00)  Pétrole brut, WTI  ECHEC : Code CRUDE_WTI absent du classeur. Utilisez codes_produits_de_base().
+[ 26/28] 00:00:04 (reste ~00:00:00)  Riz  ECHEC : Code RICE_05 absent du classeur. Utilisez codes_produits_de_base().
+[ 27/28] 00:00:04 (reste ~00:00:00)  Sciages de bois dur  ECHEC : Code SAWNWD_CMR absent du classeur. Utilisez codes_produits_de_base().
+[ 28/28] 00:00:04 (reste ~00:00:00)  Sucre  ECHEC : Code SUGAR_WLD absent du classeur. Utilisez codes_produits_de_base().
+
+Termine (echec) : 0 valeurs ajoutees, 0 revisees.
+
+Erreurs :
+PALUM : Code ALUMINUM absent du classeur. Utilisez codes_produits_de_base().
+PBANSOP : Code BANANA_EU absent du classeur. Utilisez codes_produits_de_base().
+PWHEAMT : Code WHEAT_US_HRW absent du classeur. Utilisez codes_produits_de_base().
+PCOCO : Code COCOA absent du classeur. Utilisez codes_produits_de_base().
+PCOFFOTM : Code COFFEE_ARABIC absent du classeur. Utilisez codes_produits_de_base().
+PCOFFROB : Code COFFEE_ROBUS absent du classeur. Utilisez codes_produits_de_base().
+PRUBB : Code RUBBER_TSR20 absent du classeur. Utilisez codes_produits_de_base().
+PCOALAU : Code COAL_AUS absent du classeur. Utilisez codes_produits_de_base().
+PCOTTIND : Code COTTON_A_INDX absent du classeur. Utilisez codes_produits_de_base().
+POILAPSP : Code CRUDE_PETRO absent du classeur. Utilisez codes_produits_de_base().
+PCOPP : Code COPPER absent du classeur. Utilisez codes_produits_de_base().
+PNGASEU : Code NGAS_EUR absent du classeur. Utilisez codes_produits_de_base().
+PLOGSK : Code LOGS_CMR absent du classeur. Utilisez codes_produits_de_base().
+PPOIL : Code PALM_OIL absent du classeur. Utilisez codes_produits_de_base().
+PFANDBW : Code iFOOD absent du classeur. Utilisez codes_produits_de_base().
+PALLFNFW : Code iNONENERGY absent du classeur. Utilisez codes_produits_de_base().
+PRAWMW : Code iOTHERRAWMAT absent du classeur. Utilisez codes_produits_de_base().
+PMETAW : Code iMETMIN absent du classeur. Utilisez codes_produits_de_base().
+PNRGW : Code iENERGY absent du classeur. Utilisez codes_produits_de_base().
+PMAIZMT : Code MAIZE absent du classeur. Utilisez codes_produits_de_base().
+PIORECR : Code IRON_ORE absent du classeur. Utilisez codes_produits_de_base().
+PGOLD : Code GOLD absent du classeur. Utilisez codes_produits_de_base().
+POILBRE : Code CRUDE_BRENT absent du classeur. Utilisez codes_produits_de_base().
+POILDUB : Code CRUDE_DUBAI absent du classeur. Utilisez codes_produits_de_base().
+POILWTI : Code CRUDE_WTI absent du classeur. Utilisez codes_produits_de_base().
+PRICENPQ : Code RICE_05 absent du classeur. Utilisez codes_produits_de_base().
+PSAWMAL : Code SAWNWD_CMR absent du classeur. Utilisez codes_produits_de_base().
+PSUGAISA : Code SUGAR_WLD absent du classeur. Utilisez codes_produits_de_base().
+> run_app()
+
+Listening on http://127.0.0.1:5049
+
+
+> pkgload::load_all()
+ℹ Loading opescplus
+> run_app()
+
+Listening on http://127.0.0.1:5049
+Avis : Error in [[: indice hors limites
+  74: <Anonymous>
+  73: FUN [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/i18n.R#62]
+  72: vapply
+  71: tr [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/i18n.R#61]
+  60: ui [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/app_ui.R#10]
+   3: runApp
+   2: print.shiny.appobj
+   1: <Anonymous>
+Avis : Error in ns: impossible de trouver la fonction "ns"
+  109: exists
+  108: self$exists
+  107: oldInputs$available
+  106: restoreInput
+  105: shiny::radioButtons
+   87: observe [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/mod_accueil.R#163]
+   86: <observer:observeEvent(input$manuel)>
+    3: runApp
+    2: print.shiny.appobj
+    1: <Anonymous>
+Avis : Error in [[: indice hors limites
+  74: <Anonymous>
+  73: FUN [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/i18n.R#62]
+  72: vapply
+  71: tr [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/i18n.R#61]
+  60: ui [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/app_ui.R#10]
+   3: runApp
+   2: print.shiny.appobj
+   1: <Anonymous>
+Avis : Error in ns: impossible de trouver la fonction "ns"
+  109: exists
+  108: self$exists
+  107: oldInputs$available
+  106: restoreInput
+  105: shiny::radioButtons
+   87: observe [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/mod_accueil.R#163]
+   86: <observer:observeEvent(input$manuel)>
+    3: runApp
+    2: print.shiny.appobj
+    1: <Anonymous>
+Avis : Error in [[: indice hors limites
+  74: <Anonymous>
+  73: FUN [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/i18n.R#62]
+  72: vapply
+  71: tr [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/i18n.R#61]
+  60: ui [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/app_ui.R#10]
+   3: runApp
+   2: print.shiny.appobj
+   1: <Anonymous>
+
+
+> pkgload::load_all()
+ℹ Loading opescplus
+> run_app()
+
+Listening on http://127.0.0.1:5049
+Avis : Error in ns: impossible de trouver la fonction "ns"
+  109: exists
+  108: self$exists
+  107: oldInputs$available
+  106: restoreInput
+  105: shiny::radioButtons
+   87: observe [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/mod_accueil.R#163]
+   86: <observer:observeEvent(input$manuel)>
+    3: runApp
+    2: print.shiny.appobj
+    1: <Anonymous>
+
+
+> pkgload::load_all()
+ℹ Loading opescplus
+> diagnostic_frequences()
+Frequences presentes en base :
+     frequence observations indicateurs
+      Annuelle      1466525         174
+     Mensuelle        27249           1
+ Trimestrielle         4164           1
+
+Frequences annoncees par le catalogue :
+ frequences indicateurs
+          A         205
+        M,A          28
+
+Seules les matieres premieres (categorie C01) sont publiees en mensuel. 
+Si elles ne sont pas collectees, tout le reste est annuel par nature : 
+la Banque mondiale ne publie que de l'annuel.
+> run_app()
+
+Listening on http://127.0.0.1:5049
+Avis : Error in ns: impossible de trouver la fonction "ns"
+  109: exists
+  108: self$exists
+  107: oldInputs$available
+  106: restoreInput
+  105: shiny::radioButtons
+   87: observe [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/mod_accueil.R#169]
+   86: <observer:observeEvent(input$manuel)>
+    3: runApp
+    2: print.shiny.appobj
+    1: <Anonymous>
+
+
+> collecter_en_lot(categorie = "C01")
+28 indicateurs a collecter.
+
+[  1/28] 00:00:04 (reste ~00:01:57)  Aluminium  ECHEC : Code ALUMINUM absent du classeur. Utilisez codes_produits_de_base().
+[  2/28] 00:00:04 (reste ~00:00:57)  Bananes  ECHEC : Code BANANA_EU absent du classeur. Utilisez codes_produits_de_base().
+[  3/28] 00:00:04 (reste ~00:00:36)  Blé  ECHEC : Code WHEAT_US_HRW absent du classeur. Utilisez codes_produits_de_base().
+[  4/28] 00:00:04 (reste ~00:00:26)  Cacao  ECHEC : Code COCOA absent du classeur. Utilisez codes_produits_de_base().
+[  5/28] 00:00:04 (reste ~00:00:20)  Café, arabicas doux  ECHEC : Code COFFEE_ARABIC absent du classeur. Utilisez codes_produits_de_base().
+[  6/28] 00:00:04 (reste ~00:00:16)  Café, robusta  ECHEC : Code COFFEE_ROBUS absent du classeur. Utilisez codes_produits_de_base().
+[  7/28] 00:00:04 (reste ~00:00:13)  Caoutchouc  ECHEC : Code RUBBER_TSR20 absent du classeur. Utilisez codes_produits_de_base().
+[  8/28] 00:00:04 (reste ~00:00:10)  Charbon, Australie  ECHEC : Code COAL_AUS absent du classeur. Utilisez codes_produits_de_base().
+[  9/28] 00:00:04 (reste ~00:00:09)  Coton  ECHEC : Code COTTON_A_INDX absent du classeur. Utilisez codes_produits_de_base().
+[ 10/28] 00:00:04 (reste ~00:00:07)  Cours du pétrole brut (moyenne des 3 pla  ECHEC : Code CRUDE_PETRO absent du classeur. Utilisez codes_produits_de_base().
+[ 11/28] 00:00:04 (reste ~00:00:06)  Cuivre  ECHEC : Code COPPER absent du classeur. Utilisez codes_produits_de_base().
+[ 12/28] 00:00:04 (reste ~00:00:05)  Gaz naturel, Europe  ECHEC : Code NGAS_EUR absent du classeur. Utilisez codes_produits_de_base().
+[ 13/28] 00:00:04 (reste ~00:00:05)  Grumes de bois dur  ECHEC : Code LOGS_CMR absent du classeur. Utilisez codes_produits_de_base().
+[ 14/28] 00:00:04 (reste ~00:00:04)  Huile de palme  ECHEC : Code PALM_OIL absent du classeur. Utilisez codes_produits_de_base().
+[ 15/28] 00:00:04 (reste ~00:00:03)  Indice alimentation et boissons  ECHEC : Code iFOOD absent du classeur. Utilisez codes_produits_de_base().
+[ 16/28] 00:00:04 (reste ~00:00:03)  Indice de tous les produits de base  ECHEC : Code iNONENERGY absent du classeur. Utilisez codes_produits_de_base().
+[ 17/28] 00:00:04 (reste ~00:00:02)  Indice des matières premières agricoles  ECHEC : Code iOTHERRAWMAT absent du classeur. Utilisez codes_produits_de_base().
+[ 18/28] 00:00:04 (reste ~00:00:02)  Indice des métaux  ECHEC : Code iMETMIN absent du classeur. Utilisez codes_produits_de_base().
+[ 19/28] 00:00:04 (reste ~00:00:02)  Indice des produits énergétiques  ECHEC : Code iENERGY absent du classeur. Utilisez codes_produits_de_base().
+[ 20/28] 00:00:04 (reste ~00:00:01)  Maïs  ECHEC : Code MAIZE absent du classeur. Utilisez codes_produits_de_base().
+[ 21/28] 00:00:04 (reste ~00:00:01)  Minerai de fer  ECHEC : Code IRON_ORE absent du classeur. Utilisez codes_produits_de_base().
+[ 22/28] 00:00:04 (reste ~00:00:01)  Or  ECHEC : Code GOLD absent du classeur. Utilisez codes_produits_de_base().
+[ 23/28] 00:00:04 (reste ~00:00:00)  Pétrole brut, Brent  ECHEC : Code CRUDE_BRENT absent du classeur. Utilisez codes_produits_de_base().
+[ 24/28] 00:00:04 (reste ~00:00:00)  Pétrole brut, Dubaï  ECHEC : Code CRUDE_DUBAI absent du classeur. Utilisez codes_produits_de_base().
+[ 25/28] 00:00:04 (reste ~00:00:00)  Pétrole brut, WTI  ECHEC : Code CRUDE_WTI absent du classeur. Utilisez codes_produits_de_base().
+[ 26/28] 00:00:04 (reste ~00:00:00)  Riz  ECHEC : Code RICE_05 absent du classeur. Utilisez codes_produits_de_base().
+[ 27/28] 00:00:04 (reste ~00:00:00)  Sciages de bois dur  ECHEC : Code SAWNWD_CMR absent du classeur. Utilisez codes_produits_de_base().
+[ 28/28] 00:00:04 (reste ~00:00:00)  Sucre  ECHEC : Code SUGAR_WLD absent du classeur. Utilisez codes_produits_de_base().
+
+Termine (echec) : 0 valeurs ajoutees, 0 revisees.
+
+Erreurs :
+PALUM : Code ALUMINUM absent du classeur. Utilisez codes_produits_de_base().
+PBANSOP : Code BANANA_EU absent du classeur. Utilisez codes_produits_de_base().
+PWHEAMT : Code WHEAT_US_HRW absent du classeur. Utilisez codes_produits_de_base().
+PCOCO : Code COCOA absent du classeur. Utilisez codes_produits_de_base().
+PCOFFOTM : Code COFFEE_ARABIC absent du classeur. Utilisez codes_produits_de_base().
+PCOFFROB : Code COFFEE_ROBUS absent du classeur. Utilisez codes_produits_de_base().
+PRUBB : Code RUBBER_TSR20 absent du classeur. Utilisez codes_produits_de_base().
+PCOALAU : Code COAL_AUS absent du classeur. Utilisez codes_produits_de_base().
+PCOTTIND : Code COTTON_A_INDX absent du classeur. Utilisez codes_produits_de_base().
+POILAPSP : Code CRUDE_PETRO absent du classeur. Utilisez codes_produits_de_base().
+PCOPP : Code COPPER absent du classeur. Utilisez codes_produits_de_base().
+PNGASEU : Code NGAS_EUR absent du classeur. Utilisez codes_produits_de_base().
+PLOGSK : Code LOGS_CMR absent du classeur. Utilisez codes_produits_de_base().
+PPOIL : Code PALM_OIL absent du classeur. Utilisez codes_produits_de_base().
+PFANDBW : Code iFOOD absent du classeur. Utilisez codes_produits_de_base().
+PALLFNFW : Code iNONENERGY absent du classeur. Utilisez codes_produits_de_base().
+PRAWMW : Code iOTHERRAWMAT absent du classeur. Utilisez codes_produits_de_base().
+PMETAW : Code iMETMIN absent du classeur. Utilisez codes_produits_de_base().
+PNRGW : Code iENERGY absent du classeur. Utilisez codes_produits_de_base().
+PMAIZMT : Code MAIZE absent du classeur. Utilisez codes_produits_de_base().
+PIORECR : Code IRON_ORE absent du classeur. Utilisez codes_produits_de_base().
+PGOLD : Code GOLD absent du classeur. Utilisez codes_produits_de_base().
+POILBRE : Code CRUDE_BRENT absent du classeur. Utilisez codes_produits_de_base().
+POILDUB : Code CRUDE_DUBAI absent du classeur. Utilisez codes_produits_de_base().
+POILWTI : Code CRUDE_WTI absent du classeur. Utilisez codes_produits_de_base().
+PRICENPQ : Code RICE_05 absent du classeur. Utilisez codes_produits_de_base().
+PSAWMAL : Code SAWNWD_CMR absent du classeur. Utilisez codes_produits_de_base().
+PSUGAISA : Code SUGAR_WLD absent du classeur. Utilisez codes_produits_de_base().
+> run_app()
+
+Listening on http://127.0.0.1:5049
+Avis : Error in ns: impossible de trouver la fonction "ns"
+  109: exists
+  108: self$exists
+  107: oldInputs$available
+  106: restoreInput
+  105: shiny::radioButtons
+   87: observe [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/mod_accueil.R#169]
+   86: <observer:observeEvent(input$manuel)>
+    3: runApp
+    2: print.shiny.appobj
+    1: <Anonymous>
+
+
+> pkgload::load_all()
+ℹ Loading opescplus
+> collecter_en_lot(categorie = "C01")
+28 indicateurs a collecter.
+
+[  1/28] 00:00:15 (reste ~00:06:58)  Aluminium  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[  2/28] 00:00:17 (reste ~00:03:50)  Bananes  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[  3/28] 00:00:19 (reste ~00:02:45)  Blé  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[  4/28] 00:00:22 (reste ~00:02:12)  Cacao  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[  5/28] 00:00:24 (reste ~00:01:52)  Café, arabicas doux  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[  6/28] 00:00:26 (reste ~00:01:37)  Café, robusta  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[  7/28] 00:00:28 (reste ~00:01:26)  Caoutchouc  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[  8/28] 00:00:30 (reste ~00:01:17)  Charbon, Australie  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[  9/28] 00:00:33 (reste ~00:01:09)  Coton  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 10/28] 00:00:35 (reste ~00:01:03)  Cours du pétrole brut (moyenne des 3 pla  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 11/28] 00:00:37 (reste ~00:00:57)  Cuivre  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 12/28] 00:00:39 (reste ~00:00:52)  Gaz naturel, Europe  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 13/28] 00:00:41 (reste ~00:00:48)  Grumes de bois dur  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 14/28] 00:00:43 (reste ~00:00:43)  Huile de palme  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 15/28] 00:00:46 (reste ~00:00:39)  Indice alimentation et boissons  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 16/28] 00:00:48 (reste ~00:00:36)  Indice de tous les produits de base  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 17/28] 00:00:50 (reste ~00:00:32)  Indice des matières premières agricoles  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 18/28] 00:00:53 (reste ~00:00:29)  Indice des métaux  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 19/28] 00:00:55 (reste ~00:00:26)  Indice des produits énergétiques  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 20/28] 00:00:57 (reste ~00:00:23)  Maïs  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 21/28] 00:00:59 (reste ~00:00:19)  Minerai de fer  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 22/28] 00:01:01 (reste ~00:00:16)  Or  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 23/28] 00:01:04 (reste ~00:00:13)  Pétrole brut, Brent  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 24/28] 00:01:06 (reste ~00:00:11)  Pétrole brut, Dubaï  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 25/28] 00:01:08 (reste ~00:00:08)  Pétrole brut, WTI  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 26/28] 00:01:10 (reste ~00:00:05)  Riz  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 27/28] 00:01:12 (reste ~00:00:02)  Sciages de bois dur  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+[ 28/28] 00:01:15 (reste ~00:00:00)  Sucre  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+
+Termine (echec) : 0 valeurs ajoutees, 0 revisees.
+
+Erreurs :
+PALUM : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PBANSOP : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PWHEAMT : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOCO : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOFFOTM : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOFFROB : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PRUBB : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOALAU : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOTTIND : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+POILAPSP : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOPP : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PNGASEU : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PLOGSK : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PPOIL : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PFANDBW : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PALLFNFW : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PRAWMW : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PMETAW : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PNRGW : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PMAIZMT : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PIORECR : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PGOLD : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+POILBRE : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+POILDUB : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+POILWTI : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PRICENPQ : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PSAWMAL : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PSUGAISA : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+> run_all()
+Erreur dans run_all() : impossible de trouver la fonction "run_all"
+> run_app()
+
+Listening on http://127.0.0.1:5049
+Avis : Error in ns: impossible de trouver la fonction "ns"
+  109: exists
+  108: self$exists
+  107: oldInputs$available
+  106: restoreInput
+  105: shiny::radioButtons
+   87: observe [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/mod_accueil.R#169]
+   86: <observer:observeEvent(input$manuel)>
+    3: runApp
+    2: print.shiny.appobj
+    1: <Anonymous>
+
+
+> run_app()
+
+Listening on http://127.0.0.1:5049
+Avis : Error in ns: impossible de trouver la fonction "ns"
+  109: exists
+  108: self$exists
+  107: oldInputs$available
+  106: restoreInput
+  105: shiny::radioButtons
+   87: observe [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/mod_accueil.R#169]
+   86: <observer:observeEvent(input$manuel)>
+    3: runApp
+    2: print.shiny.appobj
+    1: <Anonymous>
+
+
+> pkgload::load_all()
+ℹ Loading opescplus
+> run_app()
+
+Listening on http://127.0.0.1:5049
+Avis : Error in ns: impossible de trouver la fonction "ns"
+  109: exists
+  108: self$exists
+  107: oldInputs$available
+  106: restoreInput
+  105: shiny::radioButtons
+   87: observe [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/mod_accueil.R#169]
+   86: <observer:observeEvent(input$manuel)>
+    3: runApp
+    2: print.shiny.appobj
+    1: <Anonymous>
+
+
+> pkgload::load_all()
+ℹ Loading opescplus
+> verifier_manuels()
+Les quatre manuels sont en place. Si le téléchargement ne démarre pas, ouvrez directement http://127.0.0.1:PORT/www/manuel/manuel_opesc_fr.pdf en remplaçant PORT par celui affiché au lancement.
+               fichier present taille_ko                         adresse
+1  manuel_opesc_fr.pdf    TRUE       610  www/manuel/manuel_opesc_fr.pdf
+2  manuel_opesc_en.pdf    TRUE       603  www/manuel/manuel_opesc_en.pdf
+3 manuel_opesc_fr.docx    TRUE        38 www/manuel/manuel_opesc_fr.docx
+4 manuel_opesc_en.docx    TRUE        35 www/manuel/manuel_opesc_en.docx
+> run_app()
+
+Listening on http://127.0.0.1:5049
+Avis : Error in ns: impossible de trouver la fonction "ns"
+  109: exists
+  108: self$exists
+  107: oldInputs$available
+  106: restoreInput
+  105: shiny::radioButtons
+   87: observe [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/mod_accueil.R#175]
+   86: <observer:observeEvent(input$manuel)>
+    3: runApp
+    2: print.shiny.appobj
+    1: <Anonymous>
+Avis : Error in ns: impossible de trouver la fonction "ns"
+  109: exists
+  108: self$exists
+  107: oldInputs$available
+  106: restoreInput
+  105: shiny::radioButtons
+   87: observe [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/mod_accueil.R#175]
+   86: <observer:observeEvent(input$manuel)>
+    3: runApp
+    2: print.shiny.appobj
+    1: <Anonymous>
+
+
+> pkgload::load_all()
+ℹ Loading opescplus
+> run_app()
+
+Listening on http://127.0.0.1:5049
+Avis : Error in ns: impossible de trouver la fonction "ns"
+  127: exists
+  126: self$exists
+  125: oldInputs$available
+  124: restoreInput
+  123: shiny::radioButtons
+  118: renderUI [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/mod_accueil.R#191]
+  117: func
+  101: output$accueil-formulaire_manuel
+    3: runApp
+    2: print.shiny.appobj
+    1: <Anonymous>
+Avis : Error in ns: impossible de trouver la fonction "ns"
+  127: exists
+  126: self$exists
+  125: oldInputs$available
+  124: restoreInput
+  123: shiny::radioButtons
+  118: renderUI [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/mod_accueil.R#191]
+  117: func
+  101: output$accueil-formulaire_manuel
+    3: runApp
+    2: print.shiny.appobj
+    1: <Anonymous>
+Avis : Error in ns: impossible de trouver la fonction "ns"
+  127: exists
+  126: self$exists
+  125: oldInputs$available
+  124: restoreInput
+  123: shiny::radioButtons
+  118: renderUI [C:/Users/user/Documents/OPEScGolem_V2/opescplus/R/mod_accueil.R#191]
+  117: func
+  101: output$accueil-formulaire_manuel
+    3: runApp
+    2: print.shiny.appobj
+    1: <Anonymous>
+
+
+> pkgload::load_all()
+ℹ Loading opescplus
+Error in `load_all()`:
+! Failed to load 'R/mod_base_donnees.R'
+Caused by error in `parse()`:
+! At 'R/mod_base_donnees.R:47:47': '=' inattendu(e)
+46:     shiny::updateSelectInput(session, "categorie",
+47:       choices = c(tr("Toutes les catégories") =
+                                                  ^
+Run `rlang::last_trace()` to see where the error occurred.
+> testthat::test_local()
+Erreur dans loadNamespace(x) : aucun package nommé ‘testthat’ n'est trouvé
+> run_app()
+Erreur dans run_app() : impossible de trouver la fonction "run_app"
+> run_app()
+Erreur dans run_app() : impossible de trouver la fonction "run_app"
+> chooseCRANmirror()
+> utils:::menuInstallPkgs()
+installation des dépendances ‘credentials’, ‘gitcreds’, ‘ini’, ‘clipr’, ‘crayon’, ‘gert’, ‘gh’, ‘rstudioapi’, ‘whisker’
+
+essai de l'URL 'https://cloud.r-project.org/bin/windows/contrib/4.5/credentials_2.0.3.zip'
+essai de l'URL 'https://cloud.r-project.org/bin/windows/contrib/4.5/gitcreds_0.1.2.zip'
+essai de l'URL 'https://cloud.r-project.org/bin/windows/contrib/4.5/ini_0.3.1.zip'
+essai de l'URL 'https://cloud.r-project.org/bin/windows/contrib/4.5/clipr_0.8.1.zip'
+essai de l'URL 'https://cloud.r-project.org/bin/windows/contrib/4.5/crayon_1.5.3.zip'
+essai de l'URL 'https://cloud.r-project.org/bin/windows/contrib/4.5/gert_2.4.1.zip'
+essai de l'URL 'https://cloud.r-project.org/bin/windows/contrib/4.5/gh_1.6.1.zip'
+essai de l'URL 'https://cloud.r-project.org/bin/windows/contrib/4.5/rstudioapi_0.19.0.zip'
+essai de l'URL 'https://cloud.r-project.org/bin/windows/contrib/4.5/whisker_0.4.1.zip'
+essai de l'URL 'https://cloud.r-project.org/bin/windows/contrib/4.5/usethis_3.2.1.zip'
+le package ‘credentials’ a été décompressé et les sommes MD5 ont été vérifiées avec succés
+le package ‘gitcreds’ a été décompressé et les sommes MD5 ont été vérifiées avec succés
+le package ‘ini’ a été décompressé et les sommes MD5 ont été vérifiées avec succés
+le package ‘clipr’ a été décompressé et les sommes MD5 ont été vérifiées avec succés
+le package ‘crayon’ a été décompressé et les sommes MD5 ont été vérifiées avec succés
+le package ‘gert’ a été décompressé et les sommes MD5 ont été vérifiées avec succés
+le package ‘gh’ a été décompressé et les sommes MD5 ont été vérifiées avec succés
+le package ‘rstudioapi’ a été décompressé et les sommes MD5 ont été vérifiées avec succés
+le package ‘whisker’ a été décompressé et les sommes MD5 ont été vérifiées avec succés
+le package ‘usethis’ a été décompressé et les sommes MD5 ont été vérifiées avec succés
+
+Les packages binaires téléchargés sont dans
+        C:\Users\user\AppData\Local\Temp\Rtmp6tZGpo\downloaded_packages
+> usethis::use_git_ignore(c(".Rhistory", ".RData", ".Rproj.user/", "renv/library/"))
+✔ Setting active project to "C:/Users/user/Documents/OPEScGolem_V2/opescplus".
+✔ Adding ".Rhistory", ".RData", ".Rproj.user/", and "renv/library/" to '.gitignore'.
+> pkgload::load_all()
+ℹ Loading opescplus
+Error in `load_all()`:
+! Failed to load 'R/mod_base_donnees.R'
+Caused by error in `parse()`:
+! At 'R/mod_base_donnees.R:47:47': '=' inattendu(e)
+46:     shiny::updateSelectInput(session, "categorie",
+47:       choices = c(tr("Toutes les catégories") =
+                                                  ^
+Run `rlang::last_trace()` to see where the error occurred.
+> pkgload::load_all()
+ℹ Loading opescplus
+Error in `load_all()`:
+! Failed to load 'R/mod_base_donnees.R'
+Caused by error in `parse()`:
+! At 'R/mod_base_donnees.R:50:5': symbole inattendu
+49: 
+50:     shiny
+        ^
+Run `rlang::last_trace()` to see where the error occurred.
+> pkgload::load_all()
+ℹ Loading opescplus
+Error in `load_all()`:
+! Failed to load 'R/mod_tableau_bord.R'
+Caused by error in `parse()`:
+! At 'R/mod_tableau_bord.R:204:76': '=' inattendu(e)
+203:         shiny::updateSelectInput(session, "frequence",
+204:                                  choices = c(tr("Aucune donnée collectée") =
+                                                                                ^
+Run `rlang::last_trace()` to see where the error occurred.
+> grep -rn 'tr(.*) *=' R/
+Erreur : constante de type chaîne de caractères inattendue dans "grep -rn 'tr(.*) *='"
+> pkgload::load_all()
+ℹ Loading opescplus
+Error in `load_all()`:
+! Failed to load 'R/mod_tableau_bord.R'
+Caused by error in `parse()`:
+! At 'R/mod_tableau_bord.R:259:71': '=' inattendu(e)
+258:         shiny::updateSelectizeInput(session, "pays",
+259:           choices = c(tr("Cours mondial (série sans dimension pays)") =
+                                                                           ^
+Run `rlang::last_trace()` to see where the error occurred.
+> 
+> pkgload::load_all()
+ℹ Loading opescplus
+> run_app()
+
+Listening on http://127.0.0.1:5049
+
+
+> pkgload::load_all()
+ℹ Loading opescplus
+> preparer_base()
+24 indicateurs desactives, faute de connecteur pour : CNUCED (UNCTADstat), FAO (FAOSTAT), FMI (base CPI), FMI (DOTS), FMI (FSI), FMI (GFS), FMI (IFS), OCDE (Revenue Statistics), OCDE (SDMX), OCDE / FMI (IFS), OEC, OIT (ILOSTAT), PNUD (HDR), Transparency International
+7 indicateurs desactives, code non valide a la recette : avg_distance, avg_ubiquity, country_product_year, diversity, eci_rank, growth_proj, pci
+233 indicateurs actifs charges dans C:\Users\user\AppData\Roaming/R/data/R/opescplus/opesc.sqlite
+295 entites geographiques
+> collecter_en_lot(categorie = "C01")
+28 indicateurs a collecter.
+
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[  1/28] 00:00:35 (reste ~00:15:51)  Aluminium  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[  2/28] 00:01:03 (reste ~00:13:51)  Bananes  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[  3/28] 00:01:24 (reste ~00:11:46)  Blé  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[  4/28] 00:01:58 (reste ~00:11:52)  Cacao  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[  5/28] 00:02:29 (reste ~00:11:29)  Café, arabicas doux  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[  6/28] 00:02:51 (reste ~00:10:29)  Café, robusta  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[  7/28] 00:04:15 (reste ~00:12:45)  Caoutchouc  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[  8/28] 00:04:31 (reste ~00:11:19)  Charbon, Australie  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[  9/28] 00:04:48 (reste ~00:10:08)  Coton  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 10/28] 00:05:08 (reste ~00:09:14)  Cours du pétrole brut (moyenne des 3 pla  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 11/28] 00:05:29 (reste ~00:08:28)  Cuivre  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 12/28] 00:05:48 (reste ~00:07:44)  Gaz naturel, Europe  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 13/28] 00:06:07 (reste ~00:07:03)  Grumes de bois dur  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 14/28] 00:06:29 (reste ~00:06:29)  Huile de palme  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 15/28] 00:07:01 (reste ~00:06:05)  Indice alimentation et boissons  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 16/28] 00:07:23 (reste ~00:05:32)  Indice de tous les produits de base  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 17/28] 00:07:45 (reste ~00:05:00)  Indice des matières premières agricoles  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 18/28] 00:08:16 (reste ~00:04:35)  Indice des métaux  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 19/28] 00:09:22 (reste ~00:04:26)  Indice des produits énergétiques  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 20/28] 00:10:11 (reste ~00:04:04)  Maïs  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 21/28] 00:10:42 (reste ~00:03:34)  Minerai de fer  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 22/28] 00:11:03 (reste ~00:03:00)  Or  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 23/28] 00:11:21 (reste ~00:02:28)  Pétrole brut, Brent  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 24/28] 00:11:44 (reste ~00:01:57)  Pétrole brut, Dubaï  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 25/28] 00:12:04 (reste ~00:01:26)  Pétrole brut, WTI  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 26/28] 00:12:24 (reste ~00:00:57)  Riz  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 27/28] 00:12:54 (reste ~00:00:28)  Sciages de bois dur  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS indisponible (values must be length 1,
+ but FUN(X[[1]]) result is length 0). Repli sur le classeur de la Banque mondiale.
+[ 28/28] 00:13:19 (reste ~00:00:00)  Sucre  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+
+Termine (echec) : 0 valeurs ajoutees, 0 revisees.
+
+Erreurs :
+PALUM : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PBANSOP : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PWHEAMT : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOCO : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOFFOTM : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOFFROB : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PRUBB : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOALAU : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOTTIND : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+POILAPSP : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOPP : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PNGASEU : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PLOGSK : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PPOIL : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PFANDBW : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PALLFNFW : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PRAWMW : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PMETAW : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PNRGW : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PMAIZMT : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PIORECR : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PGOLD : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+POILBRE : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+POILDUB : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+POILWTI : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PRICENPQ : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PSAWMAL : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PSUGAISA : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+> preparer_base()
+24 indicateurs desactives, faute de connecteur pour : CNUCED (UNCTADstat), FAO (FAOSTAT), FMI (base CPI), FMI (DOTS), FMI (FSI), FMI (GFS), FMI (IFS), OCDE (Revenue Statistics), OCDE (SDMX), OCDE / FMI (IFS), OEC, OIT (ILOSTAT), PNUD (HDR), Transparency International
+7 indicateurs desactives, code non valide a la recette : avg_distance, avg_ubiquity, country_product_year, diversity, eci_rank, growth_proj, pci
+233 indicateurs actifs charges dans C:\Users\user\AppData\Roaming/R/data/R/opescplus/opesc.sqlite
+295 entites geographiques
+> codes_produits_de_base()
+Erreur dans vapply(obs_dim$values, function(v) v$id, character(1)) : 
+  values must be length 1,
+ but FUN(X[[1]]) result is length 0
+> inspecter_flux_pcps()
+Erreur dans vapply(obs_dim$values, function(v) v$id, character(1)) : 
+  values must be length 1,
+ but FUN(X[[1]]) result is length 0
+> run_app()
+
+Listening on http://127.0.0.1:5049
+
+
+> pkgload::load_all()
+ℹ Loading opescplus
+> tester_produit("PCOCO")
+Adresse : https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.RES/PCPS/+/M.W00.PCOCO. 
+Reponse : 2051 caracteres
+
+{"meta":{},"data":{"dataSets":[{"structure":0,"action":"Replace"}],"structures":[{"dataSets":[0],"links":[{"urn":"urn:sdmx:org.sdmx.infomodel.datastructure.Dataflow=IMF.RES:PCPS(9.0.0)","title":"Dataflow"},{"urn":"urn:sdmx:org.sdmx.infomodel.datastructure.DataStructure=IMF.RES:DSD_PCPS(10.0.0)","title":"DataStructureDefinition"}],"dimensions":{"series":[{"id":"COUNTRY","keyPosition":0,"roles":[],"values":[]},{"id":"INDICATOR","keyPosition":1,"roles":[],"values":[]},{"id":"DATA_TRANSFORMATION","keyPosition":2,"roles":[],"values":[]},{"id":"FREQUENCY","keyPosition":3,"roles":[],"values":[]}],"ob 
+
+0 lignes, colonnes : {meta:{}, data:{dataSets:[{structure:0, action:Replace}], structures:[{dataSets:[0], links:[{urn:urn:sdmx:org.sdmx.infomodel.datastructure.Dataflow=IMF.RES:PCPS(9.0.0), title:Dataflow}, {urn:urn:sdmx:org.sdmx.infomodel.datastructure.DataStructure=IMF.RES:DSD_PCPS(10.0.0), title:DataStructureDefinition}], dimensions:{series:[{id:COUNTRY, keyPosition:0, roles:[], values:[]}, {id:INDICATOR, keyPosition:1, roles:[], values:[]}, {id:DATA_TRANSFORMATION, keyPosition:2, roles:[], values:[]}, {id:FREQUENCY, keyPosition:3, roles:[], values:[]}], observation:[{id:TIME_PERIOD, keyPosition:4, values:[]}]}, measures:{observation:[{id:OBS_VALUE, roles:[]}]}, attributes:{dimensionGroup:[{id:CURRENCY, roles:[], isMandatory:false, relationship:{dimensions:[INDICATOR]}}, {id:COMMODITY_CF, roles:[], isMandatory:false, relationship:{dimensions:[INDICATOR]}}, {id:PCPS_RY, roles:[], isMandatory:false, relationship:{dimensions:[INDICATOR]}}, {id:INDEX_TYPE, roles:[], isMandatory:false, relationship:{dimensions:[INDICATOR]}}, {id:PRICES, roles:[], isMandatory:false, relationship:{dimensions:[INDICATOR]}}, {id:EXRATE, roles:[], isMandatory:false, relationship:{dimensions:[INDICATOR]}}, {id:TRANSFORMATION, roles:[], isMandatory:false, relationship:{dimensions:[INDICATOR]}}], series:[{id:SCALE, roles:[], isMandatory:false, relationship:{dimensions:[COUNTRY, INDICATOR, DATA_TRANSFORMATION, FREQUENCY]}}, {id:DECIMAL_DISPLAYED, roles:[], isMandatory:false, relationship:{dimensions:[COUNTRY, INDICATOR, DATA_TRANSFORMATION, FREQUENCY]}}, {id:OVERLAP, roles:[], isMandatory:false, relationship:{dimensions:[COUNTRY, INDICATOR, DATA_TRANSFORMATION, FREQUENCY]}}], observation:[{id:PRECISION, roles:[], isMandatory:false, relationship:{observation:{}}}, {id:DERIVATION_TYPE, roles:[], isMandatory:false, relationship:{observation:{}}}]}, annotations:[]}]}}
+> pkgload::load_all()
+ℹ Loading opescplus
+> tester_produit("PCOCO")
+
+cle : W00.PCOCO..M
+  aucune observation
+
+cle : W00.PCOCO..A
+  aucune observation
+
+cle : .PCOCO..M
+  aucune observation
+
+cle : .PCOCO..
+  aucune observation
+
+Aucune cle n'a rendu de donnees. Lancez codes_produits_de_base() pour verifier que le code existe.
+> codes_produits_de_base()
+Erreur : Nomenclature introuvable. Lancez tester_produit() pour voir la reponse du portail.
+> tester_produit()
+
+cle : W00.PCOCO..M
+  aucune observation
+
+cle : W00.PCOCO..A
+  aucune observation
+
+cle : .PCOCO..M
+  aucune observation
+
+cle : .PCOCO..
+  aucune observation
+
+Aucune cle n'a rendu de donnees. Lancez codes_produits_de_base() pour verifier que le code existe.
+> run_app()
+
+Listening on http://127.0.0.1:5049
+
+
+> install.packages("remotes")
+Installation du package dans ‘C:/Users/user/AppData/Local/R/win-library/4.5’
+(car ‘lib’ n'est pas spécifié)
+essai de l'URL 'https://cloud.r-project.org/bin/windows/contrib/4.5/remotes_2.5.0.zip'
+Content type 'application/zip' length 436524 bytes (426 KB)
+downloaded 426 KB
+
+le package ‘remotes’ a été décompressé et les sommes MD5 ont été vérifiées avec succés
+
+Les packages binaires téléchargés sont dans
+        C:\Users\user\AppData\Local\Temp\Rtmp6tZGpo\downloaded_packages
+> remotes::install_github("opensdmx/rsdmx")
+Using GitHub PAT from the git credential store.
+Downloading GitHub repo opensdmx/rsdmx@HEAD
+Error in utils::download.file(url, path, method = method, quiet = quiet,  : 
+  impossible d'ouvrir l'URL 'https://api.github.com/repos/opensdmx/rsdmx/tarball/HEAD'
+> run_app()
+
+Listening on http://127.0.0.1:5049
+
+
+> run_app()
+
+Listening on http://127.0.0.1:5049
+
+> run_app()
+
+Listening on http://127.0.0.1:5049
+
+
+> install.packages("imf.data")
+Installation du package dans ‘C:/Users/user/AppData/Local/R/win-library/4.5’
+(car ‘lib’ n'est pas spécifié)
+essai de l'URL 'https://cloud.r-project.org/bin/windows/contrib/4.5/imf.data_0.2.0.zip'
+Content type 'application/zip' length 104682 bytes (102 KB)
+downloaded 102 KB
+
+le package ‘imf.data’ a été décompressé et les sommes MD5 ont été vérifiées avec succés
+
+Les packages binaires téléchargés sont dans
+        C:\Users\user\AppData\Local\Temp\Rtmp6tZGpo\downloaded_packages
+> library(imf.data)
+> available_datasets <- imf_databases()
+Erreur dans imf_databases() : 
+  impossible de trouver la fonction "imf_databases"
+> library(imf.data)
+> imf.data::available_datasets <- imf_databases()
+Erreur dans imf_databases() : 
+  impossible de trouver la fonction "imf_databases"
+> help(imf.data)
+Aucune documentation pour ‘imf.data’ n'a été trouvée dans les packages et les bibliothèques :
+vous pourriez essayer ‘??imf.data’
+> ??imf.data
+démarrage du serveur d'aide httpd ... fini
+> get_data(
++   "CPI",
++   filters = list(
++     COUNTRY = "USA",
++     INDEX_TYPE = "CPI",
++     COICOP_1999 = "_T",
++     TYPE_OF_TRANSFORMATION = "IX",
++     FREQUENCY = "M"
++   ),
++   last_n_obs = 2
++ )
+# A tibble: 2 × 7
+  COUNTRY INDEX_TYPE COICOP_1999 TYPE_OF_TRANSFORMATION FREQUENCY TIME_PERIOD OBS_VALUE
+  <chr>   <chr>      <chr>       <chr>                  <chr>     <chr>           <dbl>
+1 USA     CPI        _T          IX                     M         2026-M06         153.
+2 USA     CPI        _T          IX                     M         2026-M07         153.
+> get_data(
++   "CPI",
++   filters = list(
++     COUNTRY = "USA",
++     INDEX_TYPE = "CPI",
++     COICOP_1999 = "_T",
++     TYPE_OF_TRANSFORMATION = "IX",
++     FREQUENCY = "M"
++   ),
++   last_n_obs = 2
+
++ )> 
+> run_app()
+
+Listening on http://127.0.0.1:5049
+
+
+> pkgload::load_all()
+ℹ Loading opescplus
+> tester_produit("PCOCO")
+
+cle : W00.PCOCO.*.M
+  aucune observation
+
+cle : W00.PCOCO.*.*
+  aucune observation
+
+cle : *.PCOCO.*.M
+  echec :  values must be length 1,
+ but FUN(X[[1]]) result is length 0 
+
+cle : *.PCOCO.*.*
+  echec :  values must be length 1,
+ but FUN(X[[1]]) result is length 0 
+
+Aucune cle ciblee n'a repondu. Essai du flux complet.
+  echec :  values must be length 1,
+ but FUN(X[[1]]) result is length 0 
+> collecter_en_lot(categorie = "C01")
+28 indicateurs a collecter.
+
+Flux PCPS sans reponse pour PALUM. Repli sur le classeur de la Banque mondiale.
+[  1/28] 00:00:11 (reste ~00:05:12)  Aluminium  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PBANSOP. Repli sur le classeur de la Banque mondiale.
+[  2/28] 00:00:22 (reste ~00:04:49)  Bananes  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PWHEAMT. Repli sur le classeur de la Banque mondiale.
+[  3/28] 00:00:31 (reste ~00:04:22)  Blé  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PCOCO. Repli sur le classeur de la Banque mondiale.
+[  4/28] 00:00:42 (reste ~00:04:17)  Cacao  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PCOFFOTM. Repli sur le classeur de la Banque mondiale.
+[  5/28] 00:00:50 (reste ~00:03:54)  Café, arabicas doux  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PCOFFROB. Repli sur le classeur de la Banque mondiale.
+[  6/28] 00:00:59 (reste ~00:03:37)  Café, robusta  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PRUBB. Repli sur le classeur de la Banque mondiale.
+[  7/28] 00:01:06 (reste ~00:03:18)  Caoutchouc  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PCOALAU. Repli sur le classeur de la Banque mondiale.
+[  8/28] 00:01:13 (reste ~00:03:03)  Charbon, Australie  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PCOTTIND. Repli sur le classeur de la Banque mondiale.
+[  9/28] 00:01:22 (reste ~00:02:53)  Coton  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour POILAPSP. Repli sur le classeur de la Banque mondiale.
+[ 10/28] 00:01:30 (reste ~00:02:42)  Cours du pétrole brut (moyenne des 3 pla  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PCOPP. Repli sur le classeur de la Banque mondiale.
+[ 11/28] 00:01:37 (reste ~00:02:30)  Cuivre  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PNGASEU. Repli sur le classeur de la Banque mondiale.
+[ 12/28] 00:01:44 (reste ~00:02:19)  Gaz naturel, Europe  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PLOGSK. Repli sur le classeur de la Banque mondiale.
+[ 13/28] 00:01:52 (reste ~00:02:09)  Grumes de bois dur  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PPOIL. Repli sur le classeur de la Banque mondiale.
+[ 14/28] 00:02:00 (reste ~00:02:00)  Huile de palme  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PFANDBW (aucune observation pour PFANDBW). Repli sur le classeur de la Banque mondiale.
+[ 15/28] 00:02:25 (reste ~00:02:06)  Indice alimentation et boissons  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PALLFNFW (aucune observation pour PALLFNFW). Repli sur le classeur de la Banque mondiale.
+[ 16/28] 00:02:54 (reste ~00:02:10)  Indice de tous les produits de base  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PRAWMW (aucune observation pour PRAWMW). Repli sur le classeur de la Banque mondiale.
+[ 17/28] 00:03:17 (reste ~00:02:07)  Indice des matières premières agricoles  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PMETAW (aucune observation pour PMETAW). Repli sur le classeur de la Banque mondiale.
+[ 18/28] 00:03:40 (reste ~00:02:02)  Indice des métaux  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PNRGW (aucune observation pour PNRGW). Repli sur le classeur de la Banque mondiale.
+[ 19/28] 00:04:11 (reste ~00:01:59)  Indice des produits énergétiques  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PMAIZMT. Repli sur le classeur de la Banque mondiale.
+[ 20/28] 00:04:18 (reste ~00:01:43)  Maïs  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PIORECR. Repli sur le classeur de la Banque mondiale.
+[ 21/28] 00:04:26 (reste ~00:01:28)  Minerai de fer  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PGOLD. Repli sur le classeur de la Banque mondiale.
+[ 22/28] 00:04:33 (reste ~00:01:14)  Or  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour POILBRE. Repli sur le classeur de la Banque mondiale.
+[ 23/28] 00:04:41 (reste ~00:01:01)  Pétrole brut, Brent  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour POILDUB. Repli sur le classeur de la Banque mondiale.
+[ 24/28] 00:04:49 (reste ~00:00:48)  Pétrole brut, Dubaï  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour POILWTI. Repli sur le classeur de la Banque mondiale.
+[ 25/28] 00:04:59 (reste ~00:00:35)  Pétrole brut, WTI  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PRICENPQ. Repli sur le classeur de la Banque mondiale.
+[ 26/28] 00:05:06 (reste ~00:00:23)  Riz  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PSAWMAL. Repli sur le classeur de la Banque mondiale.
+[ 27/28] 00:05:14 (reste ~00:00:11)  Sciages de bois dur  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+Flux PCPS sans reponse pour PSUGAISA. Repli sur le classeur de la Banque mondiale.
+[ 28/28] 00:05:21 (reste ~00:00:00)  Sucre  ECHEC : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Mo
+
+Termine (echec) : 0 valeurs ajoutees, 0 revisees.
+
+Erreurs :
+PALUM : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PBANSOP : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PWHEAMT : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOCO : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOFFOTM : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOFFROB : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PRUBB : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOALAU : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOTTIND : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+POILAPSP : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PCOPP : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PNGASEU : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PLOGSK : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PPOIL : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PFANDBW : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PALLFNFW : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PRAWMW : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PMETAW : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PNRGW : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PMAIZMT : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PIORECR : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PGOLD : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+POILBRE : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+POILDUB : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+POILWTI : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PRICENPQ : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PSAWMAL : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+PSUGAISA : Aucune serie reconnue dans le classeur. Codes trouves par feuille : Monthly Prices = 0, Monthly Indices = 0. Utilisez inspecter_classeur_produits() pour voir sa structure.
+Il y a eu 50 avis ou plus (utilisez warnings() pour voir les 50 premiers)
+> diagnostic_frequences()
+Frequences presentes en base :
+     frequence observations indicateurs
+      Annuelle      1466525         174
+     Mensuelle        27249           1
+ Trimestrielle         4164           1
+
+Frequences annoncees par le catalogue :
+ frequences indicateurs
+          A         205
+        M,A          28
+
+Seules les matieres premieres (categorie C01) sont publiees en mensuel. 
+Si elles ne sont pas collectees, tout le reste est annuel par nature : 
+la Banque mondiale ne publie que de l'annuel.
+> run_app()
+
+Listening on http://127.0.0.1:5049
+
+
+> run_app()
+
+Listening on http://127.0.0.1:5049
+
+
+> run_app()
+
+Listening on http://127.0.0.1:5049
+Flux PCPS sans reponse pour PALUM (Echec apres 3 tentatives sur https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.RES/PCPS/+/W00.PALUM.*.M : Failed to perform HTTP request.
+Caused by error in `curl::curl_fetch_memory()`:
+! Could not resolve hostname [api.imf.org]:
+Could not resolve host: api.imf.org). Repli sur le classeur de la Banque mondiale.
+Avis dans is_string(x) :
+  redémarrage de l'évaluation d'une promesse interrompue
+Avis dans is_string(x) :
+  redémarrage de l'évaluation d'une promesse interrompue
+Avis dans sprintf("Echec apres %d tentatives sur %s : %s", essais, url,  :
+  redémarrage de l'évaluation d'une promesse interrompue
+Flux PCPS sans reponse pour PBANSOP (Echec apres 3 tentatives sur https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.RES/PCPS/+/W00.PBANSOP.*.M : Failed to perform HTTP request.
+Caused by error in `curl::curl_fetch_memory()`:
+! Could not resolve hostname [api.imf.org]:
+Could not resolve host: api.imf.org). Repli sur le classeur de la Banque mondiale.
+Avis : No observations matched the query.
+Avis : No observations matched the query.
+Flux PCPS sans reponse pour PWHEAMT. Repli sur le classeur de la Banque mondiale.
+Avis : No observations matched the query.
+Avis : No observations matched the query.
+Flux PCPS sans reponse pour PCOCO. Repli sur le classeur de la Banque mondiale.
+Avis : No observations matched the query.
+Avis : No observations matched the query.
+Flux PCPS sans reponse pour PCOFFOTM. Repli sur le classeur de la Banque mondiale.
+Avis : No observations matched the query.
+Avis : No observations matched the query.
+Flux PCPS sans reponse pour PCOFFROB. Repli sur le classeur de la Banque mondiale.
+Avis : No observations matched the query.
+Avis : No observations matched the query.
+Flux PCPS sans reponse pour PRUBB. Repli sur le classeur de la Banque mondiale.
+
+> run_app()
+
+Listening on http://127.0.0.1:5049
+
+
+> 

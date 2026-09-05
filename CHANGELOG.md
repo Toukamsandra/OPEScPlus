@@ -1,5 +1,804 @@
 # Journal des versions
 
+## OPEScGolem_V41 (septembre 2026)
+
+**Préparation à la mise en ligne**
+
+L'hébergement visé est Posit Connect Cloud, qui déploie depuis un dépôt GitHub
+public et redéploie tout seul à chaque envoi. Deux obstacles se posaient, l'un
+mesurable, l'autre de principe.
+
+**La taille.** La base de travail pèse plus de deux cents méga-octets, alors
+que GitHub refuse un fichier au-delà de cent. Les codes d'indicateur et de pays
+y sont répétés en toutes lettres sur chaque ligne, soit cent cinquante octets
+par observation, dont l'essentiel est de la redondance.
+
+`preparer_publication()` les remplace par des entiers renvoyant à deux tables
+de correspondance. Mesuré : trente-quatre octets par ligne au lieu de cent
+cinquante, soit environ cinquante méga-octets pour un million et demi
+d'observations. Une vue rend l'opération transparente au reste du code, qui
+continue d'interroger `observation` sans savoir comment elle est rangée.
+
+Si la base reste trop lourde, l'argument `annee_min` limite la profondeur
+historique. C'est un dernier recours, la compaction devant suffire.
+
+**Le dépôt est public.** Aucune clé ne doit y figurer. Un `.gitignore` écarte
+`.Renviron`, et `verifier_publication()` contrôle avant l'envoi que rien de
+confidentiel ne partira. Les clés du moteur de recherche se déclarent dans la
+console de l'hébergeur.
+
+**app.R à la racine**, point d'entrée attendu par l'hébergeur. Il charge le
+paquet depuis les sources plutôt que de l'installer : `opescplus` n'est publié
+sur aucun dépôt de paquets. Les appels à `library()` qu'il contient ne servent
+pas au fonctionnement, le code étant préfixé par les espaces de noms ; ils
+servent à `writeManifest()`, qui établit la liste des paquets à installer en
+lisant ce fichier.
+
+**Lecture seule assumée.** Le système de fichiers du serveur n'accepte pas
+l'écriture. L'onglet Collectes n'y montre plus que le journal, avec une phrase
+qui l'explique. Afficher un formulaire d'import qui échouerait toujours vaut
+moins que ne pas l'afficher.
+
+**Chapitre 10 du README** : préparation, premier déploiement, mise à jour.
+
+## OPEScGolem_V40 (septembre 2026)
+
+**La marche à suivre tient sur une ligne**
+
+Déployée en permanence, elle mesurait cinq cents pixels et repoussait les
+catégories sous la ligne de flottaison, alors qu'elle ne sert qu'au premier
+usage. Elle tient maintenant en cinquante-six pixels : l'avertissement, le
+bouton de téléchargement et un lien qui déploie les deux séries d'étapes à la
+demande.
+
+Rien n'est perdu : le détail reste accessible d'un clic, en deux colonnes
+numérotées.
+
+**Le nombre d'indicateurs est lu en base**
+
+Il était écrit dans le texte du formulaire de téléchargement du manuel, et
+donc faux dès le retrait de la catégorie C01. Il est désormais compté à
+l'affichage, comme le nombre de catégories. Un chiffre figé dans une phrase
+devient faux sans que rien ne le signale.
+
+Le catalogue compte 313 indicateurs actifs répartis en 14 catégories.
+
+**Bornes de période inversées**
+
+Dans l'onglet Base de données, un résultat vide affichait le message générique
+sur une base peut-être vide. C'est la cause la plus fréquente et la plus facile
+à corriger qui manquait : le message précise maintenant que l'année de début
+est postérieure à celle de fin, en rappelant les deux valeurs saisies.
+
+## OPEScGolem_V39 (septembre 2026)
+
+**Deux erreurs d'import, deux causes distinctes**
+
+`objet 'remplacer' introuvable` venait d'un bloc redondant. L'effacement en
+mode remplacement a lieu une fois, pour toute la catégorie, avant la lecture du
+fichier. Un second bloc le refaisait série par série en invoquant une variable
+`remplacer` qui n'existe pas : l'argument de ces fonctions s'appelle `mode`. Le
+bloc est retiré, il faisait double emploi.
+
+`near "o": syntax error` venait d'un alias de table dans un `DELETE`. SQLite
+l'accepte dans un `SELECT`, pas dans un `DELETE`. La même condition sert
+maintenant au comptage et à l'effacement, sans alias, ce qui garantit en outre
+qu'ils portent sur les mêmes lignes.
+
+C'est cette seconde erreur qui empêchait aussi la suppression.
+
+**Un fichier vestige retiré**
+
+`R/import_fichier.R` datait d'une version antérieure et n'était appelé nulle
+part. Trois fonctions mortes de moins.
+
+**La catégorie C01 est supprimée**
+
+Elle faisait doublon avec C15 : les mêmes cours, en moins nombreux, alimentés
+par une voie qui n'a jamais abouti. Vingt-huit indicateurs retirés du
+catalogue. Il reste quatorze catégories et 344 indicateurs.
+
+**Marche à suivre dans le tableau de bord**
+
+Un encadré précède le cadre des catégories. Il explique que la base des cours
+doit être téléchargée puis importée, donne le lien vers la page du Fonds
+monétaire international, et détaille les deux séries d'étapes : cinq pour le
+téléchargement, quatre pour l'import.
+
+Cette marche à suivre a sa place dans l'interface et non dans un manuel : elle
+concerne des agents qui découvrent la plateforme, et personne n'ouvre un manuel
+avant d'avoir essayé.
+
+**Base des cours remplacée** par celle que vous avez fournie : 1 268 séries,
+247 périodes de 2012 à juillet 2026, 122 produits.
+
+## OPEScGolem_V37 (septembre 2026)
+
+**Collecte de rattrapage**
+
+`collecter_manquants()` passe en revue les indicateurs actifs sans observation
+et tente de les alimenter. Pour les cours de produits de base, le connecteur
+essaie successivement le paquet `imf.data`, des requêtes ciblées, le flux
+entier du Fonds monétaire international, puis le classeur Pink Sheet de la
+Banque mondiale. Si tout échoue, le fichier livré avec la plateforme prend le
+relais.
+
+Quatre voies pour une même donnée, ce qui est beaucoup. Aucune n'a tenu seule.
+
+Les indicateurs sans connecteur ne sont pas tentés : ce serait remplir le
+journal d'échecs prévisibles. Ils sont recensés en fin d'exécution, groupés par
+fournisseur manquant, avec le nombre d'indicateurs concernés.
+
+L'exécution se termine par l'état du catalogue, catégorie par catégorie.
+
+**Manuels refaits selon la charte d'OPESc 4.2**
+
+Le manuel adopte la présentation exacte du document de référence, avec un
+contenu propre à la plateforme.
+
+| Élément | Reprise |
+|---|---|
+| Police | serif, corps de texte justifié |
+| Page de garde | marque, titre, sous-titre, version, puis service, ministère, date, sans en-tête ni numéro |
+| En-tête courant | titre à gauche, DAPE / MINEPAT à droite, filet fin |
+| Pied de page | numéro seul, centré |
+| Chapitres | mention « Chapitre N » au-dessus du titre |
+| Sections | numérotées 1.1, 1.2, remises à zéro à chaque chapitre |
+| Tableaux | légende « Table N.M. » sous le tableau |
+| Encadrés | filet fin sur fond très clair, titre en gras |
+
+Les aplats de couleur et les filets dorés de la version précédente sont
+abandonnés : le document de référence est sobre, en noir et gris.
+
+La page de garde forme une section distincte, sans en-tête ni numéro, comme
+dans la référence.
+
+## OPEScGolem_V35 (septembre 2026)
+
+**La page semblait se mettre en veille**
+
+Deux mécanismes distincts produisaient cette impression, et tous deux
+appartiennent à Shiny.
+
+**L'atténuation pendant le recalcul.** Shiny abaisse l'opacité d'une sortie à
+un tiers pendant qu'elle se recalcule. Sur un graphique ou une carte, qui
+occupent la moitié de l'écran, l'effet se lit comme un assombrissement de toute
+la page. L'atténuation est retirée : le contenu reste lisible, et un liseré
+défilant en haut de la zone signale le travail en cours. L'information demeure,
+sans que la page paraisse s'éteindre.
+
+**Le voile de déconnexion.** Quand la liaison avec le serveur se coupe, Shiny
+pose un voile gris et attend un rechargement manuel. Deux causes se combinent :
+le navigateur ralentit les minuteries d'un onglet laissé au second plan, et les
+serveurs intermédiaires ferment les connexions restées silencieuses.
+
+Un battement toutes les vingt-cinq secondes empêche la connexion de s'endormir.
+La reprise de session est autorisée côté serveur. Et si la coupure survient
+malgré tout, la page se recharge d'elle-même après quatre secondes, sous un
+bandeau « Reconnexion en cours » qui suit la langue de l'interface.
+
+L'écouteur est posé sur le document et non sur l'objet Shiny : le script est
+chargé avant celui de Shiny, et tester son existence à cet instant reviendrait
+à ne rien enregistrer. C'est l'erreur qui avait déjà coûté deux versions au
+téléchargement du manuel.
+
+## OPEScGolem_V34 (septembre 2026)
+
+**Table des matières composée, avec ses numéros de page**
+
+Elle était confiée au champ automatique de Word, qui reste vide tant que le
+document n'est pas ouvert et actualisé dans Word. Résultat : une table blanche
+dans le PDF et pour quiconque lit sans Word.
+
+Elle est désormais composée ligne à ligne. Les numéros de page proviennent
+d'une première passe : le document est généré, converti, puis chaque titre est
+localisé dans le PDF avant la composition définitive. Une seconde mesure
+confirme que la pagination n'a pas bougé entre les deux passes.
+
+Les entrées sont repérées par leur rang et non par leur intitulé. Deux
+sous-titres peuvent porter le même nom, « Projections » figure au chapitre du
+tableau de bord comme à celui de la méthodologie, et une table indexée par le
+titre leur donnait la même page.
+
+Soixante-trois entrées, chapitres et sous-titres, toutes paginées.
+
+**Tirets cadratins retirés**
+
+Ils servaient d'incise dans le texte, de séparateur dans les légendes de
+tableau et le pied de page, et d'unité absente dans le catalogue. Remplacés par
+une ponctuation ordinaire : virgule, deux points, barre verticale, et la
+mention « non précisée » là où l'unité manque. Vérifié dans tout le projet,
+code et fichiers de données compris.
+
+**GoogleOPESc+ sur la page d'accueil**
+
+Le bloc « Ce que la plateforme permet » l'omettait, alors que c'est un onglet
+entier. Une septième carte le présente, avec sa propre icône.
+
+**Manuels** : trente et une pages, la table des matières en ayant pris une.
+
+## OPEScGolem_V33 (septembre 2026)
+
+**Manuels remis à jour, version 2.0**
+
+Les quatre fichiers, français et anglais en PDF et en Word, reflètent l'état
+actuel de la plateforme.
+
+**Deux chapitres nouveaux.** « GoogleOPESc+, la recherche orientée » expose le
+principe des sources fermées, les propositions de saisie, le classement en six
+sources et les trois états de configuration. « Importer une base externe »
+traite du fichier livré, du dépôt depuis l'interface, et de ce qui distingue
+les catégories C01 et C15.
+
+**Le catalogue passe de 233 à 341 indicateurs**, quinze catégories au lieu de
+quatorze. La liste des fournisseurs distingue désormais les trois interfaces
+interrogeables du fichier livré avec la plateforme.
+
+**Trente pages, la limite tenue.** Le catalogue ayant grossi de moitié, la mise
+en page a été resserrée plutôt que le contenu amputé : marges réduites,
+tableaux du catalogue densifiés, colonne « source » reportée en note sous
+chaque tableau puisqu'elle répétait la même valeur sur des dizaines de lignes,
+et catalogue de plus de cinquante entrées présenté sur deux colonnes de paires.
+Les annexes brèves s'enchaînent sans saut de page.
+
+**Rendu vérifié** sur le résumé exécutif, le chapitre des collectes et la
+double colonne de la catégorie C15.
+
+## OPEScGolem_V30 (août 2026)
+
+**Le filtre manquait, et c'était le principal**
+
+Afficher les trente-cinq sources à chaque recherche revenait à ne pas filtrer
+du tout. Seules celles qui traitent réellement du sujet sont désormais
+retenues, **six au maximum**. À défaut de rattachement thématique, quatre
+sources généralistes plutôt que la liste entière.
+
+Mesuré sur cinq requêtes : « dette publique » retient 6 sources sur 35,
+« complexité économique » en retient 3, « chômage » 5. Chacune est en tête pour
+une raison lisible.
+
+**Propositions pendant la frappe**
+
+Une liste de complétion s'affiche sous le champ dès deux caractères saisis.
+Elle puise dans le glossaire, les quinze catégories et les libellés des
+indicateurs : les propositions portent donc sur ce que la plateforme sait
+effectivement traiter, non sur un dictionnaire général. Un clic lance la
+recherche.
+
+**Quatre onglets**
+
+| Onglet | Ce qu'il fait |
+|---|---|
+| Tout | définition de la notion, indicateurs disponibles en base, résultats web, sources |
+| Images | recherche d'images sur les mêmes sources, en grille |
+| Actualité | résultats limités aux sources de presse et de communiqués, restreints aux douze derniers mois et triés par date |
+| Vidéos | pages de vidéo et de webcast des institutions |
+
+Chaque onglet se traduit par des paramètres différents envoyés au moteur, non
+par un simple tri de la même réponse.
+
+**Définition des notions**
+
+Un glossaire de 44 notions économiques est livré avec la plateforme : produit
+intérieur brut, solde structurel, termes de l'échange, complexité économique.
+La correspondance est souple, « PIB » retrouve « Produit intérieur brut » par
+ses initiales, et « croissance » rend la notion la plus proche.
+
+Le glossaire est maintenu dans le projet plutôt que tiré d'une encyclopédie
+généraliste : la définition est ainsi vérifiable, stable dans le temps, et
+formulée dans le vocabulaire des comptes nationaux. Il se complète en ajoutant
+une ligne à `inst/extdata/definitions.csv`.
+
+**Tests** : sept nouveaux, dont celui qui vérifie que le nombre de sources
+proposées reste borné.
+
+## OPEScGolem_V29 (août 2026)
+
+**Recherche réelle sur le web, restreinte aux sources retenues**
+
+L'onglet GoogleOPESc+ interroge désormais le web et rend de vrais résultats,
+titre, adresse et extrait, et non plus seulement des liens vers les moteurs de
+chaque site.
+
+**Pourquoi passer par un service tiers.** Interroger directement un moteur de
+recherche depuis un script est bloqué par tous les grands moteurs, et le peu
+qui passe casse à la première refonte de page. Moissonner les sites un par un
+demanderait autant d'analyseurs que de sites, chacun à refaire à chaque
+changement de maquette. Aucune des deux voies ne tient dans la durée, et je
+préfère le dire plutôt que de livrer quelque chose qui marchera trois semaines.
+
+Le moteur de recherche programmable de Google résout exactement ce problème :
+il permet de définir un ensemble fermé de sites et de n'y chercher que là. Les
+résultats sont ceux d'un vrai moteur, l'index est restreint aux trente domaines
+de la plateforme. C'est « comme Google, mais spécifique », au sens propre.
+
+**La configuration est facultative.** Sans clé, la plateforme retombe sur les
+liens de recherche par site, qui fonctionnent sans rien installer. Une note
+explique comment activer la recherche directe. La mise en place est décrite au
+chapitre 9 du fichier README, et `domaines_pour_moteur()` donne la liste des
+domaines à déclarer.
+
+**Un filtre conservé par prudence.** Même quand le moteur est déjà restreint
+aux sites inclus, les résultats sont filtrés sur la liste des domaines avant
+affichage. Une erreur de configuration ne doit pas suffire à faire entrer une
+source quelconque. Les sous-domaines sont acceptés, les imitations rejetées :
+`documents.worldbank.org` passe, `faux-worldbank.org` non.
+
+**Économie des appels.** L'offre gratuite couvre cent recherches par jour. Une
+même recherche relancée dans la session est servie depuis la mémoire.
+
+## OPEScGolem_V28 (août 2026)
+
+**Les cours de produits de base sont livrés avec la plateforme**
+
+Je vous faisais taper des commandes pour quelque chose qui doit être
+automatique. C'était mon erreur.
+
+Le fichier des cours est désormais **distribué dans le paquet** et chargé par
+`preparer_base()`, au même titre que le catalogue. Aucune commande d'import à
+lancer : après l'initialisation, les 108 produits sont là, avec leurs 17 496
+observations en mensuel, trimestriel et annuel.
+
+Le chargement n'écrase rien s'il trouve déjà des données : si vous importez un
+fichier plus récent, il reste en place.
+
+**Le vocabulaire changeait de sens**
+
+Un indicateur alimenté par import affichait « non collecté », ce qui laissait
+croire à un manque alors que la donnée est là. Ces séries ne se collectent pas
+et n'ont pas à l'être : leur source ne se laisse pas interroger par programme.
+La mention devient « sans données », qui décrit un état plutôt qu'une tâche non
+faite.
+
+**Import depuis l'interface**
+
+Onglet Collectes, un cadre permet de déposer un fichier et de choisir la
+catégorie à alimenter. Les séries inconnues du catalogue y sont créées
+automatiquement. Plus besoin de la console.
+
+**GoogleOPESc+ présenté comme un moteur de recherche**
+
+Les résultats formaient trois cadres séparés par type, ce qui obligeait à
+parcourir la page pour trouver le meilleur. Ils forment maintenant **une liste
+unique et ordonnée** : fil d'ariane avec l'organisme et le type, titre en lien,
+description. Le premier résultat pertinent est mis en valeur.
+
+Le bloc « Disponible dans la plateforme » reste en tête : si la donnée est déjà
+en base, c'est la meilleure réponse possible.
+
+Le champ de saisie est arrondi, les cases de type restent sous la barre. Le
+principe qui écarte le hors-sujet n'a pas bougé : liste de sources fermée, et
+chaque lien lance la recherche du terme sur le site visé.
+
+## OPEScGolem_V27 (août 2026)
+
+**Nouvelle catégorie : Matières premières commodityPrice**
+
+Quinzième catégorie, qui accueille l'intégralité des séries du fichier PCPS
+téléchargé, et non plus la seule sélection de 28 cours du catalogue d'origine.
+
+**108 produits**, contre 28 auparavant : indices agrégés, métaux précieux et
+métaux de la transition énergétique, terres rares, céréales, oléagineux,
+viandes, produits de la mer, bois, engrais, thés par origine. Les libellés sont
+traduits ; ceux que la source désigne d'un terme sans équivalent courant
+gardent sa désignation, signalée comme telle plutôt qu'inventée.
+
+**Quatorze séries écartées.** Le fichier livre avec les cours des taux de
+change, reconnaissables à leur code commençant par T. Un taux de change n'est
+pas une matière première : les ranger ensemble fausserait la lecture de la
+catégorie. Ils restent disponibles dans la catégorie Taux de change.
+
+**Une règle d'activation corrigée**
+
+Un indicateur était actif si sa source figurait au registre des connecteurs.
+Cette règle aurait rendu invisible toute la nouvelle catégorie : ses séries
+viennent d'un import et n'ont, par construction, aucun connecteur.
+
+Un indicateur est désormais actif s'il **peut être alimenté ou s'il l'est
+déjà**. Une donnée présente est utilisable, quelle que soit la façon dont elle
+est arrivée.
+
+**L'import peut créer les indicateurs manquants**
+
+`importer_produits_local(..., creer = TRUE)` ajoute à la catégorie les séries
+présentes dans le fichier mais absentes du catalogue, en reprenant leur libellé
+de la source. C'est ce qui permet d'accueillir une base externe entière sans
+avoir à la décrire au préalable.
+
+## OPEScGolem_V26 (août 2026)
+
+**Deux indicateurs sur un même graphique : la cause enfin trouvée**
+
+Le champ de sélection des indicateurs redevenait mono-sélection dès le premier
+chargement de catégorie. En cause, une ligne de mon code :
+`updateSelectizeInput()` recevait un argument `options`, ce qui réinitialise le
+composant côté navigateur. Il perdait alors son caractère multiple, déclaré à
+la création et non répété dans la mise à jour.
+
+Vous ne pouviez donc littéralement pas sélectionner deux indicateurs, quelle
+que soit la manœuvre. Les options ne sont plus transmises que lors de la
+création du champ.
+
+**Import ouvert à toute catégorie**
+
+`importer_produits_local()` prend désormais un argument `categorie` et un
+argument `iso3`. Elle ne sert donc plus seulement les cours mondiaux : toute
+base externe dont les codes correspondent à ceux d'une catégorie peut
+l'alimenter, pour un cours mondial comme pour une série nationale.
+
+`codes_categories()` liste les catégories avec leur code, leur nombre
+d'indicateurs, combien sont collectés et le volume d'observations. À consulter
+avant un import.
+
+**GoogleOPESc+ couvre maintenant trois natures de résultats**
+
+Trente-cinq sources au lieu de vingt-six, réparties en trois types :
+
+| Type | Sources | Exemples |
+|---|---|---|
+| Données | 17 | Banque mondiale, FMI, OCDE, ILOSTAT, BEAC, INS |
+| Publications | 9 | Rapports article IV, Moniteur des finances publiques, MINFI |
+| Actualité | 9 | Communiqués FMI et Banque mondiale, Agence Ecofin, Investir au Cameroun, Cameroon Tribune, BEAC |
+
+Des cases à cocher filtrent par type. Le type filtre mais n'entre pas dans le
+calcul de pertinence : une actualité reste rattachée à ses catégories comme une
+base de données, et le classement par spécialisation continue de s'appliquer.
+
+Le principe reste inchangé, et c'est lui qui garantit l'absence de hors-sujet :
+la liste des sources est fermée, et chaque lien lance la recherche de votre
+terme **sur le site visé**.
+
+Vérifié sur quatre requêtes, dont « politique monétaire BEAC » qui renvoie à la
+BEAC en données comme en actualité, et « Cameroun croissance » qui renvoie à
+l'INS, au MINEPAT et à Cameroon Tribune.
+
+## OPEScGolem_V25 (août 2026)
+
+**Les cours importés restaient marqués « non collecté »**
+
+Le nombre d'observations est stocké dans la table des indicateurs, pour éviter
+un comptage à chaque affichage. Cette redondance dérivait : au rechargement du
+catalogue, le compteur était **recopié** de l'ancienne table par correspondance
+de code interne. Or cinq codes venaient de changer, et l'import manuel écrivait
+pendant ce temps.
+
+Le compteur est maintenant **recalculé** depuis les observations, qui font foi.
+Une date de collecte est posée sur tout indicateur qui porte des données mais
+n'en avait pas, cas exact d'un import manuel.
+
+`rafraichir_compteurs()` fait ce recalcul à la demande. Elle est appelée à la
+fin d'un import et au rechargement du catalogue.
+
+**Ajouter au graphique**
+
+Le message « Cette série est déjà affichée » s'affichait série par série.
+Lorsque vous ajoutiez un second indicateur en gardant le premier sélectionné,
+l'avertissement apparaissait pour le premier alors que le second **avait bien
+été ajouté** : l'action semblait avoir échoué sans l'avoir fait.
+
+Un seul message désormais, et seulement si rien n'a pu être ajouté. Il indique
+quoi changer plutôt que de constater le doublon.
+
+Une indication sous le champ rappelle que la sélection accepte jusqu'à six
+indicateurs : le plus simple pour en tracer deux reste de les choisir ensemble
+avant d'appliquer.
+
+**L'onglet Recherche devient GoogleOPESc+**
+
+Le nom n'est pas traduit : c'est celui de l'outil.
+
+## OPEScGolem_V24 (août 2026)
+
+**Le fichier téléchargé est au format large**
+
+Une ligne par série, une colonne par période, et le nom de la colonne porte la
+période elle-même : `2020`, `2020-Q1`, `2020-M01`. Ce n'est pas le format long
+que produit une interface de programmation. Mon lecteur cherchait donc une
+colonne de période qui n'existe pas.
+
+Deux autres particularités, apprises en lisant votre fichier.
+
+La colonne `INDICATOR` ne contient qu'un **libellé**, pas un code. Le code utile
+est le deuxième élément de `SERIES_CODE` : `PCOCO` dans `G001.PCOCO.INDEX.Q`.
+
+Chaque produit est publié sous **quatre transformations**, dont deux taux de
+variation. Retenir la mauvaise aurait donné une série de pourcentages là où l'on
+attend un cours en dollars. Le lecteur retient le niveau en dollars, puis
+l'indice pour les séries qui n'existent que sous cette forme, et écarte
+explicitement les variations : ce sont des grandeurs dérivées, que la plateforme
+sait recalculer.
+
+**Cinq codes du catalogue étaient faux**
+
+Mes cinq indices de prix portaient un suffixe `W` hérité de la nomenclature du
+flux WEO. Le fichier PCPS les nomme sans suffixe. `PALLFNFW` devient `PALLFNF`,
+et de même pour les quatre autres.
+
+**Vérification sur votre fichier**
+
+L'import a été simulé sur le fichier que vous avez envoyé, avant livraison :
+les **28 cours passent**, soit 4 536 observations, en trois fréquences.
+
+| Fréquence | Observations par cours |
+|---|---|
+| Mensuelle | 115 |
+| Trimestrielle | 38 |
+| Annuelle | 9 |
+
+La fréquence est déduite du **nom de la colonne** et non de la colonne
+`FREQUENCY` : une même série occupe des colonnes annuelles, trimestrielles et
+mensuelles distinctes, et seul le nom de la colonne dit ce qu'elle couvre.
+
+C'est aussi ce qui débloque votre filtre de fréquence : la catégorie des
+matières premières proposera Mensuelle, Trimestrielle et Annuelle.
+
+**L'unité vient du fichier**
+
+Elle est reprise de la colonne `DATA_TRANSFORMATION` plutôt que du catalogue :
+la source fait foi.
+
+## OPEScGolem_V23 (août 2026)
+
+**Import manuel des cours de produits de base**
+
+La page du jeu de données PCPS construit son bouton DOWNLOAD en JavaScript :
+aucune adresse ne figure dans le HTML, elle ne peut donc pas être trouvée par
+programme, exactement comme la page de téléchargement de l'Atlas de Harvard.
+
+`importer_produits_local()` prend le relais. Vous téléchargez le fichier une
+fois, à la main, et la plateforme l'intègre. La lecture est tolérante : les
+colonnes sont repérées par leur contenu autant que par leur intitulé, ceux-ci
+variant d'un export à l'autre. Un mode aperçu montre ce qui serait importé sans
+rien écrire.
+
+L'écriture en base est la même fonction que pour la collecte automatique. Une
+donnée importée se comporte donc exactement comme une donnée collectée :
+fréquence mensuelle, doublage en moyenne annuelle, compteurs mis à jour.
+
+Ce n'est pas un pis-aller. Une source qui ne se laisse pas interroger
+automatiquement se charge à la main, et cela vaut mieux qu'une catégorie vide
+le jour d'une présentation.
+
+**Recherche orientée**
+
+Nouvel onglet. Ce n'est pas un moteur de recherche généraliste, c'est
+l'inverse : la liste des sources est fermée et choisie, et chaque lien renvoie
+vers la recherche du terme **sur le site visé**. Un résultat ne peut donc pas
+être hors sujet, ni provenir d'une source dont l'autorité n'est pas établie.
+
+Vingt-six sources : Banque mondiale, FMI, OCDE, CNUCED, OMC, BRI, OIT, FAO,
+AIE, OMS, UNESCO, PNUD, Growth Lab, Transparency International, BAD, BEAC,
+CEMAC, et côté camerounais l'INS, le MINEPAT, le MINFI et la Caisse autonome
+d'amortissement.
+
+La requête est d'abord confrontée au catalogue : si la donnée est déjà en base,
+la réponse la plus utile est celle-là, pas un lien vers l'extérieur.
+
+**Le classement des sources**
+
+Trois critères, par poids décroissant : le rang de la catégorie dans la
+requête, le rang de cette catégorie chez le site, et sa spécialisation.
+
+Ce dernier critère s'est imposé à l'essai. Sans lui, une recherche sur le cacao
+plaçait le portail généraliste du FMI avant la page des marchés de produits de
+base de la Banque mondiale, simplement parce qu'il couvre plus de sujets. À
+rang égal, un site qui traite trois domaines est plus pertinent qu'un portail
+qui en couvre huit.
+
+Les mots vides sont écartés : « des » figurait dans « indice des prix » et
+rattachait à tort « chômage des jeunes » à la catégorie des prix.
+
+Résultats vérifiés : le cacao renvoie aux marchés de produits de base, le
+chômage à ILOSTAT, la complexité économique à l'Atlas de Harvard, la dette au
+Moniteur des finances publiques et au MINFI.
+
+**Tests** : sept nouveaux sur la recherche, dont un qui vérifie que chaque lien
+porte bien la requête encodée, et un qui contrôle l'ordre de spécialisation.
+
+## OPEScGolem_V22 (août 2026)
+
+**Le paquet imf.data devient la voie principale**
+
+`get_data()` prend des **filtres nommés** plutôt qu'une clé positionnelle. Cela
+supprime d'un coup les deux obstacles qui ont provoqué cinq tentatives
+infructueuses : l'ordre des dimensions et la syntaxe du joker. Le nom de la
+dimension suffit, sa position n'a plus d'importance.
+
+Le paquet est déclaré facultatif. S'il n'est pas installé, le connecteur
+poursuit avec ses propres requêtes, dans cet ordre :
+
+1. `imf.data` et ses filtres nommés ;
+2. requêtes ciblées construites à la main, avec le joker `*` ;
+3. téléchargement du flux entier puis filtrage, la voie dont nous savons
+   qu'elle répond ;
+4. classeur Pink Sheet de la Banque mondiale.
+
+Quatre voies pour une même donnée, ce qui est beaucoup. Mais après cinq échecs
+sur ce seul bloc, la redondance vaut mieux que l'élégance.
+
+Pour l'activer : `install.packages("imf.data")`.
+
+**Couleurs des tuiles de catégories**
+
+Les tuiles sont des boutons Shiny, donc des éléments `.btn`. Bootstrap leur
+applique ses propres couleurs sur les états `:hover`, `:focus` et `:active`, ce
+qui rendait le libellé blanc sur fond clair au moment du clic.
+
+Toutes les couleurs sont désormais fixées explicitement pour chaque état, et la
+tuile retenue passe en bleu plein avec un texte blanc : le contraste ne dépend
+plus d'une nuance de gris. Le compteur passe en bleu clair, et la mention d'une
+catégorie non collectée en doré, lisible sur le fond sombre.
+
+Contraste mesuré : texte blanc sur fond `#1F3864`, soit un rapport très
+au-delà du seuil d'accessibilité.
+
+## OPEScGolem_V21 (août 2026)
+
+**La syntaxe du joker**
+
+L'ordre des dimensions était enfin correct, mais aucune requête ne rendait rien.
+Le rapprochement avec le tout premier diagnostic donne la réponse : une clé
+réduite à `*` avait alors rendu huit méga-octets de données. Ce n'est donc pas
+le flux qui est muet, c'est la façon dont j'écris la clé.
+
+En SDMX 3.0, le joker d'une position s'écrit `*`. Une position laissée vide est
+la syntaxe de SDMX 2.1 : ce portail la lit comme « code vide » et ne trouve
+évidemment rien.
+
+| Clé | Interprétation par le portail |
+|---|---|
+| `.PCOCO..` | pays vide, transformation vide, fréquence vide |
+| `W00.PCOCO.*.M` | pays W00, toutes transformations, mensuel |
+
+**Un recours dont on connaît le comportement**
+
+Si les quatre clés ciblées échouent encore, le connecteur télécharge le flux
+entier avec la clé `*`, la seule dont nous ayons la preuve qu'elle répond, et
+filtre en R. Le téléchargement est fait une fois par session et sert les
+vingt-huit cours.
+
+C'est plus lourd que nécessaire, mais après cinq tentatives infructueuses, une
+voie qui aboutit vaut mieux qu'une voie élégante.
+
+**Découverte des codes**
+
+`codes_produits_de_base()` lit désormais le flux lui-même et non sa
+nomenclature, dont l'interrogation échouait. Elle liste les codes réellement
+alimentés, avec leur zone géographique, leur transformation et leur nombre
+d'observations. Si `PCOCO` n'y figure pas, la sortie donnera le code exact.
+
+`tester_produit()` essaie les quatre clés puis le flux complet, et affiche dans
+ce dernier cas la dimension des produits, le nombre de codes et un échantillon.
+
+## OPEScGolem_V20 (août 2026)
+
+**La structure réelle du flux, lue dans la réponse du portail**
+
+Votre sortie de `tester_produit()` contenait exactement ce qui me manquait :
+
+```
+COUNTRY . INDICATOR . DATA_TRANSFORMATION . FREQUENCY   puis TIME_PERIOD
+```
+
+Ma clé `M.W00.PCOCO.` demandait donc le pays « M », l'indicateur « W00 » et la
+transformation « PCOCO ». Aucune donnée ne pouvait revenir. La clé correcte est
+`W00.PCOCO..M`.
+
+Deux suppositions se sont révélées fausses d'un coup. La fréquence n'est pas en
+tête de clé mais en quatrième position. Et la dimension des produits s'appelle
+`INDICATOR`, pas `COMMODITY`, contrairement à ce qu'indiquent des exemples
+publiés pour un autre millésime du flux. C'est précisément le genre de détail
+qu'on ne devine pas.
+
+**Le portail répond en JSON même quand on demande du CSV**
+
+Votre sortie le montre aussi. Le connecteur lit désormais les deux formats : il
+regarde le premier caractère de la réponse et bascule en conséquence.
+
+Le lecteur JSON est rendu tolérant. Il rendait une erreur quand la réponse
+était vide, parce que le portail renvoie alors une enveloppe complète dont
+toutes les listes de valeurs sont vides. C'est cette erreur que vous voyiez :
+`values must be length 1, but FUN(X[[1]]) result is length 0`. Il rend
+maintenant « aucune donnée », ce qui est l'information utile.
+
+**Plusieurs clés essayées**
+
+Si `W00.PCOCO..M` ne rend rien, le connecteur essaie l'annuel, puis laisse la
+dimension géographique libre. `tester_produit()` affiche les quatre essais avec
+leur résultat.
+
+**Diagnostic**
+
+`codes_produits_de_base()` interroge la structure du flux avec ses
+nomenclatures et repère celle des produits par son contenu, non par son nom,
+puisque ce nom vient de changer sous mes yeux.
+
+## OPEScGolem_V19 (août 2026)
+
+**Trois faits établis, au lieu de trois suppositions**
+
+La recherche sur la documentation du portail et sur des exemples publiés a
+donné ce qui me manquait depuis le début.
+
+| Point | Ce que je supposais | Ce qui est vrai |
+|---|---|---|
+| Dimensions de PCPS | inconnues, clé devinée | `FREQ.REF_AREA.COMMODITY.UNIT_MEASURE` |
+| Zone de référence | absente ou par pays | `W00`, cours mondiaux uniquement |
+| En-tête pour le CSV | `application/vnd.sdmx.data+csv;version=2.0.0` | `text/csv`, tout simplement |
+| Format de période | `2018-01` | `2018-M01` |
+
+L'en-tête explique l'échec le plus déroutant : le type long faisait échouer la
+requête sans qu'aucune erreur ne remonte, ce qui m'a fait croire à un blocage
+et m'a envoyée vers le JSON, puis vers le classeur Excel. `text/csv` renvoie un
+tableau plat directement lisible.
+
+**Une requête par produit**
+
+Chaque réponse fait quelques dizaines de kilo-octets au lieu des huit
+méga-octets du flux complet, et un produit absent n'empêche plus les autres
+d'aboutir. Le mensuel est demandé en premier, l'annuel en secours pour les
+indices publiés à un seul pas.
+
+**Le lecteur SDMX-JSON est retiré**
+
+Il échouait sur la dimension temporelle et n'a plus lieu d'être maintenant que
+le CSV fonctionne. Deux cents lignes de reconciliation d'indices en moins.
+
+**Diagnostic**
+
+`tester_produit("PCOCO")` isole une seule requête, affiche l'adresse
+interrogée, la taille de la réponse, ses premières lignes et ses colonnes.
+C'est le premier réflexe si la collecte échoue encore.
+`codes_produits_de_base()` interroge la nomenclature du flux, réponse légère,
+et donne les codes exacts avec leur libellé.
+
+## OPEScGolem_V18 (août 2026)
+
+**Trois fautes de syntaxe que j'ai introduites**
+
+Mon enveloppeur automatique de la version précédente a placé `tr()` sur des
+**noms d'éléments nommés**, dans `c(tr("Toutes les catégories") = "", ...)`. En
+R, ce qui figure à gauche d'un `=` dans un `c()` doit être un littéral ou un
+nom : un appel de fonction y est une faute de syntaxe, et le paquet ne se
+chargeait plus. Les trois cas sont réécrits avec `setNames`, dont le nom est
+une valeur ordinaire. Un contrôle balaie désormais le code à la recherche de ce
+motif.
+
+**Les matières premières passent par le flux PCPS du FMI**
+
+La page que vous m'avez indiquée confirme l'interface SDMX du portail. Le
+diagnostic mené plus tôt montrait qu'elle répond correctement pour PCPS : code
+200, huit méga-octets, une dizaine de secondes. Le seul obstacle était le
+format de la réponse.
+
+Le portail ignore le paramètre `format=csv` et répond en SDMX-JSON, qui
+remplace les codes de dimension par des indices positionnels : une série
+s'appelle `0:2:1:0` et ses observations sont indexées de la même façon. Une
+fonction reconcilie ces indices avec les listes de codes du bloc `structures`.
+L'algorithme a été vérifié sur une réponse reproduisant fidèlement la
+structure observée, y compris les observations non contiguës.
+
+Trois précautions. La dimension qui porte les produits est repérée par son
+contenu et non par son nom, celui-ci ayant déjà changé d'un millésime à
+l'autre. Le flux publie souvent le même produit sous plusieurs unités, prix en
+dollars et indice base 100 : seule l'unité la mieux couverte est retenue, faute
+de quoi un cours à 3 500 dollars la tonne côtoierait un indice à 112 dans la
+même série. Et le filtrage temporel se fait après réception, le portail
+ignorant les bornes transmises.
+
+**Le classeur de la Banque mondiale devient le repli**
+
+Les deux sources publient les mêmes cours mensuels. Si le flux du FMI échoue,
+le connecteur bascule sur le Pink Sheet et le signale. Disposer d'une seconde
+voie évite qu'une réorganisation de portail ne prive la plateforme de toute la
+catégorie, ce qui s'est produit deux fois en un mois.
+
+**Diagnostic**
+
+`inspecter_flux_pcps()` affiche les dimensions du flux et un échantillon de
+leurs valeurs. `codes_produits_de_base()` liste les produits réellement
+disponibles, avec leur unité et leur nombre d'observations.
+
 ## OPEScGolem_V17 (août 2026)
 
 **`impossible de trouver la fonction "ns"`**

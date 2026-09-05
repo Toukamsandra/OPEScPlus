@@ -342,23 +342,287 @@ classeur_produits <- function() {
   series
 }
 
+# --- Prix des produits de base, flux PCPS du FMI ----------------------------
+#
+# La structure reelle du flux, lue dans la reponse du portail lui-meme :
+#
+#   COUNTRY . INDICATOR . DATA_TRANSFORMATION . FREQUENCY   puis TIME_PERIOD
+#
+# Trois erreurs corrigees ici, toutes venues de suppositions :
+#
+#   - la frequence n'est pas en tete de cle mais en quatrieme position ;
+#   - la dimension des produits s'appelle INDICATOR et non COMMODITY, contre ce
+#     qu'indiquent des exemples publies pour d'autres millesimes du flux ;
+#   - le portail repond en SDMX-JSON meme lorsqu'on demande du CSV, il faut
+#     donc savoir lire les deux.
+#
+# La zone de reference est W00, le monde : PCPS ne publie que des cours
+# mondiaux de reference, sans declinaison par pays.
+FLUX_PCPS <- list(agence = "IMF.RES", flux = "PCPS", dsd = "DSD_PCPS", zone = "W00")
+
+#' Construit la cle d'une requete PCPS
+#'
+#' En SDMX 3.0, le joker d'une position s'ecrit `*`. Une position laissee vide
+#' est la syntaxe de SDMX 2.1 : ce portail la comprend comme « code vide » et
+#' ne renvoie donc rien. C'est ce qui faisait echouer toutes les requetes
+#' ciblees alors qu'une cle reduite a `*` rendait bien des donnees.
+#' @noRd
+cle_pcps <- function(code, frequence = "*", zone = "*") {
+  sprintf("%s.%s.*.%s", zone, code, frequence)
+}
+
+#' Interroge le flux et rend un tableau plat, quel que soit le format recu
+#' @noRd
+appel_pcps <- function(code, frequence = "*", zone = "*", debut = NULL) {
+  url <- sprintf("%s/data/dataflow/%s/%s/+/%s", FMI_SDMX, FLUX_PCPS$agence,
+                 FLUX_PCPS$flux, cle_pcps(code, frequence, zone))
+  if (!is.null(debut)) {
+    url <- sprintf("%s?c[TIME_PERIOD]=ge:%d-M01", url, as.integer(debut))
+  }
+  texte <- httr2::resp_body_string(
+    appel(url, list(), pause = 0.4, entetes = list(Accept = "text/csv")))
+  if (!nzchar(trimws(texte))) return(NULL)
+
+  if (substr(trimws(texte), 1, 1) == "{") return(sdmx_json_vers_tableau(texte))
+  d <- utils::read.csv(text = texte, stringsAsFactors = FALSE, check.names = FALSE)
+  if (!nrow(d)) NULL else d
+}
+
+#' Convertit une reponse SDMX-JSON en tableau plat
+#'
+#' Le format remplace les codes de dimension par des indices positionnels : une
+#' serie est nommee "0:2:1:0" et ses observations sont indexees de la meme
+#' facon. Cette fonction reconcilie ces indices avec les listes de codes du
+#' bloc `structures`.
+#'
+#' Elle rend NULL plutot que d'echouer lorsque la reponse est vide : le portail
+#' renvoie alors une enveloppe complete dont toutes les listes de valeurs sont
+#' vides, ce qui faisait planter la lecture au lieu de signaler l'absence de
+#' donnee.
+#' @noRd
+sdmx_json_vers_tableau <- function(texte) {
+  j <- tryCatch(jsonlite::fromJSON(texte, simplifyVector = FALSE),
+                error = function(e) NULL)
+  if (is.null(j)) return(NULL)
+
+  jeux <- j$data$dataSets
+  st <- j$data$structures
+  if (!length(jeux) || !length(st)) return(NULL)
+  st <- st[[1]]
+
+  series <- jeux[[1]]$series
+  if (!length(series)) return(NULL)
+
+  dims <- st$dimensions$series
+  if (!length(dims)) return(NULL)
+  noms_dims <- vapply(dims, function(d) as.character(d$id), character(1))
+  codes_dims <- lapply(dims, function(d) {
+    if (!length(d$values)) return(character(0))
+    vapply(d$values, function(v) as.character(v$id), character(1))
+  })
+
+  obs_dims <- st$dimensions$observation
+  if (!length(obs_dims) || !length(obs_dims[[1]]$values)) return(NULL)
+  periodes <- vapply(obs_dims[[1]]$values, function(v) as.character(v$id),
+                     character(1))
+
+  morceaux <- lapply(names(series), function(cle) {
+    idx <- as.integer(strsplit(cle, ":", fixed = TRUE)[[1]]) + 1L
+    obs <- series[[cle]]$observations
+    if (!length(obs)) return(NULL)
+    rang <- as.integer(names(obs)) + 1L
+    valeurs <- vapply(obs, function(o) {
+      v <- o[[1]]
+      if (is.null(v)) NA_real_ else suppressWarnings(as.numeric(v))
+    }, numeric(1), USE.NAMES = FALSE)
+
+    ligne <- data.frame(TIME_PERIOD = periodes[rang], OBS_VALUE = valeurs,
+                        stringsAsFactors = FALSE)
+    for (k in seq_along(noms_dims)) {
+      valeurs_dim <- codes_dims[[k]]
+      ligne[[noms_dims[k]]] <- if (length(valeurs_dim) >= idx[k]) valeurs_dim[idx[k]] else NA_character_
+    }
+    ligne
+  })
+
+  morceaux <- Filter(Negate(is.null), morceaux)
+  if (!length(morceaux)) return(NULL)
+  do.call(rbind, morceaux)
+}
+
+#' Interroge PCPS avec le paquet imf.data
+#'
+#' C'est la voie a privilegier : `get_data()` prend des filtres nommes, ce qui
+#' supprime la question de l'ordre des dimensions et celle de la syntaxe du
+#' joker. Ces deux points ont a eux seuls provoque cinq tentatives
+#' infructueuses.
+#'
+#' Le paquet est facultatif. S'il n'est pas installe, la fonction rend NULL et
+#' le connecteur poursuit avec ses propres requetes.
+#' @noRd
+produits_depuis_imf_data <- function(code, debut = NULL) {
+  if (!requireNamespace("imf.data", quietly = TRUE)) return(NULL)
+
+  depart <- if (is.null(debut)) NULL else sprintf("%d-M01", as.integer(debut))
+  essais <- list(
+    list(COUNTRY = FLUX_PCPS$zone, INDICATOR = code, FREQUENCY = "M"),
+    list(COUNTRY = FLUX_PCPS$zone, INDICATOR = code, FREQUENCY = "A"),
+    list(INDICATOR = code, FREQUENCY = "M"),
+    list(INDICATOR = code))
+
+  for (filtres in essais) {
+    d <- tryCatch(
+      imf.data::get_data(FLUX_PCPS$flux, filters = filtres,
+                         agency_id = FLUX_PCPS$agence,
+                         start_period = depart),
+      error = function(e) NULL)
+    if (!is.null(d) && nrow(d)) return(as.data.frame(d))
+  }
+  NULL
+}
+
+#' Telecharge le flux entier, une seule fois par session
+#'
+#' Une cle reduite a `*` est la seule forme dont on ait la preuve qu'elle
+#' repond : elle a rendu huit mega-octets lors du premier diagnostic. Elle sert
+#' donc de recours quand une requete ciblee echoue, et de source pour la
+#' decouverte des codes reellement publies.
+#' @noRd
+flux_pcps_complet <- function() {
+  if (!is.null(.cache_flux$pcps)) return(.cache_flux$pcps)
+  url <- sprintf("%s/data/dataflow/%s/%s/+/*", FMI_SDMX,
+                 FLUX_PCPS$agence, FLUX_PCPS$flux)
+  texte <- httr2::resp_body_string(
+    appel(url, list(), pause = 1, entetes = list(Accept = "text/csv")))
+  d <- if (substr(trimws(texte), 1, 1) == "{") {
+    sdmx_json_vers_tableau(texte)
+  } else {
+    utils::read.csv(text = texte, stringsAsFactors = FALSE, check.names = FALSE)
+  }
+  if (is.null(d) || !nrow(d)) {
+    stop("Le flux PCPS n'a renvoye aucune serie, meme sans filtre.", call. = FALSE)
+  }
+  .cache_flux$pcps <- d
+  d
+}
+
+#' Colonne portant les codes de produit, reperee par son contenu
+#' @noRd
+colonne_produit <- function(d) {
+  candidats <- intersect(c("INDICATOR", "COMMODITY", "INDEX"), names(d))
+  if (!length(candidats)) {
+    candidats <- setdiff(names(d), c("TIME_PERIOD", "OBS_VALUE"))
+  }
+  scores <- vapply(candidats, function(c_) {
+    sum(grepl("^P[A-Z]{2,}", unique(as.character(d[[c_]]))))
+  }, integer(1))
+  if (max(scores) < 1L) {
+    stop("Aucune dimension de produit reconnue. Colonnes : ",
+         paste(names(d), collapse = ", "), call. = FALSE)
+  }
+  candidats[[which.max(scores)]]
+}
+
+#' @noRd
+produit_dans_flux_complet <- function(code) {
+  d <- tryCatch(flux_pcps_complet(), error = function(e) NULL)
+  if (is.null(d)) return(NULL)
+  col <- tryCatch(colonne_produit(d), error = function(e) NULL)
+  if (is.null(col)) return(NULL)
+  r <- d[as.character(d[[col]]) == code, , drop = FALSE]
+  if (!nrow(r)) NULL else r
+}
+
 #' Connecteur des cours mondiaux de produits de base
+#'
+#' Le flux PCPS du FMI est la source premiere, le classeur Pink Sheet de la
+#' Banque mondiale sert de repli. Les deux publient les memes cours mensuels.
 #' @noRd
 connecteur_produits_de_base <- function(code_source, debut = NULL, fin = NULL) {
-  series <- classeur_produits()
+  r <- tryCatch(produits_depuis_fmi(code_source, debut, fin),
+                error = function(e) e)
+  if (!inherits(r, "error") && !is.null(r) && nrow(r)) return(r)
 
+  message("Flux PCPS sans reponse pour ", code_source,
+          if (inherits(r, "error")) paste0(" (", conditionMessage(r), ")") else "",
+          ". Repli sur le classeur de la Banque mondiale.")
+  produits_depuis_pink_sheet(code_source, debut, fin)
+}
+
+#' @noRd
+produits_depuis_fmi <- function(code_source, debut = NULL, fin = NULL) {
+  # Le mensuel d'abord, l'annuel en secours. Et si la zone W00 ne rend rien, on
+  # laisse la dimension libre : quelques series pourraient etre rangees sous un
+  # autre code geographique.
+  # Trois voies, de la plus sure a la plus lourde.
+  #   1. imf.data et ses filtres nommes, qui evitent toute question de cle ;
+  #   2. requetes ciblees construites a la main ;
+  #   3. telechargement du flux entier, puis filtrage.
+  d <- produits_depuis_imf_data(code_source, debut)
+
+  if (is.null(d) || !nrow(d)) {
+    for (essai in list(c(FLUX_PCPS$zone, "M"), c(FLUX_PCPS$zone, "*"),
+                       c("*", "M"), c("*", "*"))) {
+      d <- appel_pcps(code_source, essai[[2]], essai[[1]], debut)
+      if (!is.null(d) && nrow(d)) break
+    }
+  }
+
+  # A defaut, on filtre le flux complet. Celui-ci est telecharge une seule fois
+  # par session et sert alors les vingt-huit cours : c'est plus lourd, mais
+  # c'est la voie dont on sait qu'elle repond.
+  if (is.null(d) || !nrow(d)) d <- produit_dans_flux_complet(code_source)
+
+  if (is.null(d) || !nrow(d)) {
+    stop(sprintf("aucune observation pour %s", code_source), call. = FALSE)
+  }
+
+  col_periode <- intersect(c("TIME_PERIOD", "TIME"), names(d))[1]
+  col_valeur <- intersect(c("OBS_VALUE", "VALUE"), names(d))[1]
+  if (any(is.na(c(col_periode, col_valeur)))) {
+    stop(sprintf("colonnes inattendues : %s", paste(names(d), collapse = ", ")),
+         call. = FALSE)
+  }
+
+  # Une seule transformation : melanger un niveau de prix et un taux de
+  # variation fabriquerait une serie ou 3 500 dollars la tonne cotoie 2,4 %.
+  col_transfo <- intersect(c("DATA_TRANSFORMATION", "TRANSFORMATION",
+                             "UNIT_MEASURE", "UNIT"), names(d))
+  retenue <- NA_character_
+  if (length(col_transfo)) {
+    modalites <- table(as.character(d[[col_transfo[[1]]]]))
+    if (length(modalites)) {
+      retenue <- names(which.max(modalites))
+      d <- d[as.character(d[[col_transfo[[1]]]]) == retenue, , drop = FALSE]
+    }
+  }
+
+  dates <- periodes_vers_dates(as.character(d[[col_periode]]))
+  r <- data.frame(iso3 = "WLD", date_periode = dates$date_periode,
+                  frequence = dates$frequence,
+                  valeur = suppressWarnings(as.numeric(d[[col_valeur]])),
+                  stringsAsFactors = FALSE)
+  r <- r[!is.na(r$date_periode) & !is.na(r$valeur), ]
+  if (!is.null(fin)) r <- r[as.integer(format(r$date_periode, "%Y")) <= fin, ]
+  r <- r[!duplicated(r[c("frequence", "date_periode")]), ]
+
+  # La serie mensuelle est doublee d'une moyenne annuelle, faute de quoi un
+  # cours n'aurait aucune frequence commune avec les indicateurs annuels.
+  if (nrow(r)) r <- rbind(r, agreger_en_annuel(r))
+  if (!is.na(retenue) && nzchar(retenue)) attr(r, "unite") <- retenue
+  r
+}
+
+#' Repli sur le classeur mensuel de la Banque mondiale
+#' @noRd
+produits_depuis_pink_sheet <- function(code_source, debut = NULL, fin = NULL) {
+  series <- classeur_produits()
   code <- CODES_PINK_SHEET[[code_source]]
-  if (is.null(code) || is.na(code)) {
-    stop(sprintf("Aucune correspondance pour %s. Completez CODES_PINK_SHEET.",
-                 code_source), call. = FALSE)
+  if (is.null(code) || is.na(code) || is.null(series[[code]])) {
+    stop(sprintf("Code %s absent des deux sources.", code_source), call. = FALSE)
   }
   serie <- series[[code]]
-  if (is.null(serie)) {
-    stop(sprintf("Code %s absent du classeur. Utilisez codes_produits_de_base().",
-                 code), call. = FALSE)
-  }
 
-  # Le classeur ecrit 1960M01 la ou la plateforme attend 1960-01.
   periodes <- sub("^(\\d{4})[Mm](\\d{1,2})$", "\\1-\\2", serie$periodes)
   periodes <- sub("^(\\d{4})-(\\d)$", "\\1-0\\2", periodes)
   dates <- periodes_vers_dates(periodes)
@@ -369,80 +633,12 @@ connecteur_produits_de_base <- function(code_source, debut = NULL, fin = NULL) {
                                               as.character(serie$valeurs)))),
     stringsAsFactors = FALSE)
   r <- r[!is.na(r$date_periode) & !is.na(r$valeur), ]
-
   if (!is.null(debut)) r <- r[as.integer(format(r$date_periode, "%Y")) >= debut, ]
   if (!is.null(fin))   r <- r[as.integer(format(r$date_periode, "%Y")) <= fin, ]
   r <- r[!duplicated(r[c("frequence", "date_periode")]), ]
-
-  # La serie mensuelle est doublee d'une moyenne annuelle : sans elle, un cours
-  # n'aurait aucune frequence commune avec les indicateurs annuels de la
-  # Banque mondiale et ne pourrait pas etre compare sur un meme graphique.
   if (nrow(r)) r <- rbind(r, agreger_en_annuel(r))
-
-  # L'unite est lue dans le classeur plutot que devinee : les nomenclatures
-  # n'expriment pas les memes cours dans les memes unites.
   if (nzchar(serie$unite)) attr(r, "unite") <- serie$unite
   r
-}
-
-#' Affiche la structure du classeur des cours mondiaux
-#'
-#' A utiliser quand la collecte ne trouve aucun code : montre, pour chaque
-#' feuille, les premieres lignes telles qu'elles sont lues, ce qui permet de
-#' voir ou se trouvent reellement les codes.
-#'
-#' @param lignes nombre de lignes a afficher par feuille.
-#'
-#' @examples
-#' \dontrun{
-#' inspecter_classeur_produits()
-#' }
-#' @export
-inspecter_classeur_produits <- function(lignes = 12L) {
-  fichier <- tempfile(fileext = ".xlsx")
-  on.exit(unlink(fichier), add = TRUE)
-  writeBin(httr2::resp_body_raw(appel(adresse_pink_sheet(), list(), pause = 0.5)),
-           fichier)
-
-  feuilles <- openxlsx::getSheetNames(fichier)
-  cat("Feuilles du classeur :", paste(feuilles, collapse = " | "), "\n\n")
-
-  for (nom in feuilles) {
-    brut <- tryCatch(
-      openxlsx::read.xlsx(fichier, sheet = nom, colNames = FALSE,
-                          skipEmptyRows = FALSE, skipEmptyCols = FALSE,
-                          rows = seq_len(lignes)),
-      error = function(e) NULL)
-    cat("=== ", nom, " ===\n", sep = "")
-    if (is.null(brut) || !nrow(brut)) { cat("  (vide)\n\n"); next }
-    for (i in seq_len(nrow(brut))) {
-      v <- trimws(as.character(unlist(brut[i, ])))
-      v <- v[!is.na(v) & nzchar(v)]
-      cat(sprintf("  %2d : %s\n", i, substr(paste(utils::head(v, 10), collapse = " | "), 1, 150)))
-    }
-    cat("\n")
-  }
-  invisible(NULL)
-}
-
-#' Liste les cours disponibles dans le classeur mondial
-#'
-#' Indique, pour chaque serie reconnue, son unite et le nombre d'observations.
-#'
-#' @examples
-#' \dontrun{
-#' codes_produits_de_base()
-#' }
-#' @export
-codes_produits_de_base <- function() {
-  series <- classeur_produits()
-  data.frame(
-    code = names(series),
-    unite = vapply(series, function(x) x$unite, character(1), USE.NAMES = FALSE),
-    observations = vapply(series, function(x) sum(!is.na(x$valeurs)),
-                          integer(1), USE.NAMES = FALSE),
-    au_catalogue = names(series) %in% CODES_PINK_SHEET,
-    stringsAsFactors = FALSE, row.names = NULL)
 }
 
 #' Moyenne annuelle d'une serie mensuelle
@@ -462,10 +658,12 @@ agreger_en_annuel <- function(r) {
     stringsAsFactors = FALSE)
 }
 
-#' Liste les cours disponibles dans le classeur mondial
+#' Liste les produits reellement publies dans le flux PCPS
 #'
-#' Indique, pour chaque code du classeur, son unite et s'il est deja rattache a
-#' un indicateur du catalogue. Sert a corriger CODES_PINK_SHEET.
+#' Lit le flux lui-meme plutot que sa nomenclature : c'est la seule voie dont
+#' on ait la preuve qu'elle repond, et elle a l'avantage de ne montrer que les
+#' codes effectivement alimentes. Indique aussi la zone geographique et la
+#' transformation associees, ce qui permet de corriger la cle sans deviner.
 #'
 #' @examples
 #' \dontrun{
@@ -473,13 +671,82 @@ agreger_en_annuel <- function(r) {
 #' }
 #' @export
 codes_produits_de_base <- function() {
-  d <- classeur_produits()
-  codes <- names(d)[!startsWith(names(d), "col")]
-  data.frame(
+  d <- flux_pcps_complet()
+  col <- colonne_produit(d)
+  col_zone <- intersect(c("COUNTRY", "REF_AREA"), names(d))
+  col_transfo <- intersect(c("DATA_TRANSFORMATION", "UNIT_MEASURE"), names(d))
+
+  au_catalogue <- utils::read.csv(app_sys("extdata/catalogue.csv"),
+                                  stringsAsFactors = FALSE,
+                                  fileEncoding = "UTF-8-BOM")
+  au_catalogue <- au_catalogue$code_source[au_catalogue$categorie == "C15"]
+
+  codes <- sort(unique(as.character(d[[col]])))
+  dominante <- function(colonne, code) {
+    if (!length(colonne)) return("")
+    v <- as.character(d[[colonne[[1]]]][as.character(d[[col]]) == code])
+    if (!length(v)) "" else names(which.max(table(v)))
+  }
+
+  r <- data.frame(
     code = codes,
-    unite = unname(attr(d, "unites")[codes]),
-    au_catalogue = codes %in% CODES_PINK_SHEET,
-    stringsAsFactors = FALSE)
+    zone = vapply(codes, function(c_) dominante(col_zone, c_), character(1),
+                  USE.NAMES = FALSE),
+    transformation = vapply(codes, function(c_) dominante(col_transfo, c_),
+                            character(1), USE.NAMES = FALSE),
+    observations = vapply(codes, function(c_) {
+      sum(as.character(d[[col]]) == c_ & !is.na(d$OBS_VALUE))
+    }, integer(1), USE.NAMES = FALSE),
+    au_catalogue = codes %in% au_catalogue,
+    stringsAsFactors = FALSE, row.names = NULL)
+  r[order(!r$au_catalogue, r$code), ]
+}
+
+#' Teste la collecte d'un seul produit
+#'
+#' Essaie plusieurs cles, puis le flux complet, et affiche ce que chacune rend.
+#' C'est le diagnostic a lancer en premier quand la collecte echoue.
+#'
+#' @param code code du produit, par exemple "PCOCO".
+#'
+#' @examples
+#' \dontrun{
+#' tester_produit("PCOCO")
+#' }
+#' @export
+tester_produit <- function(code = "PCOCO") {
+  essais <- list(c(FLUX_PCPS$zone, "M"), c(FLUX_PCPS$zone, "*"),
+                 c("*", "M"), c("*", "*"))
+
+  for (e in essais) {
+    cat("\ncle : ", cle_pcps(code, e[[2]], e[[1]]), "\n", sep = "")
+    d <- tryCatch(appel_pcps(code, e[[2]], e[[1]]), error = function(x) x)
+    if (inherits(d, "error")) { cat("  echec : ", conditionMessage(d), "\n"); next }
+    if (is.null(d) || !nrow(d)) { cat("  aucune observation\n"); next }
+    cat("  ", nrow(d), " lignes | colonnes : ", paste(names(d), collapse = ", "),
+        "\n", sep = "")
+    print(utils::head(d, 4))
+    return(invisible(d))
+  }
+
+  cat("\nAucune cle ciblee n'a repondu. Essai du flux complet.\n")
+  d <- tryCatch(flux_pcps_complet(), error = function(x) x)
+  if (inherits(d, "error")) {
+    cat("  echec : ", conditionMessage(d), "\n")
+    return(invisible(NULL))
+  }
+  cat("  ", nrow(d), " lignes | colonnes : ", paste(names(d), collapse = ", "),
+      "\n", sep = "")
+  col <- tryCatch(colonne_produit(d), error = function(x) NULL)
+  if (!is.null(col)) {
+    codes <- sort(unique(as.character(d[[col]])))
+    cat("  dimension des produits : ", col, ", ", length(codes), " codes\n",
+        sep = "")
+    cat("  echantillon : ", paste(utils::head(codes, 15), collapse = ", "),
+        "\n", sep = "")
+    cat("  ", code, " present : ", code %in% codes, "\n", sep = "")
+  }
+  invisible(d)
 }
 
 # --- OCDE ------------------------------------------------------------------
@@ -660,6 +927,7 @@ REGISTRE <- list(
   # cours des matieres premieres.
   "FMI (WEO)"                  = connecteur_fmi_weo,
   "FMI (Fiscal Monitor)"       = connecteur_fmi_weo,
+  "FMI (PCPS)"                   = connecteur_produits_de_base,
   "Banque mondiale (Pink Sheet)" = connecteur_produits_de_base,
   # L'OCDE sort du registre. Les identifiants de flux du catalogue renvoient
   # tous 404 : l'agence supposee (OECD.SDD.STES) n'est pas la bonne pour la

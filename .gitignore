@@ -1,4 +1,22 @@
+# Rien de confidentiel ne doit partir dans un depot public.
+.Renviron
+.Rprofile
+*.Rproj
+.Rproj.user/
 .Rhistory
 .RData
-.Rproj.user/
-renv/library/
+.Ruserdata
+
+# Sorties de travail
+rsconnect/
+*.log
+manuel_*.aux
+manuel_*.toc
+manuel_*.lot
+manuel_*.out
+manuel_*.tex
+
+# La base de travail locale, distincte de celle publiee dans inst/extdata.
+opesc_local.sqlite
+*.sqlite-wal
+*.sqlite-shm

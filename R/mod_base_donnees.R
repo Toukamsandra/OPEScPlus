@@ -44,7 +44,7 @@ mod_base_donnees_server <- function(id, con) {
 
     categories <- lire_categories(con)
     shiny::updateSelectInput(session, "categorie",
-      choices = c(tr("Toutes les catégories") = "",
+      choices = c(stats::setNames("", tr("Toutes les catégories")),
                   stats::setNames(categories$code, categories$libelle)))
 
     shiny::observe({
@@ -111,7 +111,18 @@ mod_base_donnees_server <- function(id, con) {
 
     output$compte <- shiny::renderText({
       n <- nrow(donnees())
-      if (!n) return(tr("Aucune observation ne correspond aux filtres. La base est peut-être encore vide."))
+      if (!n) {
+        # Des bornes inversées sont la cause la plus fréquente d'un résultat
+        # vide, et la plus facile à corriger. Le message générique laissait
+        # chercher du côté de la base alors que le filtre suffit à l'expliquer.
+        if (!is.na(input$debut) && !is.na(input$fin) && input$debut > input$fin) {
+          return(sprintf(tr(paste(
+            "L'année de début (%d) est postérieure à l'année de fin (%d).",
+            "La première doit être inférieure à la seconde.")),
+            input$debut, input$fin))
+        }
+        return(tr("Aucune observation ne correspond aux filtres. La base est peut-être encore vide."))
+      }
       sprintf("%s observations correspondent aux filtres. Les mille premières sont affichées ; le téléchargement porte sur la sélection complète.",
               format(n, big.mark = " "))
     })

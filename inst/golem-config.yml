@@ -6,6 +6,11 @@ default:
   # variable d'environnement OPESC_BASE, puis base livree avec le paquet, puis
   # dossier de donnees de l'utilisateur.
   base: ~
+  # Moteur de recherche programmable, pour l'onglet GoogleOPESc+.
+  # A defaut, la plateforme retombe sur des liens de recherche par site.
+  # Voir domaines_pour_moteur() pour la liste des domaines a declarer.
+  cse_cle: ~
+  cse_id: ~
 
 production:
   app_prod: yes

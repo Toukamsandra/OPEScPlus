@@ -1,5 +1,4 @@
 ﻿code,libelle,ordre
-C01,Matières premières,1
 C02,Indicateurs du secteur réel,2
 C03,Indicateurs de finance publique,3
 C04,Indicateurs du secteur monétaire,4
@@ -13,3 +12,4 @@ C11,Démographie et conditions de vie,11
 C12,Complexité économique et structure productive,12
 C13,Gouvernance et climat des affaires,13
 C14,"Énergie, environnement et agriculture",14
+C15,Matières premières commodityPrice,15

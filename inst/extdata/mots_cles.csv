@@ -1,0 +1,15 @@
+﻿categorie,mots
+C01,matiere premiere matieres premieres commodite cacao cafe coton petrole brut petrolier or aluminium cuivre bois grumes sciages caoutchouc palme sucre banane mais ble riz gaz charbon minerai commodity oil cocoa coffee cotton gold
+C02,pib croissance production valeur ajoutee consommation investissement fbcf secteur reel comptes nationaux gdp growth
+C03,finance publique budget recettes depenses fiscal impot taxe solde budgetaire subvention masse salariale revenue expenditure
+C04,monnaie monetaire credit masse monetaire banque liquidite depot bancaire money credit
+C05,exterieur commerce exportation importation balance paiements compte courant investissement direct etranger ide transferts migrants reserves trade exports imports
+C06,change taux change parite devise depreciation appreciation reer exchange rate
+C07,taux interet directeur debiteur crediteur marge intermediation interest rate
+C08,prix inflation ipc indice prix desinflation deflateur cherte vie price inflation
+C09,dette endettement service dette emprunt titre public obligation bon tresor soutenabilite debt
+C10,emploi chomage travail actif population active salaire informel productivite employment unemployment labour
+C11,pauvrete inegalite gini population demographie sante education esperance vie mortalite scolarisation alphabetisation poverty inequality health education
+C12,complexite economique diversification structure productive exportation produit atlas complexity
+C13,gouvernance corruption climat affaires etat droit reglementation institution governance corruption business
+C14,energie electricite environnement climat co2 emission foret agriculture rendement engrais eau assainissement numerique internet energy environment agriculture

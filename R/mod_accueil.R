@@ -46,6 +46,9 @@ FONCTIONS <- list(
   list("table", "Base de donn\u00e9es compl\u00e8te",
        "Consultation et t\u00e9l\u00e9chargement au format tableur, en s\u00e9ries longues ou en tableau crois\u00e9. Chaque classeur porte ses sources.",
        "Base de donn\u00e9es"),
+  list("search", "GoogleOPESc+, recherche orient\u00e9e",
+       "Une recherche restreinte \u00e0 trente-cinq sources institutionnelles choisies : donn\u00e9es, publications et actualit\u00e9. La d\u00e9finition de la notion et vos propres indicateurs s'affichent en t\u00eate.",
+       "GoogleOPESc+"),
   list("refresh", "Collecte tra\u00e7able",
        "Actualisation \u00e0 la demande, par cat\u00e9gorie ou en totalit\u00e9, avec un journal de chaque ex\u00e9cution.",
        "Collectes")
@@ -193,11 +196,14 @@ mod_accueil_server <- function(id, con, parent) {
       shiny::div(
         class = "formulaire-manuel",
         shiny::div(class = "formulaire-titre", tr("T\u00e9l\u00e9charger le manuel")),
-        shiny::p(class = "manuel-note", tr(paste(
-          "Le manuel compte une trentaine de pages. Il pr\u00e9sente la plateforme,",
-          "d\u00e9taille chaque onglet, expose la m\u00e9thode et recense les 233",
-          "indicateurs du catalogue avec leur code de collecte, leur source et",
-          "leur unit\u00e9."))),
+        # Le compte est lu en base plutot qu'ecrit dans le texte : il change a
+        # chaque evolution du catalogue, et un chiffre fige dans une phrase
+        # devient faux sans que rien ne le signale.
+        shiny::p(class = "manuel-note", sprintf(
+          tr(paste("Le manuel pr\u00e9sente la plateforme, d\u00e9taille les cinq onglets,",
+                   "expose la m\u00e9thode et recense les %d indicateurs des %d",
+                   "cat\u00e9gories avec leur code de collecte et leur unit\u00e9.")),
+          n_indicateurs(con), n_categories(con))),
         shiny::div(
           class = "choix-manuel",
           shiny::radioButtons(

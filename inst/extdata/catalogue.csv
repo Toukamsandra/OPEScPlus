@@ -43,7 +43,6 @@ C06.ENDE_XDC_USD_RATE,C06,S02,"Taux de change de marché, fin de période",FMI (
 C06.PX.REX.REER,C06,S02,Taux de change effectif réel,Banque mondiale (WDI),PX.REX.REER,A,Indice 2010 = 100,1,0
 C06.ENEER_IX,C06,S02,Taux de change effectif nominal,FMI (IFS),ENEER_IX,M,Indice,1,0
 C06.PA.NUS.PPP,C06,S02,Facteur de conversion PPA,Banque mondiale (WDI),PA.NUS.PPP,A,LCU / USD int.,1,0
-C01.POILAPSP,C01,S02,Cours du pétrole brut (moyenne des 3 places),Banque mondiale (Pink Sheet),POILAPSP,"M,A",USD / baril,0,1
 C03.GGR_NGDP,C03,S03,Recettes totales des administrations publiques,FMI (Fiscal Monitor),GGR_NGDP,A,% du PIB,1,0
 C03.GGX_NGDP,C03,S03,Dépenses totales des administrations publiques,FMI (Fiscal Monitor),GGX_NGDP,A,% du PIB,1,0
 C03.GGXCNL_NGDP,C03,S03,Solde budgétaire global,FMI (Fiscal Monitor),GGXCNL_NGDP,A,% du PIB,1,1
@@ -236,30 +235,111 @@ C13.IQ.CPA.TRAN.XQ,C13,S15,"Note CPIA, transparence et corruption",Banque mondia
 C13.BREADY_REG,C13,S15,"Indice Business Ready, pilier réglementaire",Banque mondiale (B-READY),BREADY_REG,A,Score 0-100,1,0
 C13.CPI,C13,S15,Indice de perception de la corruption,Transparency International,CPI,A,Score 0-100,1,0
 C13.IC.TAX.DURS,C13,S15,Temps consacré aux formalités fiscales,Banque mondiale (WDI),IC.TAX.DURS,A,Heures / an,1,0
-C01.PALLFNFW,C01,S02,Indice de tous les produits de base,Banque mondiale (Pink Sheet),PALLFNFW,"M,A",Indice,0,0
-C01.PNRGW,C01,S02,Indice des produits énergétiques,Banque mondiale (Pink Sheet),PNRGW,"M,A",Indice,0,0
-C01.PFANDBW,C01,S02,Indice alimentation et boissons,Banque mondiale (Pink Sheet),PFANDBW,"M,A",Indice,0,0
-C01.PMETAW,C01,S02,Indice des métaux,Banque mondiale (Pink Sheet),PMETAW,"M,A",Indice,0,0
-C01.PRAWMW,C01,S02,Indice des matières premières agricoles,Banque mondiale (Pink Sheet),PRAWMW,"M,A",Indice,0,0
-C01.POILBRE,C01,S02,"Pétrole brut, Brent",Banque mondiale (Pink Sheet),POILBRE,"M,A",USD / baril,0,0
-C01.POILWTI,C01,S02,"Pétrole brut, WTI",Banque mondiale (Pink Sheet),POILWTI,"M,A",USD / baril,0,0
-C01.POILDUB,C01,S02,"Pétrole brut, Dubaï",Banque mondiale (Pink Sheet),POILDUB,"M,A",USD / baril,0,0
-C01.PNGASEU,C01,S02,"Gaz naturel, Europe",Banque mondiale (Pink Sheet),PNGASEU,"M,A",USD / MBtu,0,0
-C01.PCOALAU,C01,S02,"Charbon, Australie",Banque mondiale (Pink Sheet),PCOALAU,"M,A",USD / tonne,0,0
-C01.PALUM,C01,S02,Aluminium,Banque mondiale (Pink Sheet),PALUM,"M,A",USD / tonne,0,0
-C01.PCOPP,C01,S02,Cuivre,Banque mondiale (Pink Sheet),PCOPP,"M,A",USD / tonne,0,0
-C01.PIORECR,C01,S02,Minerai de fer,Banque mondiale (Pink Sheet),PIORECR,"M,A",USD / tonne,0,0
-C01.PCOCO,C01,S02,Cacao,Banque mondiale (Pink Sheet),PCOCO,"M,A",USD / tonne,0,1
-C01.PCOFFOTM,C01,S02,"Café, arabicas doux",Banque mondiale (Pink Sheet),PCOFFOTM,"M,A",cents US / livre,0,0
-C01.PCOFFROB,C01,S02,"Café, robusta",Banque mondiale (Pink Sheet),PCOFFROB,"M,A",cents US / livre,0,0
-C01.PCOTTIND,C01,S02,Coton,Banque mondiale (Pink Sheet),PCOTTIND,"M,A",cents US / livre,0,0
-C01.PSUGAISA,C01,S02,Sucre,Banque mondiale (Pink Sheet),PSUGAISA,"M,A",cents US / livre,0,0
-C01.PBANSOP,C01,S02,Bananes,Banque mondiale (Pink Sheet),PBANSOP,"M,A",USD / tonne,0,0
-C01.PRUBB,C01,S02,Caoutchouc,Banque mondiale (Pink Sheet),PRUBB,"M,A",cents US / livre,0,0
-C01.PPOIL,C01,S02,Huile de palme,Banque mondiale (Pink Sheet),PPOIL,"M,A",USD / tonne,0,0
-C01.PLOGSK,C01,S02,Grumes de bois dur,Banque mondiale (Pink Sheet),PLOGSK,"M,A",USD / m3,0,0
-C01.PSAWMAL,C01,S02,Sciages de bois dur,Banque mondiale (Pink Sheet),PSAWMAL,"M,A",USD / m3,0,0
-C01.PMAIZMT,C01,S02,Maïs,Banque mondiale (Pink Sheet),PMAIZMT,"M,A",USD / tonne,0,0
-C01.PWHEAMT,C01,S02,Blé,Banque mondiale (Pink Sheet),PWHEAMT,"M,A",USD / tonne,0,0
-C01.PRICENPQ,C01,S02,Riz,Banque mondiale (Pink Sheet),PRICENPQ,"M,A",USD / tonne,0,0
-C01.PGOLD,C01,S02,Or,Banque mondiale (Pink Sheet),PGOLD,"M,A",USD / once troy,0,0
+C15.LMICS,C15,S02,"Indice des produits, pays à revenu faible et intermédiaire",Import local (PCPS),LMICS,"M,T,A",,0,0
+C15.PAGRI,C15,S02,Indice des produits agricoles,Import local (PCPS),PAGRI,"M,T,A",,0,0
+C15.PALLFNF,C15,S02,Indice de tous les produits de base,Import local (PCPS),PALLFNF,"M,T,A",,0,0
+C15.PALLMETA,C15,S02,Indice de tous les métaux,Import local (PCPS),PALLMETA,"M,T,A",,0,0
+C15.PALUM,C15,S02,Aluminium,Import local (PCPS),PALUM,"M,T,A",,0,0
+C15.PAPPLE,C15,S02,Fruits hors agrumes,Import local (PCPS),PAPPLE,"M,T,A",,0,0
+C15.PBANSOP,C15,S02,Bananes,Import local (PCPS),PBANSOP,"M,T,A",,0,0
+C15.PBARL,C15,S02,Orge,Import local (PCPS),PBARL,"M,T,A",,0,0
+C15.PBEEF,C15,S02,Viande bovine,Import local (PCPS),PBEEF,"M,T,A",,0,0
+C15.PBEVE,C15,S02,Indice des boissons,Import local (PCPS),PBEVE,"M,T,A",,0,0
+C15.PCERE,C15,S02,Indice des céréales,Import local (PCPS),PCERE,"M,T,A",,0,0
+C15.PCHANA,C15,S02,Légumineuses,Import local (PCPS),PCHANA,"M,T,A",,0,0
+C15.PCHROM,C15,S02,Chrome,Import local (PCPS),PCHROM,"M,T,A",,0,0
+C15.PCOAL,C15,S02,Indice du charbon,Import local (PCPS),PCOAL,"M,T,A",,0,0
+C15.PCOALAU,C15,S02,"Charbon, Australie",Import local (PCPS),PCOALAU,"M,T,A",,0,0
+C15.PCOALSA,C15,S02,"Charbon, Afrique du Sud",Import local (PCPS),PCOALSA,"M,T,A",,0,0
+C15.PCOBA,C15,S02,Cobalt,Import local (PCPS),PCOBA,"M,T,A",,0,0
+C15.PCOCO,C15,S02,Cacao,Import local (PCPS),PCOCO,"M,T,A",,0,0
+C15.PCOFF,C15,S02,Indice du café,Import local (PCPS),PCOFF,"M,T,A",,0,0
+C15.PCOFFOTM,C15,S02,"Café, arabicas doux",Import local (PCPS),PCOFFOTM,"M,T,A",,0,0
+C15.PCOFFROB,C15,S02,"Café, robusta",Import local (PCPS),PCOFFROB,"M,T,A",,0,0
+C15.PCOIL,C15,S02,Huile de coco,Import local (PCPS),PCOIL,"M,T,A",,0,0
+C15.PCOPP,C15,S02,Cuivre,Import local (PCPS),PCOPP,"M,T,A",,0,0
+C15.PCOTTIND,C15,S02,Coton,Import local (PCPS),PCOTTIND,"M,T,A",,0,0
+C15.PDAP,C15,S02,Phosphate diammonique,Import local (PCPS),PDAP,"M,T,A",,0,0
+C15.PENTM,C15,S02,Indice des métaux de la transition énergétique,Import local (PCPS),PENTM,"M,T,A",,0,0
+C15.PEXGALL,C15,S02,Indice de tous les produits hors or,Import local (PCPS),PEXGALL,"M,T,A",,0,0
+C15.PEXGMETA,C15,S02,Indice des métaux hors or,Import local (PCPS),PEXGMETA,"M,T,A",,0,0
+C15.PFANDB,C15,S02,Indice alimentation et boissons,Import local (PCPS),PFANDB,"M,T,A",,0,0
+C15.PFERT,C15,S02,Indice des engrais,Import local (PCPS),PFERT,"M,T,A",,0,0
+C15.PFOOD,C15,S02,Indice alimentaire,Import local (PCPS),PFOOD,"M,T,A",,0,0
+C15.PFSHMEAL,C15,S02,Farine de poisson,Import local (PCPS),PFSHMEAL,"M,T,A",,0,0
+C15.PGNUTS,C15,S02,Arachides,Import local (PCPS),PGNUTS,"M,T,A",,0,0
+C15.PGOLD,C15,S02,Or,Import local (PCPS),PGOLD,"M,T,A",,0,0
+C15.PHARD,C15,S02,Indice du bois dur,Import local (PCPS),PHARD,"M,T,A",,0,0
+C15.PHIDE,C15,S02,Cuirs et peaux,Import local (PCPS),PHIDE,"M,T,A",,0,0
+C15.PINDU,C15,S02,Indice des matières industrielles,Import local (PCPS),PINDU,"M,T,A",,0,0
+C15.PIORECR,C15,S02,Minerai de fer,Import local (PCPS),PIORECR,"M,T,A",,0,0
+C15.PLAMB,C15,S02,Viande ovine,Import local (PCPS),PLAMB,"M,T,A",,0,0
+C15.PLEAD,C15,S02,Plomb,Import local (PCPS),PLEAD,"M,T,A",,0,0
+C15.PLITH,C15,S02,Lithium,Import local (PCPS),PLITH,"M,T,A",,0,0
+C15.PLMMODY,C15,S02,Molybdène,Import local (PCPS),PLMMODY,"M,T,A",,0,0
+C15.PLOGORE,C15,S02,Grumes,Import local (PCPS),PLOGORE,"M,T,A",,0,0
+C15.PLOGSK,C15,S02,"Grumes, Cameroun",Import local (PCPS),PLOGSK,"M,T,A",,0,0
+C15.PMAIZMT,C15,S02,Maïs,Import local (PCPS),PMAIZMT,"M,T,A",,0,0
+C15.PMANGELE,C15,S02,Manganèse,Import local (PCPS),PMANGELE,"M,T,A",,0,0
+C15.PMEAT,C15,S02,Indice des viandes,Import local (PCPS),PMEAT,"M,T,A",,0,0
+C15.PMETA,C15,S02,Indice des métaux,Import local (PCPS),PMETA,"M,T,A",,0,0
+C15.PMILK,C15,S02,Lait,Import local (PCPS),PMILK,"M,T,A",,0,0
+C15.PNFUEL,C15,S02,Indice des produits hors combustibles,Import local (PCPS),PNFUEL,"M,T,A",,0,0
+C15.PNGAS,C15,S02,Indice du gaz naturel,Import local (PCPS),PNGAS,"M,T,A",,0,0
+C15.PNGASEU,C15,S02,"Gaz naturel, Europe",Import local (PCPS),PNGASEU,"M,T,A",,0,0
+C15.PNGASJP,C15,S02,"Gaz naturel, Japon",Import local (PCPS),PNGASJP,"M,T,A",,0,0
+C15.PNGASUS,C15,S02,"Gaz naturel, États-Unis",Import local (PCPS),PNGASUS,"M,T,A",,0,0
+C15.PNICK,C15,S02,Nickel,Import local (PCPS),PNICK,"M,T,A",,0,0
+C15.PNRG,C15,S02,Indice des produits énergétiques,Import local (PCPS),PNRG,"M,T,A",,0,0
+C15.POATS,C15,S02,Avoine,Import local (PCPS),POATS,"M,T,A",,0,0
+C15.POILAPSP,C15,S02,"Pétrole brut, moyenne des trois places",Import local (PCPS),POILAPSP,"M,T,A",,0,0
+C15.POILBRE,C15,S02,"Pétrole brut, Brent",Import local (PCPS),POILBRE,"M,T,A",,0,0
+C15.POILDUB,C15,S02,"Pétrole brut, Dubaï",Import local (PCPS),POILDUB,"M,T,A",,0,0
+C15.POILWTI,C15,S02,"Pétrole brut, WTI",Import local (PCPS),POILWTI,"M,T,A",,0,0
+C15.POLVOIL,C15,S02,Huile d'olive,Import local (PCPS),POLVOIL,"M,T,A",,0,0
+C15.PORANG,C15,S02,Oranges,Import local (PCPS),PORANG,"M,T,A",,0,0
+C15.PPALLA,C15,S02,Palladium,Import local (PCPS),PPALLA,"M,T,A",,0,0
+C15.PPLAT,C15,S02,Platine,Import local (PCPS),PPLAT,"M,T,A",,0,0
+C15.PPMETA,C15,S02,Indice des métaux précieux,Import local (PCPS),PPMETA,"M,T,A",,0,0
+C15.PPOIL,C15,S02,Huile de palme,Import local (PCPS),PPOIL,"M,T,A",,0,0
+C15.PPORK,C15,S02,Viande porcine,Import local (PCPS),PPORK,"M,T,A",,0,0
+C15.PPOTASH,C15,S02,Potasse,Import local (PCPS),PPOTASH,"M,T,A",,0,0
+C15.PPOULT,C15,S02,Volaille,Import local (PCPS),PPOULT,"M,T,A",,0,0
+C15.PPROPANE,C15,S02,Propane,Import local (PCPS),PPROPANE,"M,T,A",,0,0
+C15.PRAWM,C15,S02,Indice des matières premières agricoles,Import local (PCPS),PRAWM,"M,T,A",,0,0
+C15.PREODOM,C15,S02,Terres rares,Import local (PCPS),PREODOM,"M,T,A",,0,0
+C15.PRICENPQ,C15,S02,Riz,Import local (PCPS),PRICENPQ,"M,T,A",,0,0
+C15.PROIL,C15,S02,Huile de colza,Import local (PCPS),PROIL,"M,T,A",,0,0
+C15.PRUBB,C15,S02,Caoutchouc,Import local (PCPS),PRUBB,"M,T,A",,0,0
+C15.PSALM,C15,S02,Saumon,Import local (PCPS),PSALM,"M,T,A",,0,0
+C15.PSAWMAL,C15,S02,"Sciages, Malaisie",Import local (PCPS),PSAWMAL,"M,T,A",,0,0
+C15.PSAWORE,C15,S02,Sciages,Import local (PCPS),PSAWORE,"M,T,A",,0,0
+C15.PSEAF,C15,S02,Indice des produits de la mer,Import local (PCPS),PSEAF,"M,T,A",,0,0
+C15.PSHRI,C15,S02,Crevettes,Import local (PCPS),PSHRI,"M,T,A",,0,0
+C15.PSILLUMP,C15,S02,Silicium,Import local (PCPS),PSILLUMP,"M,T,A",,0,0
+C15.PSILVER,C15,S02,Argent,Import local (PCPS),PSILVER,"M,T,A",,0,0
+C15.PSMEA,C15,S02,Tourteau de soja,Import local (PCPS),PSMEA,"M,T,A",,0,0
+C15.PSOFT,C15,S02,Bois tendre,Import local (PCPS),PSOFT,"M,T,A",,0,0
+C15.PSOIL,C15,S02,Huile de soja,Import local (PCPS),PSOIL,"M,T,A",,0,0
+C15.PSORG,C15,S02,Sorgho,Import local (PCPS),PSORG,"M,T,A",,0,0
+C15.PSOYB,C15,S02,Soja,Import local (PCPS),PSOYB,"M,T,A",,0,0
+C15.PSUGA,C15,S02,Indice du sucre,Import local (PCPS),PSUGA,"M,T,A",,0,0
+C15.PSUGAISA,C15,S02,Sucre,Import local (PCPS),PSUGAISA,"M,T,A",,0,0
+C15.PSUGAUSA,C15,S02,"Sucre, États-Unis",Import local (PCPS),PSUGAUSA,"M,T,A",,0,0
+C15.PSUNO,C15,S02,Huile de tournesol,Import local (PCPS),PSUNO,"M,T,A",,0,0
+C15.PTEA,C15,S02,Thé,Import local (PCPS),PTEA,"M,T,A",,0,0
+C15.PTEAINDIA,C15,S02,"Thé, Inde",Import local (PCPS),PTEAINDIA,"M,T,A",,0,0
+C15.PTEAMOM,C15,S02,"Thé, Mombasa",Import local (PCPS),PTEAMOM,"M,T,A",,0,0
+C15.PTEASL,C15,S02,"Thé, Sri Lanka",Import local (PCPS),PTEASL,"M,T,A",,0,0
+C15.PTIMB,C15,S02,Indice du bois,Import local (PCPS),PTIMB,"M,T,A",,0,0
+C15.PTIN,C15,S02,Étain,Import local (PCPS),PTIN,"M,T,A",,0,0
+C15.PTOMATO,C15,S02,Tomates,Import local (PCPS),PTOMATO,"M,T,A",,0,0
+C15.PURAN,C15,S02,Uranium,Import local (PCPS),PURAN,"M,T,A",,0,0
+C15.PUREA,C15,S02,Urée,Import local (PCPS),PUREA,"M,T,A",,0,0
+C15.PVANPENT,C15,S02,Vanadium,Import local (PCPS),PVANPENT,"M,T,A",,0,0
+C15.PVOIL,C15,S02,Indice des huiles végétales,Import local (PCPS),PVOIL,"M,T,A",,0,0
+C15.PWHEAMT,C15,S02,Blé,Import local (PCPS),PWHEAMT,"M,T,A",,0,0
+C15.PWOOL,C15,S02,Indice de la laine,Import local (PCPS),PWOOL,"M,T,A",,0,0
+C15.PWOOLC,C15,S02,"Laine, fibre grossière",Import local (PCPS),PWOOLC,"M,T,A",,0,0
+C15.PWOOLF,C15,S02,"Laine, fibre fine",Import local (PCPS),PWOOLF,"M,T,A",,0,0
+C15.PZINC,C15,S02,Zinc,Import local (PCPS),PZINC,"M,T,A",,0,0

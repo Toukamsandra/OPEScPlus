@@ -10,6 +10,8 @@ app_ui <- function(request) {
   shiny::tagList(
     ressources_externes(),
     message_bienvenue(),
+    shiny::tags$span(id = "opesc-texte-reconnexion", style = "display:none",
+                     tr("Reconnexion en cours")),
 
     shiny::div(
       class = "bandeau",
@@ -40,6 +42,7 @@ app_ui <- function(request) {
         shiny::tabPanel(tr("Accueil"), mod_accueil_ui("accueil")),
         shiny::tabPanel(tr("Tableau de bord"), mod_tableau_bord_ui("tdb")),
         shiny::tabPanel(tr("Base de donn\u00e9es"), mod_base_donnees_ui("base")),
+        shiny::tabPanel("GoogleOPESc+", mod_recherche_ui("recherche")),
         shiny::tabPanel(tr("Collectes"), mod_collectes_ui("collectes")))),
 
     shiny::div(
@@ -86,9 +89,15 @@ bandeau_partenaires <- function() {
 #' plusieurs fois par jour.
 #' @noRd
 message_bienvenue <- function() {
-  # Le message entier passe par le dictionnaire, titre comme corps. La version
-  # precedente n'en traduisait que les deux premiers mots, le reste restant en
-  # francais dans une interface anglaise.
+  # Le message ne paraît qu'une fois par session de navigation. Il reparaissait
+  # a chaque rechargement de page, donc a chaque changement de langue et a
+  # chaque retour sur l'onglet, ce qui en faisait une gene plutot qu'un accueil.
+  # `sessionStorage` retient qu'il a ete montre ; il s'efface a la fermeture du
+  # navigateur, si bien qu'une nouvelle connexion le retrouve.
+  #
+  # Le cadre est retire du document en meme temps que le texte disparait, et
+  # non quelques instants plus tard : un encadre vide subsistait le temps de la
+  # transition.
   titre <- sprintf("%s %s", tr("Bienvenue sur"), CONFIG$nom)
   corps <- tr(paste(
     "Observatoire des perspectives \u00e9conomiques du MINEPAT. Les donn\u00e9es mises",
@@ -97,15 +106,24 @@ message_bienvenue <- function() {
 
   shiny::tags$script(shiny::HTML(sprintf(
     "document.addEventListener('DOMContentLoaded', function () {
+       try {
+         if (sessionStorage.getItem('opesc_bienvenue')) { return; }
+         sessionStorage.setItem('opesc_bienvenue', '1');
+       } catch (e) { /* navigation privee : le message s'affichera */ }
+
        setTimeout(function () {
          var n = document.createElement('div');
          n.className = 'bienvenue';
          n.innerHTML = '<strong>' + %s + '</strong><span>' + %s + '</span>';
          document.body.appendChild(n);
+
+         var retirer = function () {
+           n.classList.remove('bienvenue-visible');
+           setTimeout(function () { if (n.parentNode) { n.remove(); } }, 340);
+         };
          setTimeout(function () { n.classList.add('bienvenue-visible'); }, 60);
-         setTimeout(function () { n.classList.remove('bienvenue-visible'); }, 11000);
-         setTimeout(function () { n.remove(); }, 12000);
-         n.addEventListener('click', function () { n.remove(); });
+         setTimeout(retirer, 7000);
+         n.addEventListener('click', retirer);
        }, 500);
      });",
     jsonlite::toJSON(titre, auto_unbox = TRUE),
@@ -134,5 +152,22 @@ ressources_externes <- function() {
     golem::favicon(ico = "favicon", ext = "png"),
     golem::bundle_resources(path = app_sys("app/www"), app_title = "OPESc+"),
     shiny::tags$link(rel = "stylesheet", type = "text/css", href = "www/opesc.css"),
-    shiny::tags$script(src = "www/opesc.js"))
+    shiny::tags$script(src = "www/opesc.js"),
+
+    # Le message du voile de deconnexion est pose des le chargement : Shiny
+    # cree ce voile lui-meme, sans texte, et il n'y a pas d'autre moment pour
+    # lui en donner un.
+    shiny::tags$script(shiny::HTML(sprintf(
+      "document.addEventListener('DOMContentLoaded', function () {
+         var poser = function () {
+           var v = document.getElementById('shiny-disconnected-overlay');
+           if (v) { v.setAttribute('data-message', %s); }
+         };
+         document.addEventListener('shiny:disconnected', function () {
+           setTimeout(poser, 50);
+         });
+       });",
+      jsonlite::toJSON(tr(paste(
+        "La connexion \u00e0 la plateforme a \u00e9t\u00e9 interrompue. Vos donn\u00e9es sont",
+        "intactes : rechargez la page pour reprendre.")), auto_unbox = TRUE)))))
 }

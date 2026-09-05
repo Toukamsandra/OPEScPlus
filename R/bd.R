@@ -244,8 +244,24 @@ diagnostic_frequences <- function() {
   print(d, row.names = FALSE)
   cat("\nFrequences annoncees par le catalogue :\n")
   print(attendus, row.names = FALSE)
-  cat("\nSeules les matieres premieres (categorie C01) sont publiees en mensuel.",
+  cat("\nSeules les matieres premieres (categorie C15) sont publiees en mensuel.",
       "\nSi elles ne sont pas collectees, tout le reste est annuel par nature :",
       "\nla Banque mondiale ne publie que de l'annuel.\n")
   invisible(d)
+}
+
+#' Nombre d'indicateurs actifs
+#'
+#' Compte lu en base a chaque appel. Ecrire ce chiffre dans un texte le rend
+#' faux des la premiere evolution du catalogue, sans que rien ne le signale.
+#' @noRd
+n_indicateurs <- function(con) {
+  DBI::dbGetQuery(con, "SELECT COUNT(*) AS n FROM indicateur WHERE actif = 1")$n
+}
+
+#' Nombre de categories portant au moins un indicateur actif
+#' @noRd
+n_categories <- function(con) {
+  DBI::dbGetQuery(con, "
+    SELECT COUNT(DISTINCT categorie) AS n FROM indicateur WHERE actif = 1")$n
 }

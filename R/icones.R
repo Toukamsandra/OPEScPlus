@@ -16,6 +16,9 @@ icone <- function(nom, taille = 26) {
     trend = '<path d="M3 17l5-6 4 3 6-8"/><path d="M14 6h5v5"/>',
     table = paste0('<rect x="3" y="4" width="18" height="16" rx="2"/>',
                    '<path d="M3 10h18M9 10v10"/>'),
+    download = paste0('<path d="M12 3v12"/><path d="M7 11l5 5 5-5"/>',
+                      '<path d="M4 20h16"/>'),
+    search = paste0('<circle cx="11" cy="11" r="7"/><path d="M20 20l-4.3-4.3"/>'),
     refresh = paste0('<path d="M20 12a8 8 0 11-2.6-5.9"/><path d="M20 4v5h-5"/>'),
     '<circle cx="12" cy="12" r="9"/>')
 
