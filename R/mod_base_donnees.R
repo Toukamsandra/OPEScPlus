@@ -43,9 +43,20 @@ mod_base_donnees_server <- function(id, con) {
   shiny::moduleServer(id, function(input, output, session) {
 
     categories <- lire_categories(con)
+
+    # Une categorie est retenue au chargement : un tableau vide au premier
+    # abord laisse croire que la base l'est aussi. Celle du secteur reel est
+    # prise par defaut, faute de quoi la premiere alimentee.
+    categorie_depart <- local({
+      avec <- categories$code[categories$collectes > 0]
+      if ("C02" %in% avec) "C02"
+      else if (length(avec)) avec[[1]]
+      else categories$code[[1]]
+    })
     shiny::updateSelectInput(session, "categorie",
       choices = c(stats::setNames("", tr("Toutes les catégories")),
-                  stats::setNames(categories$code, categories$libelle)))
+                  stats::setNames(categories$code, categories$libelle)),
+      selected = categorie_depart)
 
     shiny::observe({
       d <- if (is.null(input$categorie) || input$categorie == "")

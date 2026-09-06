@@ -148,10 +148,17 @@ creer_schema <- function(con) {
 #' Definition d'un indicateur, avec sa source
 #' @noRd
 lire_definition <- function(con, code_interne) {
-  d <- DBI::dbGetQuery(con,
-    "SELECT texte, source FROM definition WHERE code_interne = ?",
-    params = list(code_interne))
-  if (!nrow(d)) return(NULL)
+  # Une definition est un complement, jamais une condition d'affichage. Si la
+  # table manque, parce que la base date d'avant son introduction ou qu'une
+  # publication l'a omise, la fonction rend NULL et l'interface poursuit.
+  # Interrompre une recherche entiere faute d'une definition serait hors de
+  # proportion.
+  d <- tryCatch(
+    DBI::dbGetQuery(con,
+      "SELECT texte, source FROM definition WHERE code_interne = ?",
+      params = list(code_interne)),
+    error = function(e) NULL)
+  if (is.null(d) || !nrow(d)) return(NULL)
   list(texte = d$texte[[1]], source = d$source[[1]])
 }
 
@@ -303,4 +310,84 @@ n_indicateurs <- function(con) {
 n_categories <- function(con) {
   DBI::dbGetQuery(con, "
     SELECT COUNT(DISTINCT categorie) AS n FROM indicateur WHERE actif = 1")$n
+}
+
+#' Etat complet de la plateforme
+#'
+#' Une seule commande pour repondre a la question qui revient : pourquoi
+#' l'ecran est-il vide ? Elle dit quelle base est ouverte, ce qu'elle contient,
+#' et si l'indicateur affiche au chargement y figure.
+#'
+#' @examples
+#' \dontrun{
+#' diagnostic_plateforme()
+#' }
+#' @export
+diagnostic_plateforme <- function() {
+  chemin <- chemin_base()
+  cat("Base ouverte :", chemin, "\n")
+  if (!file.exists(chemin)) {
+    cat("\nCe fichier n'existe pas. Lancez preparer_base().\n")
+    return(invisible(FALSE))
+  }
+  cat(sprintf("Taille : %.0f Mo\n", file.size(chemin) / 1024^2))
+
+  con <- connexion(chemin)
+  on.exit(DBI::dbDisconnect(con), add = TRUE)
+
+  tables <- DBI::dbListTables(con)
+  attendues <- c("categorie", "pays", "indicateur", "observation")
+  manquantes <- setdiff(attendues, tables)
+  if (length(manquantes)) {
+    cat("\nTables manquantes :", paste(manquantes, collapse = ", "), "\n")
+    cat("Lancez preparer_base().\n")
+    return(invisible(FALSE))
+  }
+
+  n <- DBI::dbGetQuery(con, "SELECT COUNT(*) AS n FROM observation")$n
+  cat(sprintf("\nObservations en base : %s\n", format(n, big.mark = "\u202f")))
+  if (n == 0) {
+    cat("La base est vide. Lancez collecter_manquants().\n")
+    return(invisible(FALSE))
+  }
+
+  d <- DBI::dbGetQuery(con, "
+    SELECT c.code, c.libelle,
+           COUNT(i.code_interne) AS indicateurs,
+           SUM(CASE WHEN i.nb_observations > 0 THEN 1 ELSE 0 END) AS avec_donnees
+    FROM categorie c
+    LEFT JOIN indicateur i ON i.categorie = c.code AND i.actif = 1
+    GROUP BY c.code, c.libelle, c.ordre ORDER BY c.ordre")
+  cat("\nPar categorie :\n")
+  for (i in seq_len(nrow(d))) {
+    cat(sprintf("  %-4s %-44s %3d / %3d\n", d$code[[i]],
+                substr(d$libelle[[i]], 1, 44),
+                d$avec_donnees[[i]], d$indicateurs[[i]]))
+  }
+
+  # L'indicateur affiche au chargement du tableau de bord.
+  cat("\nIndicateur de depart :\n")
+  for (code in c("NY.GDP.PCAP.KD.ZG", "NY.GDP.MKTP.KD.ZG")) {
+    ind <- DBI::dbGetQuery(con, "
+      SELECT code_interne, categorie, actif, nb_observations FROM indicateur
+      WHERE code_source = ?", params = list(code))
+    if (!nrow(ind)) { cat(sprintf("  %-20s absent du catalogue\n", code)); next }
+    pour_cmr <- DBI::dbGetQuery(con, "
+      SELECT COUNT(*) AS n FROM observation
+      WHERE code_interne = ? AND iso3 = 'CMR' AND frequence = 'A'",
+      params = list(ind$code_interne[[1]]))$n
+    cat(sprintf("  %-20s categorie %s, %d observations dont %d pour le Cameroun\n",
+                code, ind$categorie[[1]], ind$nb_observations[[1]], pour_cmr))
+  }
+
+  compteurs <- DBI::dbGetQuery(con, "
+    SELECT COUNT(*) AS n FROM indicateur
+    WHERE actif = 1 AND nb_observations = 0
+      AND code_interne IN (SELECT DISTINCT code_interne FROM observation)")$n
+  if (compteurs > 0) {
+    cat(sprintf("\n%d indicateurs portent des observations mais affichent un compteur a zero.\n",
+                compteurs))
+    cat("Lancez rafraichir_compteurs().\n")
+  }
+  invisible(TRUE)
 }

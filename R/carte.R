@@ -65,8 +65,11 @@ tracer_carte <- function(d, surligner = character(0), id_clic = NULL) {
     d, source = "carte", type = "choropleth", locations = ~iso3, z = ~valeur,
     text = ~infobulle, hoverinfo = "text",
     zmin = bornes[[1]], zmax = bornes[[2]],
-    colorscale = list(c(0, "#EEF2F8"), c(0.5, "#5B85C4"), c(1, "#1F3864")),
-    marker = list(line = list(color = "#C8A24A", width = ~epaisseur)),
+    # Degrade du vert institutionnel, du plus pale au plus soutenu. Une
+    # echelle a teinte unique se lit sans ambiguite : la valeur croit avec
+    # l'intensite, ce qu'un degrade bicolore ne dit pas.
+    colorscale = list(c(0, "#E9F0F9"), c(0.5, "#5B93C9"), c(1, "#0A2F5C")),
+    marker = list(line = list(color = "#14509B", width = ~epaisseur)),
     colorbar = list(title = list(text = if (is.na(unite)) "" else unite,
                                  font = list(size = 11)),
                     thickness = 12, len = 0.7))

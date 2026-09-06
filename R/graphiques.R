@@ -111,8 +111,8 @@ tracer <- function(d, type = "ligne", base100 = FALSE, titre = NULL) {
       legend.text = ggplot2::element_text(size = 9),
       panel.grid.minor = ggplot2::element_blank(),
       panel.grid.major.x = ggplot2::element_blank(),
-      plot.title = ggplot2::element_text(face = "bold", colour = "#1F3864", size = 13),
-      axis.title.y = ggplot2::element_text(size = 9, colour = "#5C6672"))
+      plot.title = ggplot2::element_text(face = "bold", colour = "#0A2F5C", size = 13),
+      axis.title.y = ggplot2::element_text(size = 9, colour = "#5A6470"))
 }
 
 #' Version interactive, pour l'affichage a l'ecran.
@@ -145,7 +145,7 @@ tracer_camembert <- function(d) {
     ggplot2::theme(
       legend.position = "right",
       legend.text = ggplot2::element_text(size = 9),
-      plot.title = ggplot2::element_text(face = "bold", colour = "#1F3864",
+      plot.title = ggplot2::element_text(face = "bold", colour = "#0A2F5C",
                                          hjust = 0.5, size = 13))
 }
 
@@ -172,7 +172,7 @@ tracer_camembert_interactif <- function(d) {
   plotly::layout(
     p,
     title = list(text = format(attr(parts, "periode"), "%Y"),
-                 font = list(size = 14, color = "#1F3864")),
+                 font = list(size = 14, color = "#0A2F5C")),
     legend = list(orientation = "v", x = 1.02, y = 0.5),
     margin = list(t = 46, b = 10))
 }

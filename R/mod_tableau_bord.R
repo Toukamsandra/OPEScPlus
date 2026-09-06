@@ -108,8 +108,22 @@ mod_tableau_bord_server <- function(id, con) {
     tous_pays  <- lire_pays(con)
 
     avec_donnees <- categories$code[categories$collectes > 0]
+    categorie_depart <- local({
+      # La categorie retenue est celle qui porte l'indicateur de depart, a
+      # condition qu'il soit alimente. Sinon la premiere categorie qui contient
+      # des donnees, quelles qu'elles soient.
+      d <- DBI::dbGetQuery(con, "
+        SELECT categorie FROM indicateur
+        WHERE code_source IN ('NY.GDP.PCAP.KD.ZG', 'NY.GDP.MKTP.KD.ZG')
+          AND actif = 1 AND nb_observations > 0
+        ORDER BY code_source")
+      if (nrow(d)) d$categorie[[1]]
+      else if (length(avec_donnees)) avec_donnees[[1]]
+      else categories$code[[1]]
+    })
+
     etat <- shiny::reactiveValues(
-      categorie = if (length(avec_donnees)) avec_donnees[[1]] else categories$code[[1]],
+      categorie = categorie_depart,
       series    = list(),   # series affichees
       donnees   = NULL,     # tableau assemble
       graphique = NULL)
@@ -214,6 +228,11 @@ mod_tableau_bord_server <- function(id, con) {
       lire_indicateurs(con, etat$categorie)
     })
 
+    # Indicateur retenu au chargement, s'il est present et alimente.
+    # Indicateur retenu au chargement, s'il figure dans la categorie courante.
+    # Le pays de depart, lui, est deja fixe par CONFIG$pays_defaut.
+    INDICATEUR_DEPART <- "NY.GDP.PCAP.KD.ZG"
+
     shiny::observeEvent(indicateurs_categorie(), {
       d <- indicateurs_categorie()
       if (!nrow(d)) {
@@ -235,8 +254,21 @@ mod_tableau_bord_server <- function(id, con) {
       # multiple : le champ redevenait mono-selection des le premier
       # chargement, et il devenait impossible de choisir deux indicateurs.
       # Les options sont posees une fois pour toutes a la creation du champ.
+      # L'indicateur de depart est retenu s'il figure dans la categorie et
+      # porte des donnees. A defaut, le premier qui en porte : ouvrir sur un
+      # indicateur vide donnerait un graphique vide, ce qui laisse croire a une
+      # panne.
+      #
+      # La variable lue ici est `d`, la table des indicateurs de la categorie.
+      # Une premiere version interrogeait un nom qui n'existe pas dans cette
+      # portee : la selection retombait toujours sur le premier de la liste.
+      alimentes <- d[d$nb_observations > 0, ]
+      cible <- alimentes$code_interne[alimentes$code_source == INDICATEUR_DEPART]
+      retenu <- if (length(cible)) cible[[1]]
+                else if (nrow(alimentes)) alimentes$code_interne[[1]]
+                else choix[[1]]
       shiny::updateSelectizeInput(session, "indicateur", choices = choix,
-                                  selected = choix[[1]], server = TRUE)
+                                  selected = retenu, server = TRUE)
     })
 
     # Les cascades qui suivent (frequence, periode, pays) se calent sur le
@@ -401,6 +433,34 @@ mod_tableau_bord_server <- function(id, con) {
     shiny::observeEvent(input$appliquer, {
       etat$series <- selection_courante()
       dessiner()
+    })
+
+    # --- selection de depart ----------------------------------------------
+    # Un tableau de bord vide n'apprend rien et laisse l'utilisateur devant un
+    # cadre gris. Une serie est donc tracee au chargement : la croissance du
+    # produit interieur brut par habitant, au Cameroun, en annuel. Elle se
+    # remplace au premier filtre applique.
+    demarrage <- shiny::reactiveVal(FALSE)
+
+    shiny::observe({
+      if (demarrage()) return()
+      # On attend que les cascades soient remplies : les declencher trop tot
+      # produirait une selection vide, donc aucun trace.
+      shiny::req(length(input$indicateur), input$frequence, length(input$pays))
+      demarrage(TRUE)
+      etat$series <- selection_courante()
+      dessiner()
+
+      # Si rien n'a pu etre trace, l'utilisateur doit savoir pourquoi : un
+      # cadre vide se lit comme une panne alors que la base n'est simplement
+      # pas alimentee.
+      if (is.null(etat$donnees) || !nrow(etat$donnees)) {
+        shiny::showNotification(tr(paste(
+          "Aucune donn\u00e9e \u00e0 tracer au chargement. La base ne contient",
+          "peut-\u00eatre encore rien pour cette cat\u00e9gorie : lancez",
+          "diagnostic_plateforme() dans la console.")),
+          type = "warning", duration = 12)
+      }
     })
 
     shiny::observeEvent(input$ajouter, {
@@ -645,7 +705,7 @@ mod_tableau_bord_server <- function(id, con) {
         wb <- openxlsx::createWorkbook()
         openxlsx::addWorksheet(wb, "Classement")
         openxlsx::writeData(wb, "Classement", sortie, headerStyle =
-          openxlsx::createStyle(fontColour = "#FFFFFF", fgFill = "#1F3864",
+          openxlsx::createStyle(fontColour = "#FFFFFF", fgFill = "#0A2F5C",
                                 textDecoration = "bold"))
         openxlsx::freezePane(wb, "Classement", firstRow = TRUE)
         openxlsx::setColWidths(wb, "Classement", seq_along(sortie), widths = "auto")

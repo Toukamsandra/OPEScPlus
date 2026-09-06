@@ -33,8 +33,13 @@ FREQUENCES <- data.frame(
 )
 
 # Palette : lisible en videoprojection et distinguable en nuances de gris.
-PALETTE <- c("#1F3864", "#C00000", "#2E7D32", "#E07B00", "#5B2C87",
-             "#00838F", "#8D6E63", "#455A64")
+# Palette des graphiques, accordee a la charte du ministere. Les trois
+# premieres couleurs sont celles des armoiries de la Republique, ce qui donne
+# a un graphique a deux ou trois series une identite immediate. Les suivantes
+# les completent en restant distinguables, y compris pour un daltonien : elles
+# different autant par leur clarte que par leur teinte.
+PALETTE <- c("#0A2F5C", "#CE1126", "#2E7BC4", "#177245", "#7A5195",
+             "#B07219", "#5A6470", "#8FC0EA")
 
 libelle_frequence <- function(codes) {
   tr(FREQUENCES$libelle[match(codes, FREQUENCES$code)])

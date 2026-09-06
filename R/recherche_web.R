@@ -283,8 +283,18 @@ definir <- function(requete) {
   # « Croissance economique » et non une notion qui la contient.
   i <- i[which.min(abs(nchar(termes[i]) - nchar(q)))]
   colonne <- if (langue_courante() == "en") "definition_en" else "definition_fr"
+  # La source est celle du manuel dont la definition est tiree, non le nom de
+  # la plateforme : « Glossaire OPESc+ » n'apprenait rien et laissait croire a
+  # une definition maison, alors qu'elles reprennent toutes un texte de
+  # reference.
+  # `source` peut manquer d'un glossaire ancien, et la valeur peut etre vide.
+  # Elle est ramenee a une chaine dans tous les cas : une condition posee plus
+  # loin sur une valeur nulle interrompait l'affichage de toute la recherche,
+  # `nzchar(NULL)` rendant un vecteur vide dont `if` ne sait que faire.
+  source <- if ("source" %in% names(d)) as.character(d$source[[i]]) else ""
+  if (is.na(source) || !nzchar(trimws(source))) source <- "Glossaire OPESc+"
   list(terme = d$terme[[i]], definition = d[[colonne]][[i]],
-       categorie = d$categorie[[i]])
+       categorie = d$categorie[[i]], source = source)
 }
 
 .cache_glossaire <- new.env(parent = emptyenv())

@@ -95,3 +95,26 @@ test_that("aucun type selectionne rend un tableau vide sans erreur", {
   cs <- categories_de_la_requete("inflation")
   expect_equal(nrow(liens_de_la_requete("inflation", cs, character(0))), 0L)
 })
+
+test_that("une definition porte toujours une source", {
+  # C'est la condition posee sur une source absente qui interrompait
+  # l'affichage de la recherche entiere : `nzchar(NULL)` rend un vecteur vide,
+  # dont `if` ne sait que faire. La source est donc toujours une chaine.
+  .i18n$langue <- "fr"
+  for (terme in c("dette publique", "inflation", "PIB", "agr\u00e9gat")) {
+    d <- definir(terme)
+    expect_false(is.null(d), info = terme)
+    expect_true(is.character(d$source), info = terme)
+    expect_true(nzchar(d$source), info = terme)
+  }
+})
+
+test_that("les sources citees sont des references, non la plateforme", {
+  # Une definition doit renvoyer a une autorite. Le glossaire ne se cite
+  # lui-meme qu'a defaut de mieux.
+  d <- utils::read.csv(app_sys("extdata/definitions.csv"),
+                       stringsAsFactors = FALSE, fileEncoding = "UTF-8-BOM")
+  expect_true("source" %in% names(d))
+  expect_true(all(nzchar(d$source)))
+  expect_lt(sum(grepl("OPESc", d$source)), 3L)
+})

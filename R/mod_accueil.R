@@ -95,9 +95,10 @@ mod_accueil_ui <- function(id) {
                               class = "btn-opesc-clair btn-large",
                               icon = shiny::icon("download"))),
         shiny::uiOutput(ns("formulaire_manuel"))),
-      shiny::div(class = "hero-image",
-        shiny::img(src = "www/illustration.svg",
-                   alt = tr("Illustration : donn\u00e9es et analyse \u00e9conomique")))),
+      # Une illustration decorative ne dit rien. Un graphique de la croissance
+      # camerounaise, tire de la base elle-meme, montre d'emblee ce que la
+      # plateforme contient et de quelle source elle le tient.
+      shiny::div(class = "hero-image", banniere_graphique())),
 
     # --- chiffres cles ----------------------------------------------------
     shiny::uiOutput(ns("chiffres")),
@@ -106,12 +107,19 @@ mod_accueil_ui <- function(id) {
     shiny::div(class = "section",
       shiny::h2(tr("Ce que la plateforme permet")),
       shiny::div(class = "grille-fonctions",
-        lapply(FONCTIONS, function(f) {
-          shiny::div(class = "carte-fonction",
-            shiny::div(class = "fonction-icone", icone(f[[1]])),
-            shiny::h3(tr(f[[2]])),
-            shiny::p(tr(f[[3]])),
-            shiny::span(class = "fonction-onglet", tr(f[[4]])))
+        # Le detail est replie. Sept cartes deployees faisaient une page que
+        # personne ne lit : l'oeil glisse sur un mur de texte, alors qu'il
+        # parcourt volontiers sept titres.
+        lapply(seq_along(FONCTIONS), function(i) {
+          f <- FONCTIONS[[i]]
+          shiny::tags$details(class = "carte-fonction",
+            shiny::tags$summary(
+              shiny::div(class = "fonction-icone", icone(f[[1]])),
+              shiny::div(class = "fonction-titre",
+                shiny::h3(tr(f[[2]])),
+                shiny::span(class = "fonction-onglet", tr(f[[4]]))),
+              shiny::span(class = "fonction-chevron", "\u203A")),
+            shiny::p(class = "fonction-detail", tr(f[[3]])))
         }))),
 
     # --- acces exterieurs -------------------------------------------------
@@ -120,8 +128,8 @@ mod_accueil_ui <- function(id) {
       shiny::div(class = "grille-liens",
         lapply(LIENS$institutions, function(l) {
           shiny::tags$a(class = "carte-lien", href = l[[3]], target = "_blank",
-                        rel = "noopener",
-            shiny::strong(l[[1]]), shiny::span(tr(l[[2]])),
+                        rel = "noopener", title = tr(l[[2]]),
+            shiny::strong(l[[1]]),
             shiny::span(class = "carte-lien-fleche", "\u2192"))
         }))),
 

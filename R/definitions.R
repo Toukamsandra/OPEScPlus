@@ -70,8 +70,11 @@ collecter_definitions <- function(forcer = FALSE, pause = 0.2) {
     if (is.null(def)) {
       interne <- definir(ligne$libelle)
       if (!is.null(interne)) {
+        # La source nommee est celle du manuel de reference, non la
+        # plateforme : une definition doit renvoyer a une autorite.
         def <- list(texte = interne$definition,
-                    source = "Glossaire OPESc+")
+                    source = if (isTRUE(nzchar(interne$source %||% "")))
+                               interne$source else "Glossaire OPESc+")
         depuis_glossaire <- depuis_glossaire + 1L
       }
     }

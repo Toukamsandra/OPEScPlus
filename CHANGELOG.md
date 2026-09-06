@@ -1,5 +1,248 @@
 # Journal des versions
 
+## OPEScGolem_V52 (septembre 2026)
+
+**Le graphique paraît avec la page**
+
+Il passait par plotly, ce qui suppose de charger la bibliothèque graphique puis
+de faire un aller-retour avec le serveur. Pendant ce temps la bannière restait
+vide, et c'est ce délai que vous constatiez.
+
+Il est désormais assemblé pendant la construction de la page, en SVG. Il arrive
+avec le reste du document et s'affiche du premier coup, sans attente.
+
+Son apparence reprend celle des graphiques du tableau de bord : fond clair,
+grille horizontale légère, courbe bleue avec ses points, titre en gras, unité
+sous le titre. Les graduations sont des valeurs rondes plutôt que des
+intervalles calculés, un axe qui affiche 2,7 et 5,4 se lisant moins bien qu'un
+axe qui affiche 0, 2, 4.
+
+**Adaptation aux petits écrans, seconde passe**
+
+La barre d'onglets n'avait aucune règle : ses cinq entrées se repliaient sur
+trois lignes ou dépassaient de la fenêtre. Elle défile maintenant
+horizontalement, comme dans les applications qui en comptent beaucoup.
+
+Le document ne défile plus jamais horizontalement dans son ensemble : les
+éléments qui débordent le font à l'intérieur de leur propre cadre. C'est la
+règle qui évite qu'un tableau ou une barre d'onglets ne décale toute la page.
+
+Les sorties graphiques suivent la largeur qu'on leur laisse. Sans cette règle,
+plotly conservait la largeur calculée au premier rendu et débordait après une
+rotation de l'écran.
+
+**Vérifié** à 320, 390, 768 et 1280 pixels : aucun débordement horizontal.
+
+## OPEScGolem_V51 (septembre 2026)
+
+**GoogleOPESc+ ne répondait plus**
+
+Une condition posée sur une source absente. `nzchar(NULL)` rend un vecteur
+vide, et `if` sur un vecteur vide lève une erreur : l'affichage de toute la
+recherche s'interrompait pour une définition sans attribution.
+
+Deux corrections, car une seule laissait le défaut possible. La source est
+désormais toujours une chaîne, avec le glossaire de la plateforme comme repli
+nommé. Et la condition tolère une valeur absente.
+
+Un test vérifie qu'aucune définition ne sort sans source.
+
+**Adaptation aux petits écrans**
+
+Les règles s'arrêtaient à un seuil unique : un téléphone recevait encore des
+grilles à deux colonnes et une carte de quatre cent soixante pixels de haut,
+qui masquait tout le reste.
+
+Trois seuils désormais, correspondant à trois usages. À 1100 pixels, la carte
+perd sa hauteur fixe et les grilles passent à deux colonnes. À 820, tout passe
+en une colonne et les chiffres clés se rangent par deux. À 560, un chiffre par
+ligne, les cadres occupent toute la largeur, la carte se réduit à 260 pixels.
+
+Les éléments interactifs gardent une cible d'au moins quarante-quatre pixels
+sur écran tactile : en deçà, ils sont manqués une fois sur trois au doigt.
+
+Les tableaux débordent horizontalement plutôt que d'écraser leurs colonnes : un
+tableau illisible ne vaut pas mieux qu'un tableau qu'on fait défiler.
+
+**Vérifié** à 390, 768 et 1280 pixels : aucun débordement horizontal.
+
+## OPEScGolem_V49 (septembre 2026)
+
+**Le graphique de la bannière est celui du tableau de bord**
+
+Mon tracé maison en SVG était une illustration à part, avec sa propre écriture
+et ses propres conventions. Il emprunte désormais la fonction de tracé du
+tableau de bord : la bannière montre exactement ce que l'utilisateur produira,
+sur fond clair comme les autres. Les commandes de manipulation sont retirées,
+une bannière se regarde et ne se manipule pas.
+
+**Une sélection au chargement**
+
+Le tableau de bord ouvrait sur un cadre gris, et la base de données sur un
+tableau vide. Ni l'un ni l'autre n'apprenait quoi que ce soit, et un tableau
+vide laissait même croire que la base l'était aussi.
+
+Le tableau de bord trace au chargement la croissance du produit intérieur brut
+par habitant pour le Cameroun, en annuel. La catégorie retenue est celle qui
+porte cet indicateur, non une catégorie quelconque. La base de données ouvre
+sur les indicateurs du secteur réel. Les deux se remplacent au premier filtre
+appliqué.
+
+**Le journal des collectes passe en dernier**
+
+Il rend compte de ce qui a été fait, alors que l'import et la suppression sont
+ce qu'on vient faire. L'ordre précédent obligeait à faire défiler un tableau
+pour atteindre les commandes.
+
+**Les définitions citent leur manuel**
+
+« Glossaire OPESc+ » n'apprenait rien et laissait croire à une définition
+maison. Les quarante-quatre notions reprennent en réalité des textes de
+référence, qui sont désormais nommés : le Système de comptabilité nationale
+pour le produit intérieur brut, le Manuel de la balance des paiements pour le
+compte courant, les résolutions de la Conférence internationale des
+statisticiens du travail pour le chômage.
+
+Une définition doit renvoyer à une autorité, sans quoi elle ne vaut rien dans
+une note.
+
+## OPEScGolem_V48 (septembre 2026)
+
+**Le graphique était invisible**
+
+Tracé en blanc, il était dessiné sur le fond blanc de la bannière. Il lui
+fallait un cadre : il repose désormais sur un aplat dégradé de bleu, avec sa
+légende et sa source en dessous. C'est aussi ce qui lui donne le poids visuel
+qu'il n'avait pas.
+
+**La série est cherchée plus largement**
+
+Quatre codes sont essayés dans l'ordre, du taux de croissance de la Banque
+mondiale à celui du Fonds monétaire international, puis le déflateur. À défaut,
+le produit intérieur brut en niveau, converti en milliards de dollars : mieux
+vaut une série de niveau qu'une bannière sans donnée.
+
+`diagnostic_banniere()` dit lequel des codes manque, et s'il manque au
+catalogue ou seulement en données.
+
+## OPEScGolem_V47 (septembre 2026)
+
+**Charte reprise : bleu, blanc, rouge**
+
+J'avais déduit les couleurs des armoiries de la République, qui sont vert, or
+et rouge. C'était une déduction, pas une observation, et elle était fausse : la
+charte du ministère est bleue, avec le rouge réservé aux actions.
+
+Le bleu se décline en trois valeurs, du bandeau aux surfaces claires. Le rouge
+est réservé à ce sur quoi on clique pour aller ailleurs : lien, bouton
+d'action. Le réserver ainsi lui garde sa force ; l'employer comme ornement la
+lui ôterait.
+
+**Une réserve.** Le site du ministère ne publie pas sa feuille de style, et je
+n'ai pas pu relever ses codes exacts. Ceux retenus sont un choix raisonné, tous
+dans onze variables au même endroit : si vous disposez des codes officiels, ils
+se substituent là et nulle part ailleurs.
+
+**Un graphique à la place de l'illustration**
+
+La bannière portait un dessin décoratif, qui ne disait rien. Elle porte
+maintenant la croissance du produit intérieur brut camerounais sur vingt ans,
+tirée de la base elle-même, avec sa source nommée sous la courbe. C'est une
+démonstration plutôt qu'un ornement : le visiteur voit d'emblée ce que la
+plateforme contient et d'où elle le tient.
+
+Le tracé est en SVG produit côté serveur : une bannière n'a pas à être survolée
+ni zoomée, et un SVG s'affiche sans attendre le chargement d'un moteur
+graphique. L'échelle englobe toujours le zéro, sans quoi une année de récession
+passerait pour un simple creux.
+
+Si la série manque, l'illustration reprend sa place.
+
+**Cartes d'accueil repliées**
+
+Sept cartes déployées faisaient un mur de texte que l'œil ne parcourt pas. Seul
+le titre et l'onglet concerné restent visibles ; le détail se déplie d'un clic.
+
+**Source sur toute définition**
+
+Celle du glossaire portait son texte sans dire d'où il venait. Toute définition
+affichée porte désormais sa source, sans exception : l'utilisateur doit pouvoir
+dire d'où vient ce qu'il recopie dans une note.
+
+**Performance**
+
+Je n'ai pas su reproduire la lenteur que vous décrivez : sur une base d'essai
+de six cent mille lignes, une requête filtrée revient en un dixième de
+milliseconde, avec ou sans index.
+
+J'ai donc appliqué ce dont l'effet est certain sans prétendre avoir trouvé la
+cause : index sur les tables de correspondance de la base publiée, statistiques
+de planification calculées à la publication, et tables temporaires gardées en
+mémoire.
+
+Dites-moi ce qui est lent précisément, et si c'est en ligne ou en local : la
+réponse oriente entièrement le diagnostic.
+
+## OPEScGolem_V46 (septembre 2026)
+
+**Charte graphique alignée sur l'identité du ministère**
+
+La charte précédente, bleu marine et doré, n'appartenait à personne : elle
+pouvait aussi bien habiller une banque qu'un cabinet de conseil. Rien n'y
+situait la plateforme.
+
+Les couleurs ont été relevées sur les armoiries de la République telles
+qu'elles figurent déjà dans le bandeau : vert `#007854`, or `#FCCC0C`, rouge
+`#CC0C24`. Ce sont les couleurs nationales, celles qu'emploient les sites du
+gouvernement.
+
+| Élément | Avant | Après |
+|---|---|---|
+| Couleur principale | bleu marine `#1F3864` | vert `#00694A` |
+| Accent | doré `#C8A24A` | or `#F0B90B` |
+| Alerte | rouge `#B4232A` | rouge `#C0392B` |
+| Fonds clairs | teintés de bleu | teintés de vert |
+
+Le changement porte partout, non seulement à l'écran : la palette des
+graphiques, le dégradé de la carte, l'illustration de la bannière et les
+en-têtes des classeurs exportés. Une charte qui s'arrête à l'interface n'en est
+pas une.
+
+**Palette des graphiques repensée.** Les trois premières couleurs sont celles
+des armoiries, ce qui donne à un graphique de deux ou trois séries une
+identité immédiate. Les suivantes s'en distinguent autant par leur clarté que
+par leur teinte, pour rester lisibles par un daltonien.
+
+**Carte à teinte unique.** Un dégradé du vert pâle au vert soutenu remplace le
+dégradé bicolore : la valeur croît avec l'intensité, ce qu'une échelle à deux
+teintes ne dit pas.
+
+**Un contraste corrigé.** Le doré de la charte sur fond vert soutenu descend à
+3,7 contre 1, sous le seuil de lisibilité. Une variante éclaircie lui est
+réservée pour ces fonds : même teinte, clarté différente. Les neuf autres
+associations contrôlées dépassent toutes le seuil.
+
+## OPEScGolem_V45 (septembre 2026)
+
+**La recherche échouait en ligne**
+
+`preparer_publication()` recopiait quatre tables et oubliait celle des
+définitions. En ligne, l'interface interrogeait donc une table absente, et la
+recherche s'interrompait sur une erreur.
+
+Deux corrections, car une seule n'aurait pas suffi.
+
+La table des définitions voyage désormais avec les autres. C'est la cause.
+
+Et `lire_definition()` rend `NULL` plutôt que d'échouer quand la table manque.
+C'est la protection : une définition est un complément, jamais une condition
+d'affichage. Interrompre une recherche entière faute d'une définition serait
+hors de proportion, et le cas se reproduira avec une base antérieure à cette
+version.
+
+`verifier_publication()` compte désormais les définitions embarquées et
+signale leur absence avant l'envoi.
+
 ## OPEScGolem_V44 (septembre 2026)
 
 **La base publiée éclipsait la base de travail**

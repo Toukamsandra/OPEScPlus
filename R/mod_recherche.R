@@ -312,7 +312,16 @@ mod_recherche_server <- function(id, con, parent) {
                 shiny::span(class = "definition-categorie",
                             nom_categorie(definition$categorie))
               }),
-            shiny::p(class = "definition-texte", definition$definition))
+            shiny::p(class = "definition-texte", definition$definition),
+            # Toute definition affichee porte sa source, sans exception : celle
+            # du glossaire comme celle d'une institution. L'utilisateur doit
+            # pouvoir dire d'ou vient ce qu'il recopie dans une note.
+            # La condition tolere une valeur absente : c'est elle qui, posee
+            # sur un NULL, interrompait l'affichage de la recherche entiere.
+            if (isTRUE(nzchar(definition$source %||% ""))) {
+              shiny::span(class = "definition-source",
+                          sprintf(tr("Source : %s"), definition$source))
+            })
         },
 
         # --- ce que la plateforme contient deja -------------------------

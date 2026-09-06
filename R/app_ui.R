@@ -135,7 +135,7 @@ message_bienvenue <- function() {
 theme_opesc <- function() {
   bslib::bs_theme(
     version = 5,
-    primary = "#1F3864", secondary = "#5C6672",
+    primary = "#0A2F5C", secondary = "#5A6470",
     "body-bg" = "#F5F7FA", "body-color" = "#1B1F24")
 }
 

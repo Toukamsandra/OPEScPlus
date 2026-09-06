@@ -73,7 +73,11 @@ preparer_publication <- function(depuis = NULL, annee_min = NULL,
   DBI::dbExecute(publiee, "PRAGMA synchronous = OFF")
 
   cat("Copie des tables de reference...\n")
-  for (table in c("categorie", "pays", "indicateur", "journal_collecte")) {
+  # La table des definitions voyage avec les autres : l'oublier laissait
+  # l'interface en ligne interroger une table absente, et la recherche
+  # s'interrompait sur une erreur.
+  for (table in c("categorie", "pays", "indicateur", "journal_collecte",
+                  "definition")) {
     if (!DBI::dbExistsTable(source, table)) next
     DBI::dbWriteTable(publiee, table,
                       DBI::dbReadTable(source, table), overwrite = TRUE)
@@ -136,6 +140,21 @@ preparer_publication <- function(depuis = NULL, annee_min = NULL,
     JOIN cle_indicateur i ON i.id_indicateur = o.id_indicateur
     JOIN cle_pays p ON p.id_pays = o.id_pays")
 
+  # Index sur les tables de correspondance. La vue joint trois tables a chaque
+  # lecture : sans index, chacune est parcourue entierement. L'effet ne se
+  # mesure pas sur une base d'essai, ou SQLite s'en sort seul, mais il devient
+  # sensible a plusieurs centaines de milliers de lignes.
+  DBI::dbExecute(publiee, "
+    CREATE INDEX IF NOT EXISTS idx_cle_ind ON cle_indicateur (code_interne)")
+  DBI::dbExecute(publiee, "
+    CREATE INDEX IF NOT EXISTS idx_cle_pays ON cle_pays (iso3)")
+  DBI::dbExecute(publiee, "
+    CREATE INDEX IF NOT EXISTS idx_obs_ind
+    ON observation_compacte (id_indicateur, frequence, annee)")
+
+  # ANALYZE renseigne le planificateur de requetes sur la distribution des
+  # donnees. Sans ces statistiques, il choisit parfois un plan defavorable.
+  DBI::dbExecute(publiee, "ANALYZE")
   DBI::dbExecute(publiee, "VACUUM")
 
   taille <- file.size(cible) / 1024^2
@@ -185,6 +204,16 @@ verifier_publication <- function() {
     controle(taille <= 90,
              sprintf("taille de la base : %.0f Mo", taille),
              "au-dela de 90 Mo, relancez avec annee_min")
+  }
+
+  if (presente) {
+    con <- connexion(base)
+    on.exit(DBI::dbDisconnect(con), add = TRUE)
+    n <- tryCatch(
+      DBI::dbGetQuery(con, "SELECT COUNT(*) AS n FROM definition")$n,
+      error = function(e) 0L)
+    controle(n > 0, sprintf("definitions embarquees : %d", n),
+             "lancez collecter_definitions() puis preparer_publication()")
   }
 
   cat("\nSecurite du depot public\n")

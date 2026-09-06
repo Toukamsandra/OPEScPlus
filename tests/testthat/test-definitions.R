@@ -61,3 +61,13 @@ test_that("le schema s'applique aussi a une base ou observation est une vue", {
   expect_no_error(creer_schema(con))
   expect_true("definition" %in% DBI::dbListTables(con))
 })
+
+test_that("une base sans table de definitions ne fait pas echouer la lecture", {
+  # Cas d'une base publiee avant l'introduction de cette table, ou d'une
+  # publication qui l'aurait omise. Une definition est un complement : son
+  # absence ne doit pas interrompre l'affichage d'une recherche.
+  con <- DBI::dbConnect(RSQLite::SQLite(), tempfile(fileext = ".sqlite"))
+  on.exit(DBI::dbDisconnect(con))
+  DBI::dbExecute(con, "CREATE TABLE indicateur (code_interne TEXT)")
+  expect_null(lire_definition(con, "C02.PIB"))
+})

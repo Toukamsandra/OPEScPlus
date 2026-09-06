@@ -10,7 +10,7 @@
 ecrire_classeur <- function(chemin, d, format_large = FALSE) {
   wb <- openxlsx::createWorkbook()
   style_entete <- openxlsx::createStyle(
-    fontColour = "#FFFFFF", fgFill = "#1F3864", textDecoration = "bold",
+    fontColour = "#FFFFFF", fgFill = "#0A2F5C", textDecoration = "bold",
     halign = "left", border = "TopBottomLeftRight", wrapText = TRUE)
 
   donnees <- d[c("pays", "iso3", "libelle", "unite", "frequence",

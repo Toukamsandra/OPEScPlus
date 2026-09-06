@@ -34,8 +34,6 @@ mod_collectes_ui <- function(id) {
   if (!modifiable) return(journal)
 
   shiny::tagList(
-    journal,
-
     # --- depot d'un fichier ----------------------------------------------
     # Toute source ne se laisse pas interroger par programme : celle des cours
     # de produits de base construit son lien de telechargement en JavaScript.
@@ -86,7 +84,11 @@ mod_collectes_ui <- function(id) {
         shiny::div(class = "champ champ-actions",
           shiny::actionButton(ns("supprimer"), tr("Supprimer"),
                               class = "btn-opesc-clair", icon = shiny::icon("trash")))),
-      shiny::uiOutput(ns("resultat_suppression"))))
+      shiny::uiOutput(ns("resultat_suppression"))),
+
+    # Le journal vient en dernier : il rend compte de ce qui a ete fait, alors
+    # que l'import et la suppression sont ce qu'on vient faire.
+    journal)
 }
 
 mod_collectes_server <- function(id, con) {

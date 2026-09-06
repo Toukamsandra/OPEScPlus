@@ -1,7 +1,21 @@
 :root{
-  --bleu:#1F3864; --bleu-clair:#2C4F8F; --or:#C8A24A;
-  --vert:#137B3B; --rouge:#B4232A;
-  --texte:#1B1F24; --gris:#5C6672; --bordure:#DCE1E8; --fond:#F5F7FA;
+  /* Bleu, blanc, rouge : la charte du ministere. Le bleu porte l'identite et
+     se decline en trois valeurs, du bandeau aux surfaces claires. Le rouge
+     est reserve a ce sur quoi on clique pour aller ailleurs : un lien, un
+     bouton d'action. Le reserver ainsi lui garde sa force ; l'employer comme
+     couleur d'ornement la lui oterait.
+
+     Les codes ci-dessous sont un choix raisonne : le site du ministere ne
+     publie pas sa feuille de style, et les deduire d'une capture aurait donne
+     des approximations. Si vous disposez des codes officiels, ils se
+     substituent ici et nulle part ailleurs.
+
+     Les noms de variables restent ceux d'origine pour ne pas disperser le
+     changement dans six cents declarations. */
+  --bleu:#0A2F5C; --bleu-clair:#14509B; --bleu-vif:#2E7BC4;
+  --or:#14509B; --or-clair:#8FC0EA;
+  --vert:#177245; --rouge:#CE1126;
+  --texte:#1B1F24; --gris:#5A6470; --bordure:#DCE3EC; --fond:#F4F6FA;
   --rayon:6px;
 }
 body{background:var(--fond);color:var(--texte);margin:0}
@@ -49,7 +63,7 @@ body{background:var(--fond);color:var(--texte);margin:0}
 /* --------------------------------------------------------- manuel ------- */
 /* Formulaire replie dans la page, sans fenetre modale : celle-ci dependait du
    balisage Bootstrap et ne s'ouvrait pas. */
-.formulaire-manuel{margin-top:20px;padding:20px 22px;background:#F8FAFC;
+.formulaire-manuel{margin-top:20px;padding:20px 22px;background:#F8FAFD;
   border:1px solid var(--bordure);border-left:4px solid var(--or);
   border-radius:var(--rayon);animation:apparition .2s ease-out}
 .formulaire-titre{font-weight:700;color:var(--bleu);font-size:1rem;margin-bottom:6px}
@@ -102,7 +116,7 @@ body{background:var(--fond);color:var(--texte);margin:0}
 .chiffre-valeur{font-size:1.62rem;font-weight:700;color:var(--bleu);line-height:1.1}
 .chiffre-libelle{font-size:.78rem;color:var(--gris);text-transform:uppercase;
   letter-spacing:.5px}
-.chiffre-maj{background:#F8FAFC}
+.chiffre-maj{background:#F8FAFD}
 .chiffre-date{font-size:.92rem;color:var(--bleu);font-weight:600}
 
 .section{margin-bottom:30px}
@@ -116,11 +130,11 @@ body{background:var(--fond);color:var(--texte);margin:0}
   border-radius:var(--rayon);padding:19px 21px;position:relative;
   transition:box-shadow .16s,border-color .16s}
 .carte-fonction:hover{border-color:var(--bleu-clair);
-  box-shadow:0 4px 14px rgba(31,56,100,.10)}
+  box-shadow:0 4px 14px rgba(10,47,92,.10)}
 .fonction-icone{color:var(--or);margin-bottom:11px;line-height:1}
 .carte-fonction h3{font-size:1rem;color:var(--bleu);margin:0 0 7px;font-weight:700}
 .carte-fonction p{color:var(--gris);font-size:.86rem;line-height:1.55;margin:0 0 12px}
-.fonction-onglet{font-size:.7rem;color:var(--bleu-clair);background:#EEF2F8;
+.fonction-onglet{font-size:.7rem;color:var(--bleu-clair);background:#E9F0F9;
   border-radius:10px;padding:2px 9px;font-weight:600}
 
 .grille-liens{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));
@@ -136,7 +150,7 @@ body{background:var(--fond);color:var(--texte);margin:0}
 .carte-lien-fleche{color:var(--bleu-clair)!important;font-size:1.1rem!important;
   margin-top:3px}
 .carte-source{border-left-color:var(--or)}
-.etiquette{align-self:flex-start;background:#EEF2F8;color:var(--bleu-clair)!important;
+.etiquette{align-self:flex-start;background:#E9F0F9;color:var(--bleu-clair)!important;
   font-size:.72rem!important;border-radius:10px;padding:2px 9px;font-weight:600;margin-top:4px}
 
 /* ------------------------------------------------------- bienvenue ------ */
@@ -162,7 +176,7 @@ body{background:var(--fond);color:var(--texte);margin:0}
 .fiche-drapeau{position:relative;margin-bottom:13px}
 .fiche-drapeau img{width:100%;height:auto;border-radius:4px;
   box-shadow:0 1px 6px rgba(0,0,0,.18)}
-.fiche-code{position:absolute;right:7px;bottom:7px;background:rgba(31,56,100,.88);
+.fiche-code{position:absolute;right:7px;bottom:7px;background:rgba(10,47,92,.88);
   color:#fff;font-size:.68rem;font-weight:700;letter-spacing:1px;
   padding:2px 7px;border-radius:3px}
 .fiche-corps h4{color:var(--bleu);font-size:1.08rem;margin:0 0 11px;font-weight:700}
@@ -195,10 +209,10 @@ body{background:var(--fond);color:var(--texte);margin:0}
   color:var(--gris);font-weight:600}
 .indication{margin:5px 0 0;font-size:.76rem;color:var(--gris);font-style:italic}
 .suggestions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
-.suggestion{background:#EEF2F8;border:1px solid var(--bordure);border-radius:12px;
+.suggestion{background:#E9F0F9;border:1px solid var(--bordure);border-radius:12px;
   padding:3px 11px;font-size:.82rem;color:var(--bleu-clair)!important;
   text-decoration:none!important}
-.suggestion:hover{background:var(--bleu);color:#fff!important;border-color:var(--bleu)}
+.suggestion:hover{background:var(--rouge);color:#fff!important;border-color:var(--rouge)}
 
 /* Resultats presentes en liste ordonnee, a la maniere d'un moteur de
    recherche : le classement fait le travail, l'oeil descend une seule
@@ -210,12 +224,12 @@ body{background:var(--fond);color:var(--texte);margin:0}
 .resultats-compte{color:var(--gris);font-size:.84rem}
 .resultats-sujet{color:var(--bleu);font-size:.84rem;font-weight:600}
 
-.bloc-interne{background:#F4F9F5;border:1px solid #CFE6D6;
+.bloc-interne{background:#F1F6FC;border:1px solid #CBDFF3;
   border-left:4px solid var(--vert);border-radius:var(--rayon);
   padding:14px 16px;margin-bottom:20px}
 .bloc-interne-titre{font-size:.72rem;font-weight:700;color:var(--vert);
   text-transform:uppercase;letter-spacing:.8px;margin-bottom:9px}
-.resultat-interne{padding:10px 0;border-bottom:1px solid #DFEDE3}
+.resultat-interne{padding:10px 0;border-bottom:1px solid #DCE8F5}
 .resultat-interne:last-child{border-bottom:0}
 .resultat-interne strong{color:var(--bleu);font-size:.9rem;display:block}
 .resultat-meta{color:var(--gris);font-size:.78rem;display:block}
@@ -229,11 +243,11 @@ body{background:var(--fond);color:var(--texte);margin:0}
 
 .liste-resultats{display:flex;flex-direction:column;gap:20px;position:relative}
 .resultat{max-width:74ch}
-.resultat-premier{background:#F8FAFC;border-left:3px solid var(--or);
+.resultat-premier{background:#F8FAFD;border-left:3px solid var(--or);
   padding:12px 16px;margin-left:-16px;border-radius:0 var(--rayon) var(--rayon) 0}
 .resultat-fil{display:flex;align-items:center;gap:9px;margin-bottom:3px}
 .resultat-fil span:first-child{color:var(--gris);font-size:.78rem}
-.resultat-type{background:#EEF2F8;color:var(--bleu-clair);font-size:.68rem;
+.resultat-type{background:#E9F0F9;color:var(--bleu-clair);font-size:.68rem;
   border-radius:9px;padding:1px 8px;font-weight:600;text-transform:uppercase;
   letter-spacing:.4px}
 .resultat-titre{display:block;color:var(--bleu-clair)!important;font-size:1.08rem;
@@ -249,7 +263,7 @@ body{background:var(--fond);color:var(--texte);margin:0}
   overflow-y:auto}
 .proposition{display:block;padding:8px 18px;color:var(--texte)!important;
   font-size:.92rem;text-decoration:none!important}
-.proposition:hover{background:#EEF2F8;color:var(--bleu)!important}
+.proposition:hover{background:#E9F0F9;color:var(--bleu)!important}
 
 /* Barre d'onglets, a la maniere d'un moteur de recherche. */
 .onglets-recherche{display:flex;gap:4px;border-bottom:1px solid var(--bordure);
@@ -262,16 +276,17 @@ body{background:var(--fond);color:var(--texte);margin:0}
 .onglet-actif{color:var(--bleu)!important;border-bottom-color:var(--or)}
 
 /* Definition de la notion recherchee. */
-.bloc-definition{background:#FBF8F0;border:1px solid #E8DCC0;
+.bloc-definition{background:#F3F7FC;border:1px solid #C9DCF0;
   border-left:4px solid var(--or);border-radius:var(--rayon);
   padding:16px 19px;margin-bottom:20px}
 .definition-entete{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;
   margin-bottom:7px}
 .definition-terme{font-size:1.1rem;font-weight:700;color:var(--bleu)}
-.definition-categorie{font-size:.72rem;color:#8A6D1F;background:#F2E7CC;
+.definition-categorie{font-size:.72rem;color:#14509B;background:#DCEAF8;
   border-radius:9px;padding:2px 9px;font-weight:600}
-.definition-texte{color:var(--texte);font-size:.93rem;line-height:1.6;margin:0;
-  max-width:78ch}
+.definition-texte{color:var(--texte);font-size:.93rem;line-height:1.6;
+  margin:0 0 7px;max-width:78ch}
+.definition-source{color:var(--bleu-clair);font-size:.76rem;font-style:italic}
 
 /* Grille d'images. */
 .grille-images{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
@@ -279,7 +294,7 @@ body{background:var(--fond);color:var(--texte);margin:0}
 .vignette{display:block;text-decoration:none!important;border:1px solid var(--bordure);
   border-radius:var(--rayon);overflow:hidden;background:#fff}
 .vignette:hover{border-color:var(--bleu-clair);box-shadow:0 3px 10px rgba(0,0,0,.10)}
-.vignette img{width:100%;height:130px;object-fit:cover;display:block;background:#EEF2F8}
+.vignette img{width:100%;height:130px;object-fit:cover;display:block;background:#E9F0F9}
 .vignette-legende{display:block;padding:8px 10px;font-size:.78rem;
   color:var(--texte);line-height:1.35;
   overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -303,23 +318,23 @@ body{background:var(--fond);color:var(--texte);margin:0}
    le lien qui deploie les etapes. Deploye en permanence, ce bloc repoussait
    les categories sous la ligne de flottaison alors qu'il ne sert qu'au
    premier usage. */
-.bandeau-marche{background:#FDFAF3;border:1px solid #E8DCC0;
+.bandeau-marche{background:#F3F7FC;border:1px solid #C9DCF0;
   border-left:4px solid var(--or);padding:12px 18px}
 .marche-ligne{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .marche-icone{color:var(--or);flex:0 0 auto;line-height:1}
 .marche-texte{flex:1 1 auto;min-width:220px;line-height:1.4}
 .marche-texte strong{color:var(--bleu);font-size:.92rem;margin-right:7px}
 .marche-texte span{color:var(--gris);font-size:.86rem}
-.marche-bouton{flex:0 0 auto;background:var(--bleu);color:#fff!important;
+.marche-bouton{flex:0 0 auto;background:var(--rouge);color:#fff!important;
   font-weight:600;font-size:.84rem;padding:7px 16px;border-radius:18px;
   text-decoration:none!important;white-space:nowrap}
-.marche-bouton:hover{background:var(--bleu-clair);color:#fff!important}
+.marche-bouton:hover{background:#A80E1F;color:#fff!important}
 .marche-bouton::after{content:"\2197";margin-left:6px}
 .marche-bascule{flex:0 0 auto;color:var(--bleu-clair)!important;font-size:.84rem;
   font-weight:600;text-decoration:none!important;white-space:nowrap}
 .marche-bascule:hover{text-decoration:underline!important}
 
-.marche-detail{margin-top:14px;padding-top:14px;border-top:1px solid #E8DCC0;
+.marche-detail{margin-top:14px;padding-top:14px;border-top:1px solid #C9DCF0;
   animation:apparition .2s ease-out}
 .marche-colonnes{display:grid;grid-template-columns:1fr 1fr;gap:22px}
 .marche-etape{display:flex;gap:11px;align-items:flex-start}
@@ -337,6 +352,45 @@ body{background:var(--fond);color:var(--texte);margin:0}
   .marche-colonnes{grid-template-columns:1fr;gap:14px}
 }
 
+/* ------------------------------------------- graphique de la banniere --- */
+/* Le graphique est un SVG assemble avec la page : il parait du premier coup,
+   sans attendre le chargement d'une bibliotheque ni un aller-retour serveur.
+   Son apparence reprend celle des graphiques du tableau de bord. */
+.hero-graphique{width:100%;background:#fff;border:1px solid var(--bordure);
+  border-radius:var(--rayon);padding:6px 8px 4px}
+.g-croissance{width:100%;height:auto;display:block}
+.g-titre{fill:var(--bleu);font-size:14px;font-weight:700;font-family:inherit}
+.g-unite{fill:var(--gris);font-size:11px;font-family:inherit}
+.g-axe{fill:var(--gris);font-size:11px;font-family:inherit}
+.g-derniere{fill:var(--rouge);font-size:14px;font-weight:700;font-family:inherit}
+.hero-legende{margin-top:0;padding:0 10px 8px;display:flex;
+  flex-direction:column;gap:2px}
+.hero-legende-source{color:var(--gris);font-size:.76rem;font-style:italic}
+
+/* ------------------------------------------ cartes de fonctionnalites --- */
+/* Le detail est replie. Sept cartes deployees faisaient un mur de texte que
+   l'oeil ne parcourt pas, alors qu'il parcourt volontiers sept titres. */
+.carte-fonction{background:#fff;border:1px solid var(--bordure);
+  border-radius:var(--rayon);padding:0;transition:border-color .15s}
+.carte-fonction[open]{border-color:var(--bleu-vif);
+  box-shadow:0 2px 10px rgba(10,47,92,.08)}
+.carte-fonction summary{display:flex;align-items:center;gap:13px;
+  padding:15px 17px;cursor:pointer;list-style:none}
+.carte-fonction summary::-webkit-details-marker{display:none}
+.carte-fonction summary:hover{background:#F8FAFD;
+  border-radius:var(--rayon)}
+.fonction-icone{color:var(--bleu-clair);flex:0 0 auto;line-height:1}
+.fonction-titre{flex:1 1 auto;min-width:0}
+.fonction-titre h3{margin:0;font-size:.96rem;color:var(--bleu);
+  line-height:1.3}
+.fonction-onglet{display:inline-block;margin-top:3px;font-size:.72rem;
+  color:var(--gris);background:#E9F0F9;border-radius:9px;padding:1px 8px}
+.fonction-chevron{flex:0 0 auto;color:var(--bleu-vif);font-size:1.3rem;
+  line-height:1;transition:transform .18s}
+.carte-fonction[open] .fonction-chevron{transform:rotate(90deg)}
+.fonction-detail{margin:0;padding:0 17px 16px 47px;color:var(--texte);
+  font-size:.88rem;line-height:1.6;max-width:78ch}
+
 /* --------------------------------------------------- tuiles categories -- */
 /* Les tuiles sont des boutons Shiny, donc des elements `.btn`. Bootstrap leur
    applique ses propres couleurs sur les etats :hover, :focus et :active, ce
@@ -350,14 +404,14 @@ body{background:var(--fond);color:var(--texte);margin:0}
 .tuile:link,
 .tuile:visited{display:flex!important;flex-direction:column;align-items:flex-start;
   justify-content:flex-start;text-align:left;gap:4px;
-  background:#F8FAFC!important;border:1px solid var(--bordure)!important;
+  background:#F8FAFD!important;border:1px solid var(--bordure)!important;
   border-left:4px solid var(--bordure)!important;border-radius:var(--rayon);
   padding:11px 13px;cursor:pointer;width:100%;height:100%;min-height:78px;
   transition:none;color:var(--texte)!important;font-family:inherit;
   box-shadow:none!important}
 
 .tuile:hover,
-.tuile:focus{background:#EEF2F8!important;
+.tuile:focus{background:#E9F0F9!important;
   border-left-color:var(--bleu-clair)!important;color:var(--texte)!important}
 .tuile:focus-visible{outline:2px solid var(--or);outline-offset:2px}
 
@@ -368,7 +422,7 @@ body{background:var(--fond);color:var(--texte);margin:0}
 .tuile.tuile-active:focus,
 .tuile.tuile-active:active{background:var(--bleu)!important;
   border-color:var(--bleu)!important;border-left-color:var(--or)!important;
-  color:#FFFFFF!important;box-shadow:0 2px 8px rgba(31,56,100,.24)!important}
+  color:#FFFFFF!important;box-shadow:0 2px 8px rgba(10,47,92,.24)!important}
 
 .tuile-libelle{font-weight:600;font-size:.87rem;line-height:1.25;white-space:normal}
 .tuile-compte{font-size:.74rem;color:var(--gris)}
@@ -377,8 +431,8 @@ body{background:var(--fond);color:var(--texte);margin:0}
 .tuile-vide{color:#A07000;font-style:italic}
 
 .tuile.tuile-active .tuile-libelle{color:#FFFFFF}
-.tuile.tuile-active .tuile-compte{color:#C7D2E4}
-.tuile.tuile-active .tuile-vide{color:var(--or);font-style:italic}
+.tuile.tuile-active .tuile-compte{color:#B9D2EC}
+.tuile.tuile-active .tuile-vide{color:var(--or-clair);font-style:italic}
 
 /* ------------------------------------------------------ barre filtres --- */
 .cadre-filtres{padding-bottom:8px}
@@ -407,7 +461,7 @@ body{background:var(--fond);color:var(--texte);margin:0}
 .btn-opesc:hover{background:var(--bleu-clair)!important}
 .btn-opesc-clair{background:#fff!important;border:1px solid var(--bordure)!important;
   color:var(--bleu)!important;font-weight:600;white-space:nowrap}
-.btn-opesc-clair:hover{background:#EEF2F8!important}
+.btn-opesc-clair:hover{background:#E9F0F9!important}
 
 .alerte{background:#FFF8E6;border-left:4px solid var(--or);padding:9px 13px;
   margin-top:12px;border-radius:0 var(--rayon) var(--rayon) 0;font-size:.85rem}
@@ -415,7 +469,7 @@ body{background:var(--fond);color:var(--texte);margin:0}
 
 /* ------------------------------------------------------------ jetons ---- */
 .jetons{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.jeton{background:#EEF2F8;border:1px solid var(--bordure);border-radius:12px;
+.jeton{background:#E9F0F9;border:1px solid var(--bordure);border-radius:12px;
   padding:3px 8px 3px 11px;font-size:.79rem;display:inline-flex;align-items:center;gap:7px}
 .jeton-retirer{color:var(--gris)!important;text-decoration:none!important;
   font-size:1rem;line-height:1}
@@ -439,7 +493,7 @@ body{background:var(--fond);color:var(--texte);margin:0}
 
 .meta{font-size:.83rem;color:var(--gris);margin:2px 0 0}
 .petit{font-size:.8rem;color:var(--gris)}
-.note{background:#F8FAFC;border-left:4px solid var(--bleu-clair);padding:9px 13px;
+.note{background:#F8FAFD;border-left:4px solid var(--bleu-clair);padding:9px 13px;
   color:var(--gris);font-size:.83rem;border-radius:0 var(--rayon) var(--rayon) 0;margin:12px 0 0}
 
 /* ----------------------------------------------------------- tableau ---- */
@@ -520,10 +574,150 @@ table.dataTable tbody tr:nth-child(even){background:#FAFBFD}
 
 /* Voile de deconnexion : moins sombre, et accompagne d'un message. La page
    se recharge d'elle-meme, il n'y a rien a faire. */
-#shiny-disconnected-overlay{background-color:rgba(31,56,100,.10)!important;
+#shiny-disconnected-overlay{background-color:rgba(10,47,92,.10)!important;
   opacity:1!important}
 /* Le message est ecrit par le script, qui le lit dans un element rendu par R :
    il suit ainsi la langue de l'interface. */
 .bandeau-reconnexion{position:fixed;left:50%;top:24px;transform:translateX(-50%);
   z-index:3000;background:var(--bleu);color:#fff;font-size:.86rem;font-weight:600;
   padding:9px 18px;border-radius:20px;box-shadow:0 4px 14px rgba(0,0,0,.22)}
+
+/* ------------------------------------------------- petits ecrans -------- */
+/* Trois seuils, correspondant a trois usages : une tablette en paysage, une
+   tablette en portrait, un telephone. Les regles precedentes s'arretaient a
+   la premiere, si bien qu'un telephone recevait encore des grilles a deux
+   colonnes et une carte de quatre cent soixante pixels de haut. */
+
+@media(max-width:1100px){
+  /* La carte perd sa hauteur fixe : sur un ecran etroit, elle occupait plus
+     que la fenetre et il fallait defiler pour voir la legende. */
+  .zone-carte{min-height:380px}
+  .colonne-fiche{min-height:0}
+  .grille-fonctions{grid-template-columns:1fr 1fr}
+  .grille-liens{grid-template-columns:1fr 1fr}
+  .resultats-internes{grid-template-columns:1fr 1fr}
+}
+
+@media(max-width:820px){
+  .cadre{padding:18px 16px}
+  .section{padding:0}
+  .hero{padding:22px 18px}
+  .hero h1{font-size:1.45rem;line-height:1.28}
+  .hero p{font-size:.9rem}
+  .hero-actions{flex-wrap:wrap}
+  .hero-actions .btn{flex:1 1 100%;justify-content:center;text-align:center}
+
+  /* Les chiffres passent a deux colonnes : quatre sur une ligne les rendaient
+     illisibles, un par ligne allongeait la page inutilement. */
+  .bande-chiffres{grid-template-columns:1fr 1fr}
+  .chiffre-valeur{font-size:1.5rem}
+
+  .grille-fonctions, .grille-liens, .resultats-internes,
+  .marche-colonnes, .choix-manuel{grid-template-columns:1fr}
+
+  .zone-carte{min-height:320px}
+  .entete-graphique{flex-direction:column;align-items:stretch;gap:12px}
+  .entete-graphique .actions-graphique{justify-content:flex-start;flex-wrap:wrap}
+
+  .onglets-recherche{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .onglet-recherche{padding:11px 14px;white-space:nowrap}
+  .resultat{max-width:none}
+  .grille-images{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+}
+
+@media(max-width:560px){
+  body{font-size:15px}
+  .cadre{padding:15px 13px;border-radius:0;border-left:0;border-right:0;
+    margin-left:-14px;margin-right:-14px}
+  .hero{padding:18px 15px;border-radius:0;margin-left:-14px;margin-right:-14px}
+  .hero h1{font-size:1.25rem}
+  .hero-surtitre{font-size:.68rem}
+
+  /* Un seul chiffre par ligne : a cette largeur, deux colonnes coupent les
+     libelles au milieu d'un mot. */
+  .bande-chiffres{grid-template-columns:1fr}
+
+  .tuiles{grid-template-columns:1fr}
+  .tuile{min-height:0}
+
+  /* La carte reste utilisable mais cesse d'occuper toute la hauteur de
+     l'ecran : sur un telephone, elle masquait tout le reste. */
+  .zone-carte{min-height:260px}
+
+  .marche-ligne{align-items:flex-start;flex-direction:column;gap:10px}
+  .marche-bouton, .marche-bascule{width:100%;text-align:center}
+  .marche-texte{min-width:0}
+
+  .barre-recherche{flex-direction:column}
+  .barre-recherche .btn{width:100%}
+  .filtres-recherche .checkbox-inline{margin-right:12px;font-size:.82rem}
+
+  .resultat-titre{font-size:1rem}
+  .liste-resultats{gap:16px}
+  .resultat-premier{margin-left:0;padding:11px 13px}
+
+  .bloc-definition{padding:13px 14px}
+  .definition-terme{font-size:1rem}
+
+  .fonction-detail{padding:0 15px 14px 15px}
+  .carte-fonction summary{padding:13px 14px;gap:11px}
+
+  /* Les tableaux debordent plutot que d'ecraser leurs colonnes : un tableau
+     illisible ne vaut pas mieux qu'un tableau qu'on fait defiler. */
+  .dataTables_wrapper{overflow-x:auto}
+  table.dataTable{font-size:.82rem}
+}
+
+/* Les elements interactifs gardent une cible d'au moins quarante-quatre
+   pixels : en deca, ils sont manques une fois sur trois au doigt. */
+@media(pointer:coarse){
+  .btn, .tuile, .onglet-recherche, .marche-bouton, .suggestion{min-height:44px}
+  .btn{display:inline-flex;align-items:center}
+  .proposition{padding:11px 18px}
+}
+
+/* --------------------------------- barre d'onglets et conteneur --------- */
+/* Le document ne defile jamais horizontalement : les elements qui debordent le
+   font a l'interieur de leur propre cadre. C'est la regle qui evite qu'un
+   tableau ou une barre d'onglets ne decale toute la page. */
+html, body{max-width:100%;overflow-x:hidden}
+
+/* La barre d'onglets n'avait aucune regle pour les petits ecrans : ses cinq
+   entrees se repliaient sur trois lignes ou depassaient de la fenetre. Elle
+   defile horizontalement, comme dans les applications qui en ont beaucoup. */
+@media(max-width:820px){
+  .conteneur{padding:12px 14px 32px}
+  .bandeau-principal, .partenaires-interne{padding-left:14px;padding-right:14px}
+
+  /* `max-width` confine la barre : sans elle, son contenu defilant pousse la
+     page entiere et un filet de deux pixels deborde a droite. */
+  .navbar{overflow-x:auto;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;max-width:100%}
+  .navbar::-webkit-scrollbar{display:none}
+  .navbar .navbar-nav{flex-direction:row!important;flex-wrap:nowrap}
+  .navbar .nav-link{padding:11px 13px!important;white-space:nowrap;
+    font-size:.88rem}
+
+  /* Les sorties graphiques suivent la largeur qu'on leur laisse. Sans cette
+     regle, plotly conserve la largeur calculee au premier rendu et deborde
+     apres une rotation de l'ecran. */
+  .plotly, .js-plotly-plot, .html-widget{width:100%!important}
+  .shiny-plot-output img{max-width:100%;height:auto}
+
+  /* Les tableaux defilent plutot que d'ecraser leurs colonnes. */
+  .dataTables_wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .dataTables_filter input{width:100%}
+}
+
+@media(max-width:560px){
+  .conteneur{padding:10px 12px 28px}
+  .bandeau-principal{padding:9px 12px}
+  .navbar .nav-link{padding:10px 11px!important;font-size:.84rem}
+  .marque{font-size:1.15rem}
+  .bandeau-sous-titre{font-size:.72rem}
+
+  /* Les champs de formulaire atteignent la largeur pleine : a cette taille,
+     deux champs cote a cote deviennent inutilisables. */
+  .form-control, .selectize-control, .shiny-input-container{width:100%!important}
+  .modal-dialog{margin:10px}
+}
