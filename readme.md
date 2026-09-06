@@ -252,6 +252,18 @@ preparer_publication()
 verifier_publication()
 ```
 
+**Un point d'attention.** Une fois la base compacte écrite dans
+`inst/extdata`, deux bases coexistent sur votre poste : celle de travail, dans
+le dossier de données de l'utilisateur, et celle destinée à la publication. La
+plateforme retient la première tant qu'elle existe, et ne se rabat sur la
+seconde que sur le serveur, où le dossier utilisateur n'existe pas.
+
+Pour savoir laquelle est en usage :
+
+```r
+chemin_base()
+```
+
 La première construit la base compacte dans `inst/extdata/opesc.sqlite` et
 annonce sa taille. Si elle dépasse quatre-vingt-dix méga-octets, relancez en
 limitant la profondeur : `preparer_publication(annee_min = 1990)`.

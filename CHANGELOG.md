@@ -1,5 +1,66 @@
 # Journal des versions
 
+## OPEScGolem_V44 (septembre 2026)
+
+**La base publiée éclipsait la base de travail**
+
+Erreur introduite avec `preparer_publication()`. Dès que la base compacte était
+écrite dans `inst/extdata`, `chemin_base()` la préférait à la base locale :
+vous travailliez donc sur la version publiée, où `observation` est une vue et
+non une table.
+
+D'où les deux erreurs constatées. `views may not be indexed`, parce que le
+schéma tentait d'indexer une vue. Puis `no such table: definition`, parce que
+le schéma s'était interrompu avant de créer cette table.
+
+La base de travail passe désormais avant celle livrée avec le paquet. Sur le
+serveur, le dossier de données de l'utilisateur n'existe pas : la base livrée
+est alors la seule, et elle est retenue. Le déploiement fonctionne donc comme
+prévu, sans que la publication perturbe le travail local.
+
+`chemin_base()` indique laquelle est en usage.
+
+**Le schéma tolère une base publiée**
+
+SQLite refuse d'indexer une vue. La création des index est désormais
+conditionnée à la présence d'une vraie table. Le schéma s'applique donc aux
+deux formes de base sans échouer, ce qui importe puisqu'il crée aussi la table
+des définitions.
+
+## OPEScGolem_V43 (septembre 2026)
+
+**Une définition et sa source pour chaque indicateur**
+
+Les définitions sont récupérées auprès du fournisseur de chaque série, et non
+rédigées dans le projet. Deux raisons.
+
+La première tient à l'autorité. Dans un document administratif, une définition
+sans source ne vaut rien : celle de la Banque mondiale pour le produit
+intérieur brut engage la Banque mondiale, une définition anonyme n'engage
+personne. La source est donc affichée sous chaque définition.
+
+La seconde tient à l'exactitude. Trois cents définitions rédigées à la main
+comporteraient des approximations, et une approximation sur une définition
+d'indicateur se propage dans toutes les notes qui l'emploient.
+
+La Banque mondiale publie, pour chaque indicateur, un texte de définition et
+le nom de l'organisme qui en répond. Les deux champs sont repris tels quels.
+Pour les séries d'autres fournisseurs, le glossaire de la plateforme sert de
+recours, avec la mention explicite « Glossaire OPESc+ » : l'utilisateur doit
+savoir que la définition vient d'ici et non de l'institution qui publie la
+série.
+
+`collecter_definitions()` lance la récupération, `diagnostic_definitions()`
+montre où en est la couverture, catégorie par catégorie.
+
+**Marche à suivre du téléchargement complétée**
+
+Quatre étapes s'ajoutent, entre le choix de la période et la validation :
+le déroulé des autres bases disponibles par la flèche devant « Ensemble de
+données », dont l'indice des prix à la production ; la restriction aux pays et
+indicateurs voulus ; la transformation des données ; et le choix de la
+fréquence.
+
 ## OPEScGolem_V41 (septembre 2026)
 
 **Préparation à la mise en ligne**

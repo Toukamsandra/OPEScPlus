@@ -24,12 +24,23 @@ chemin_base <- function() {
   depuis_config <- tryCatch(get_golem_config("base"), error = function(e) NULL)
   if (!is.null(depuis_config) && nzchar(depuis_config)) return(depuis_config)
 
+  # La base de travail de l'utilisateur passe avant celle livree avec le
+  # paquet. L'ordre inverse avait une consequence facheuse : des lors que
+  # `preparer_publication()` avait ecrit la base compacte dans inst/extdata,
+  # la plateforme cessait d'utiliser la base locale et travaillait sur la
+  # version publiee, ou `observation` est une vue et non une table.
+  #
+  # Sur le serveur, ce dossier n'existe pas : la base livree est alors la
+  # seule, et elle est retenue.
+  dossier <- tools::R_user_dir("opescplus", "data")
+  locale <- file.path(dossier, "opesc.sqlite")
+  if (file.exists(locale)) return(locale)
+
   embarquee <- app_sys("extdata/opesc.sqlite")
   if (nzchar(embarquee) && file.exists(embarquee)) return(embarquee)
 
-  dossier <- tools::R_user_dir("opescplus", "data")
   dir.create(dossier, showWarnings = FALSE, recursive = TRUE)
-  file.path(dossier, "opesc.sqlite")
+  locale
 }
 
 #' La base est-elle modifiable ?
@@ -101,11 +112,18 @@ creer_schema <- function(con) {
       valeur       REAL,
       PRIMARY KEY (code_interne, iso3, frequence, date_periode))")
 
-  DBI::dbExecute(con, "
-    CREATE INDEX IF NOT EXISTS obs_idx
-    ON observation (code_interne, frequence, iso3, date_periode)")
-  DBI::dbExecute(con, "
-    CREATE INDEX IF NOT EXISTS obs_annee ON observation (code_interne, annee)")
+  # Sur une base publiee, `observation` est une vue et SQLite refuse de
+  # l'indexer. Le schema doit rester applicable aux deux formes : la
+  # verification evite une erreur qui interromprait tout le chargement.
+  est_table <- nrow(DBI::dbGetQuery(con, "
+    SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'observation'")) > 0
+  if (est_table) {
+    DBI::dbExecute(con, "
+      CREATE INDEX IF NOT EXISTS obs_idx
+      ON observation (code_interne, frequence, iso3, date_periode)")
+    DBI::dbExecute(con, "
+      CREATE INDEX IF NOT EXISTS obs_annee ON observation (code_interne, annee)")
+  }
 
   DBI::dbExecute(con, "
     CREATE TABLE IF NOT EXISTS journal_collecte (
@@ -113,7 +131,28 @@ creer_schema <- function(con) {
       debut TEXT NOT NULL, fin TEXT, declencheur TEXT, statut TEXT,
       nb_indicateurs INTEGER DEFAULT 0, nb_creees INTEGER DEFAULT 0,
       nb_modifiees INTEGER DEFAULT 0, message TEXT)")
+
+  # Les definitions ne sont pas redigees ici : elles sont recuperees aupres du
+  # fournisseur de chaque indicateur, avec son nom. Une definition sans source
+  # ne vaut rien dans un document administratif, et en ecrire trois cents
+  # soi-meme reviendrait a se substituer aux institutions qui les publient.
+  DBI::dbExecute(con, "
+    CREATE TABLE IF NOT EXISTS definition (
+      code_interne TEXT PRIMARY KEY,
+      texte        TEXT NOT NULL,
+      source       TEXT NOT NULL,
+      recuperee    TEXT)")
   invisible(TRUE)
+}
+
+#' Definition d'un indicateur, avec sa source
+#' @noRd
+lire_definition <- function(con, code_interne) {
+  d <- DBI::dbGetQuery(con,
+    "SELECT texte, source FROM definition WHERE code_interne = ?",
+    params = list(code_interne))
+  if (!nrow(d)) return(NULL)
+  list(texte = d$texte[[1]], source = d$source[[1]])
 }
 
 # --- lectures --------------------------------------------------------------

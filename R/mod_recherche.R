@@ -299,7 +299,7 @@ mod_recherche_server <- function(id, con, parent) {
       resultats <- rechercher_web(q, 10L, vue)
       definition <- if (identical(vue, "tout")) definir(q) else NULL
       indicateurs <- if (identical(vue, "tout"))
-        indicateurs_de_la_requete(con, q, limite = 5L) else NULL
+        indicateurs_de_la_requete(con, q, limite = 4L) else NULL
 
       shiny::div(class = "cadre cadre-resultats",
 
@@ -316,19 +316,34 @@ mod_recherche_server <- function(id, con, parent) {
         },
 
         # --- ce que la plateforme contient deja -------------------------
+        # Chaque indicateur porte sa definition et la source qui en repond.
+        # Une definition sans source ne vaut rien dans un document
+        # administratif : celle de la Banque mondiale engage la Banque
+        # mondiale, une definition anonyme n'engage personne.
         if (!is.null(indicateurs) && nrow(indicateurs)) {
           shiny::div(class = "bloc-interne",
             shiny::div(class = "bloc-interne-titre",
                        tr("Disponible dans la plateforme")),
             lapply(seq_len(nrow(indicateurs)), function(i) {
               r <- indicateurs[i, ]
+              def <- lire_definition(con, r$code_interne)
               shiny::div(class = "resultat-interne",
                 shiny::strong(tr(r$libelle)),
                 shiny::span(class = "resultat-meta", sprintf(
                   "%s \u00b7 %s", nom_categorie(r$categorie),
                   if (r$nb_observations > 0)
                     sprintf(tr("%d observations"), r$nb_observations)
-                  else tr("sans donn\u00e9es"))))
+                  else tr("sans donn\u00e9es"))),
+                if (!is.null(def)) {
+                  shiny::tagList(
+                    shiny::p(class = "resultat-definition", def$texte),
+                    shiny::span(class = "resultat-source",
+                                sprintf(tr("Source de la d\u00e9finition : %s"),
+                                        def$source)))
+                } else {
+                  shiny::span(class = "resultat-sans-definition",
+                              tr("D\u00e9finition non renseign\u00e9e. Lancez collecter_definitions()."))
+                })
             }))
         },
 

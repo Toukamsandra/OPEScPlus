@@ -139,7 +139,11 @@ mod_tableau_bord_server <- function(id, con) {
           etape("1", tr("T\u00e9l\u00e9charger la base"), list(
             tr("Rubrique \u00ab Prix des mati\u00e8res premi\u00e8res \u00bb, puis \u00ab Acc\u00e9der \u00e0 la base de donn\u00e9es \u00bb."),
             tr("Cliquez sur \u00ab Voir donn\u00e9es \u00bb."),
-            tr("Dans \u00ab Explorateur de donn\u00e9es \u00bb, choisissez les quinze derni\u00e8res ann\u00e9es."),
+            tr("Dans \u00ab Explorateur de donn\u00e9es \u00bb, d\u00e9finissez la p\u00e9riode, par exemple les quinze derni\u00e8res ann\u00e9es."),
+            tr("La fl\u00e8che devant \u00ab Ensemble de donn\u00e9es \u00bb d\u00e9roule les autres bases disponibles, dont l'indice des prix \u00e0 la production."),
+            tr("Vous pouvez ensuite restreindre aux pays et aux indicateurs voulus, plut\u00f4t que de tout t\u00e9l\u00e9charger."),
+            tr("\u00ab Transformer les donn\u00e9es \u00bb permet d'en changer la pr\u00e9sentation."),
+            tr("La fr\u00e9quence se choisit ensuite : annuelle, trimestrielle, mensuelle, ou toutes."),
             tr("Cliquez sur \u00ab Postulez \u00bb, puis \u00ab T\u00e9l\u00e9charger \u00bb."),
             tr("Choisissez l'ensemble de donn\u00e9es sur la page, non les donn\u00e9es compl\u00e8tes."))),
           etape("2", tr("Importer dans la plateforme"), list(

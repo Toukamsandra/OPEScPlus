@@ -215,10 +215,17 @@ body{background:var(--fond);color:var(--texte);margin:0}
   padding:14px 16px;margin-bottom:20px}
 .bloc-interne-titre{font-size:.72rem;font-weight:700;color:var(--vert);
   text-transform:uppercase;letter-spacing:.8px;margin-bottom:9px}
-.resultat-interne{padding:5px 0;border-bottom:1px solid #DFEDE3}
+.resultat-interne{padding:10px 0;border-bottom:1px solid #DFEDE3}
 .resultat-interne:last-child{border-bottom:0}
 .resultat-interne strong{color:var(--bleu);font-size:.9rem;display:block}
-.resultat-meta{color:var(--gris);font-size:.78rem}
+.resultat-meta{color:var(--gris);font-size:.78rem;display:block}
+/* La definition et sa source. Les separer visuellement importe : la premiere
+   engage l'institution qui la publie, la seconde dit laquelle. */
+.resultat-definition{color:var(--texte);font-size:.85rem;line-height:1.55;
+  margin:7px 0 4px;max-width:80ch}
+.resultat-source{color:var(--vert);font-size:.76rem;font-style:italic}
+.resultat-sans-definition{color:var(--gris);font-size:.78rem;font-style:italic;
+  display:block;margin-top:5px}
 
 .liste-resultats{display:flex;flex-direction:column;gap:20px;position:relative}
 .resultat{max-width:74ch}

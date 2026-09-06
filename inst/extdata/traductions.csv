@@ -637,3 +637,10 @@ Catégorie : « Matières premières commodityPrice ».,Category: Commodity pric
 "Le manuel présente la plateforme, détaille les cinq onglets, expose la méthode et recense les %d indicateurs des %d catégories avec leur code de collecte et leur unité.","The manual introduces the platform, details the five tabs, sets out the method and lists the %d indicators of the %d categories with their collection code and unit."
 L'année de début (%d) est postérieure à l'année de fin (%d). La première doit être inférieure à la seconde.,The start year (%d) is later than the end year (%d). The first must be earlier than the second.
 "Cette plateforme est publiée en lecture seule. Les données y sont figées à la date de publication : la collecte et l'import restent des opérations locales, menées sur le poste qui alimente la base.","This platform is published read-only. The data is frozen as at the publication date: collection and import remain local operations, carried out on the machine that feeds the database."
+"Dans « Explorateur de données », définissez la période, par exemple les quinze dernières années.","In Data explorer, set the period, for example the last fifteen years."
+Définition non renseignée. Lancez collecter_definitions().,Definition not available. Run collecter_definitions().
+"La flèche devant « Ensemble de données » déroule les autres bases disponibles, dont l'indice des prix à la production.","The arrow before Dataset unfolds the other available databases, including the producer price index."
+"La fréquence se choisit ensuite : annuelle, trimestrielle, mensuelle, ou toutes.","The frequency is then chosen: annual, quarterly, monthly, or all."
+Source de la définition : %s,Definition source: %s
+"Vous pouvez ensuite restreindre aux pays et aux indicateurs voulus, plutôt que de tout télécharger.","You can then narrow to the countries and indicators you want, rather than downloading everything."
+« Transformer les données » permet d'en changer la présentation.,Transform data lets you change how they are laid out.
