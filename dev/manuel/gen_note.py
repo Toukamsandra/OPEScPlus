@@ -60,6 +60,13 @@ PREAMBULE = r"""\documentclass[11pt,a4paper,openany]{report}
 \setlength{\parindent}{0pt}
 \renewcommand{\arraystretch}{1.06}
 
+\renewcommand{\chaptername}{Chapitre}
+\renewcommand{\tablename}{Table}
+\renewcommand{\figurename}{Figure}
+\renewcommand{\appendixname}{Annexe}
+\renewcommand{\contentsname}{Table des matières}
+\renewcommand{\listtablename}{Liste des tableaux}
+
 \begin{document}
 """
 
@@ -110,13 +117,13 @@ CORPS = r"""
 OPESc+ est une plateforme de consultation des indicateurs économiques
 mondiaux, construite pour la Division des Analyses et des Politiques
 Économiques. Elle rassemble 313 indicateurs répartis en 14 catégories,
-couvrant environ 217 économies depuis 1960, et les met à disposition sous
-forme de séries exploitables : graphiques, cartes, exports en tableur.
+couvrant environ 217 économies, et les met à disposition sous forme de séries
+exploitables : graphiques, cartes, exports en tableur.
 
-Elle est en ligne, accessible par un simple lien, sans installation.
+Elle est en ligne, accessible par un lien, sans installation ni compte.
 
 \begin{encadre}{Ce qu'elle est, ce qu'elle n'est pas}
-OPESc+ est un outil de consultation et de restitution. Ce n'est pas un modele
+OPESc+ est un outil de consultation et de restitution. Ce n'est pas un modèle
 macroéconomique : elle ne simule aucun choc et ne produit aucune prévision
 institutionnelle. Elle complète OPESc, dont elle reprend la charte, sans s'y
 substituer.
@@ -124,18 +131,18 @@ substituer.
 
 \chapter{Ce que la plateforme apporte}
 
-\section{Le probleme de départ}
+\section{Le problème de départ}
 
 Préparer une note de conjoncture suppose de rassembler des données dispersées
 entre les portails de la Banque mondiale, du Fonds monétaire international et
 d'une dizaine d'autres institutions. Chacun a son interface, sa nomenclature,
-son format d'export. Le temps passe a collecter n'est pas passe a analyser, et
-deux notes rediges le meme mois peuvent reposer sur des millésimes différents.
+son format d'export. Le temps passé à collecter n'est pas passé à analyser, et
+deux notes rédigées le même mois peuvent reposer sur des millésimes différents.
 
 \section{La réponse}
 
-Une base unique, alimentée automatiquement aupres des sources d'origine, et une
-interface qui la rend consultable sans connaissance technique.
+Une base unique, alimentée auprès des sources d'origine, et une interface qui
+la rend consultable sans connaissance technique.
 
 \begin{table}[H]
 \centering\small
@@ -143,11 +150,11 @@ interface qui la rend consultable sans connaissance technique.
 \toprule
 \textbf{Onglet} & \textbf{Usage} \\
 \midrule
-Accueil & Présentation, chiffres de la base, acces aux sites de référence, téléchargement du manuel \\
+Accueil & Présentation, chiffres de la base, graphique de la croissance camerounaise, téléchargement du manuel \\
 Tableau de bord & Graphiques, carte du monde, projections, exports \\
 Base de données & Consultation tabulaire et téléchargement en tableur \\
-GoogleOPESc+ & Recherche documentaire limitée a des sources choisies \\
-Collectes & Journal des actualisations et import de fichiers \\
+GoogleOPESc+ & Recherche documentaire limitée à des sources choisies \\
+Collectes & Import de fichiers, suppression, journal des actualisations \\
 \bottomrule
 \end{tabularx}
 \caption{Les cinq onglets}
@@ -158,19 +165,26 @@ Collectes & Journal des actualisations et import de fichiers \\
 \textbf{Les filtres ne mènent jamais dans le vide.} Les fréquences proposées,
 les pays offerts et les bornes de période sont ceux qui existent réellement en
 base pour l'indicateur choisi. Un cadre vide indique toujours la raison et la
-marche a suivre.
+marche à suivre.
 
-\textbf{La comparaison est immédiate.} Jusqu'a six séries sur un meme
+\textbf{L'écran n'est jamais vide au chargement.} Le tableau de bord trace
+d'emblée la croissance du produit intérieur brut par habitant pour le Cameroun,
+et la base de données ouvre sur une catégorie alimentée. Un écran gris au
+premier abord laisse croire à une panne.
+
+\textbf{La comparaison est immédiate.} Jusqu'à six séries sur un même
 graphique. Quand les unités diffèrent, elles sont ramenées en base 100 pour
 rester comparables, automatiquement.
-
-\textbf{La carte suit le filtre.} Un curseur d'année animable montre une
-dynamique que le graphique ne rend pas quand les pays sont nombreux. Un clic
-ouvre la fiche du pays.
 
 \textbf{Tout export porte ses sources.} Chaque classeur téléchargé comporte une
 feuille indiquant, pour chaque indicateur, sa provenance et la date
 d'extraction. C'est ce qui rend une note vérifiable des mois plus tard.
+
+\textbf{Chaque définition cite son autorité.} Les définitions viennent du
+fournisseur de la série, ou des manuels de référence : Système de comptabilité
+nationale, Manuel de la balance des paiements, résolutions de l'Organisation
+internationale du travail. Une définition sans source ne vaut rien dans un
+document administratif.
 
 \chapter{Les données}
 
@@ -183,8 +197,8 @@ d'extraction. C'est ce qui rend une note vérifiable des mois plus tard.
 \textbf{Fournisseur} & \textbf{Ce qu'il apporte} \\
 \midrule
 Banque mondiale & Indicateurs du développement dans le monde, dette internationale, gouvernance, pauvreté, Findex, performance logistique \\
-Fonds monétaire international & Perspectives de l'economie mondiale, Moniteur des finances publiques \\
-Fonds monétaire international & Prix des produits de base, par fichier \\
+Fonds monétaire international & Perspectives de l'économie mondiale, Moniteur des finances publiques \\
+Fonds monétaire international & Prix des produits de base, par fichier importé \\
 Growth Lab, Harvard & Atlas de la complexité économique \\
 \bottomrule
 \end{tabularx}
@@ -196,10 +210,10 @@ des séries dont la propriété reste celle de leurs producteurs.
 
 \section{Trois principes de traitement}
 
-\textbf{Une valeur manquante n'est jamais un zero.} Elle n'est pas enregistrée,
-et une serie lacunaire est tracée en pointillés, jamais interpolée. Relier deux
-points distants de plusieurs années par un trait plein suggérerait une
-évolution qui n'a pas ete observée.
+\textbf{Une valeur manquante n'est jamais un zéro.} Elle n'est pas
+enregistrée, et une série lacunaire est tracée en pointillés, jamais
+interpolée. Relier deux points distants de plusieurs années par un trait plein
+suggérerait une évolution qui n'a pas été observée.
 
 \textbf{Les agrégats sont écartés des classements et des cartes.} Sans cela, le
 monde et la zone euro occuperaient systématiquement les premières places et
@@ -207,27 +221,26 @@ monde et la zone euro occuperaient systématiquement les premières places et
 
 \textbf{Chaque collecte est journalisée.} Une collecte peut se terminer sans
 erreur et sans rien ramener, par exemple si un fournisseur a renommé un code.
-Sans journal, cette panne silencieuse passerait inaperçue pendant des mois et
-les analyses reposeraient sur des séries figées.
+Sans journal, cette panne silencieuse passerait inaperçue pendant des mois.
 
 \section{Le cas des matières premières}
 
-Cette catégorie mérite une mention, car elle fonctionne autrement.
+Cette catégorie fonctionne autrement, et cela mérite d'être expliqué.
 
 Le portail du Fonds monétaire international construit son lien de
 téléchargement en JavaScript : aucune adresse ne figure dans le code de la
-page, et elle ne peut donc pas etre trouvée par programme. Six voies
-differentes ont ete essayées avant d'en tirer la conclusion.
+page, elle ne peut donc pas être trouvée par programme. Six voies différentes
+ont été essayées avant d'en tirer la conclusion.
 
-La base se téléchargé donc à la main, une fois, puis s'importée dans la
-plateforme depuis l'onglet Collectes. Un encadré en tête du tableau de bord
-donne la marche a suivre en deux séries d'étapes. Une base est livrée avec la
-plateforme, ces étapes servent a l'actualiser.
+La base se télécharge à la main, une fois, puis s'importe depuis l'onglet
+Collectes. Un bandeau replié en tête du tableau de bord donne la marche à
+suivre en deux séries d'étapes. Une base est livrée avec la plateforme, ces
+étapes servent à l'actualiser.
 
-\begin{encadre}{Une donnée importee vaut une donnée collectee}
-Elle emprunte la meme fonction d'écriture, porte les mêmes fréquences et
+\begin{encadre}{Une donnée importée vaut une donnée collectée}
+Elle emprunte la même fonction d'écriture, porte les mêmes fréquences et
 alimente les mêmes compteurs. Un indicateur est utilisable dès lors qu'il porte
-des données, quelle que soit la facon dont elles sont arrivées.
+des données, quelle que soit la façon dont elles sont arrivées.
 \end{encadre}
 
 \chapter{Comment elle est faite}
@@ -237,15 +250,13 @@ des données, quelle que soit la facon dont elles sont arrivées.
 La plateforme est écrite en R, avec le cadre Shiny, et organisée en paquet
 selon la structure golem.
 
-Ce choix se justifie par l'usage. Une première version avait ete construite en
-Django, un cadre conçu pour des applications a comptes utilisateurs, formulaires
-et ecritures concurrentes. OPESc+ n'est rien de tout cela : c'est un
-explorateur de données en lecture seule. Sur les quatre grandes fonctions de
-Django, une et demie servaient.
+Ce choix se justifie par l'usage. Une première version avait été construite en
+Django, un cadre conçu pour des applications à comptes utilisateurs,
+formulaires et écritures concurrentes. OPESc+ n'est rien de tout cela : c'est
+un explorateur de données en lecture seule.
 
-R présente en outre l'avantage d'etre la langue de travail des statisticiens de
-la division : les évolutions futures, projections ou comparaisons, y seront plus
-faciles a mener.
+R présente en outre l'avantage d'être la langue de travail des statisticiens de
+la division : les évolutions futures y seront plus faciles à mener.
 
 \section{L'architecture}
 
@@ -259,104 +270,112 @@ Quatre étages, volontairement séparés.
   \item Les exports produisent des fichiers autonomes portant leurs sources.
 \end{enumerate}
 
-Cette séparation a une conséquence pratique : consulter la plateforme ne peut
-en aucun cas altérer les données, et une collecte en cours n'empêche pas la
-consultation.
+Consulter la plateforme ne peut donc en aucun cas altérer les données, et une
+collecte en cours n'empêche pas la consultation.
+
+\section{L'identité visuelle}
+
+La charte reprend celle du ministère : le bleu porte l'identité et se décline
+en trois valeurs, le rouge est réservé à ce sur quoi on clique pour aller
+ailleurs. Le réserver ainsi lui garde sa force.
+
+Le changement porte partout, non seulement à l'écran : la palette des
+graphiques, le dégradé de la carte et les en-têtes des classeurs exportés. Une
+charte qui s'arrête à l'interface n'en est pas une.
+
+Les contrastes ont été mesurés : neuf associations de couleurs sur dix
+dépassaient le seuil de lisibilité, la dixième a été corrigée.
 
 \section{Ce qui garantit la qualité}
 
 Le projet comporte une soixantaine de tests automatisés. Ils ne vérifient pas
 seulement que le code s'exécute, mais que les règles de lecture sont
-respectées : que les agrégats sont bien exclus des cartes, qu'une serie
+respectées : que les agrégats sont bien exclus des cartes, qu'une série
 lacunaire n'est pas interpolée, qu'un changement de langue ne laisse pas de
-texte en français.
+texte en français, qu'aucune définition ne s'affiche sans source.
 
-Deux de ces tests sont nés d'erreurs constatées, et les rendent désormais
-impossibles a reproduire.
+Plusieurs de ces tests sont nés d'erreurs constatées, et les rendent désormais
+impossibles à reproduire.
 
 \chapter{Les difficultés rencontrées}
 
-Cette section n'a pas vocation a etre présentée en détail, mais elle explique
-pourquoi certains choix ont ete faits, et pourquoi le projet a demandé le temps
-qu'il a demandé.
+Cette section n'a pas vocation à être présentée en détail, mais elle explique
+certains choix et le temps qu'a demandé le projet.
 
 \section{Les portails changent}
 
 Le Fonds monétaire international a réorganisé ses interfaces deux fois pendant
-la construction. Une adresse a ete retirée en novembre 2025, une autre s'est
-mise a refuser toute requête automatisée. L'Atlas de Harvard a change de
-technologie d'acces.
+la construction. Une adresse a été retirée, une autre s'est mise à refuser
+toute requête automatisée. L'Atlas de Harvard a changé de technologie d'accès.
 
-La leçon en a été tirée : chaque source critique dispose désormais de plusieurs
-voies d'acces, et le connecteur bascule de l'une a l'autre en le signalant.
+Chaque source critique dispose désormais de plusieurs voies d'accès, et le
+connecteur bascule de l'une à l'autre en le signalant.
 
 \section{Certaines sources ne se laissent pas interroger}
 
-Deux pages, celle des prix des produits de base et celle de l'Atlas,
-construisent leur lien de téléchargement en JavaScript. Aucun programme ne peut
-le trouver.
-
-Plutot que de s'obstiner, la plateforme assume l'import manuel et l'organise :
-dépôt depuis l'interface, création automatique des indicateurs inconnus,
-vérification de ce qui sera écrit avant de l'ecrire.
+Deux pages construisent leur lien de téléchargement en JavaScript. Aucun
+programme ne peut le trouver. Plutôt que de s'obstiner, la plateforme assume
+l'import manuel et l'organise : dépôt depuis l'interface, création automatique
+des indicateurs inconnus, vérification avant écriture.
 
 \section{Six fournisseurs restent hors d'atteinte}
 
 La CNUCED, la FAO, l'OIT, l'OCDE, le PNUD et Transparency International
-demandent chacun un connecteur spécifique, qui reste a ecrire. Leurs
-indicateurs sont désactivés plutot que laissés visibles et muets dans
-l'interface.
-
-C'est un choix délibéré : un indicateur qui ne donnera rien ne doit pas figurer
-dans une liste.
+demandent chacun un connecteur spécifique, qui reste à écrire. Leurs
+indicateurs sont désactivés plutôt que laissés visibles et muets : un
+indicateur qui ne donnera rien ne doit pas figurer dans une liste.
 
 \chapter{La mise en ligne}
 
 \section{Où et comment}
 
-La plateforme est hebergee sur Posit Connect Cloud, dans son offre gratuite.
-Elle se déploie depuis un dépôt GitHub public et se redéploie automatiquement a
+La plateforme est hébergée sur Posit Connect Cloud, dans son offre gratuite.
+Elle se déploie depuis un dépôt GitHub public et se redéploie automatiquement à
 chaque envoi de code.
 
-Concrètement, modifier la plateforme en ligne revient a modifier le code en
-local, le tester, puis le pousser. Le redéploiement prend une a deux minutes.
+Modifier la plateforme en ligne revient donc à modifier le code en local, le
+tester, puis le pousser. Le redéploiement prend une à deux minutes.
 
 \section{Deux contraintes traitées}
 
 \textbf{La taille.} La base de travail pesait plus de deux cents méga-octets,
-alors que GitHub refuse un fichier au-dela de cent. Les codes d'indicateur et
-de pays y etaient répétés en toutes lettres sur chaque ligne. Les remplacer par
-des entiers renvoyant a deux tables de correspondance a ramené la ligne de cent
-cinquante a trente-quatre octets.
+alors que GitHub refuse un fichier au-delà de cent. Les codes d'indicateur et
+de pays y étaient répétés en toutes lettres sur chaque ligne. Les remplacer par
+des entiers renvoyant à deux tables de correspondance a ramené la ligne de cent
+cinquante à trente-quatre octets. La profondeur historique a ensuite été
+limitée à 1990 pour la version publiée, ce qui ramène la base à soixante
+méga-octets.
 
-\textbf{Le dépôt est public.} Aucune clef n'y figure. Les identifiants du
-moteur de recherche se déclarent dans la console de l'hébergeur, en variables
+\textbf{Le dépôt est public.} Aucune clé n'y figure. Les identifiants du moteur
+de recherche se déclarent dans la console de l'hébergeur, en variables
 d'environnement.
 
 \section{Ce que la mise en ligne change}
 
 Le système de fichiers du serveur est en lecture seule. La base publiée est
-donc figée a sa date de publication, et l'onglet Collectes n'y montre que le
+figée à sa date de publication, et l'onglet Collectes n'y montre que le
 journal. La collecte et l'import restent des opérations locales, menées sur le
 poste qui alimente la base, puis republiées.
 
-\begin{encadre}{A savoir avant une démonstration}
+\begin{encadre}{À savoir avant une démonstration}
 L'offre gratuite met le contenu en veille après une période d'inactivité. Le
-premier visiteur attend une trentaine de secondes au réveil. Prévenez votre
-auditoire, sans quoi il croira a une panne, et ouvrez la plateforme quelques
-minutes avant de commencer.
+premier visiteur attend une trentaine de secondes au réveil. Ouvrez la
+plateforme quelques minutes avant de commencer, et prévenez votre auditoire,
+sans quoi il croira à une panne.
 \end{encadre}
 
-\chapter{Ce qui reste a faire}
+\chapter{Ce qui reste à faire}
 
 \begin{enumerate}
   \item \textbf{Brancher les six fournisseurs manquants}, ce qui rendrait
         actifs une trentaine d'indicateurs supplémentaires.
   \item \textbf{Automatiser la collecte}, par une tâche planifiée hebdomadaire
         sur un poste de la division, suivie d'une republication.
+  \item \textbf{Régénérer les manuels}, qui annoncent encore le périmètre
+        antérieur au retrait d'une catégorie.
   \item \textbf{Traduire les libellés des indicateurs en anglais} dans
-        l'interface. Le travail est fait pour le manuel, il reste a le porter.
-  \item \textbf{Décider du régime d'hébergement.} L'offre gratuite convient a
+        l'interface. Le travail est fait pour le manuel, il reste à le porter.
+  \item \textbf{Décider du régime d'hébergement.} L'offre gratuite convient à
         une consultation interne. Une ouverture plus large demanderait une
         offre payante ou un hébergement au ministère.
 \end{enumerate}
@@ -371,8 +390,8 @@ minutes avant de commencer.
 \midrule
 Indicateurs actifs & 313, en 14 catégories \\
 Économies couvertes & environ 217, plus 40 agrégats \\
-Couverture temporelle & 1960 a l'année en cours \\
-Fournisseurs branchés & 3, plus un fichier importée \\
+Couverture temporelle & 1960 en local, 1990 en ligne \\
+Fournisseurs branchés & 3, plus un fichier importé \\
 Langues & français et anglais \\
 Documentation & manuel de 30 pages, dans les deux langues \\
 Tests automatisés & une soixantaine \\

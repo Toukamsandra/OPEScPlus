@@ -1,5 +1,65 @@
 # Journal des versions
 
+## OPEScGolem_V56 (septembre 2026)
+
+**Série complète, observations et projections distinguées**
+
+La bannière affiche désormais le taux de croissance du PIB réel de 2010 à 2035,
+tel que fourni par la division.
+
+Les dix dernières valeurs sont des projections. Elles sont tracées en
+pointillés, sur un fond légèrement teinté, avec la mention « Projections à
+partir de 2026 ». Le repère rouge marque la dernière année observée, non le
+dernier point tracé : c'est elle qui sépare le constat de la prévision.
+
+Cette distinction n'est pas cosmétique. Une prévision affichée comme un constat
+engagerait le ministère sur un chiffre qu'il n'a pas constaté, et la page
+d'accueil d'une plateforme officielle est le dernier endroit où se permettre
+cette confusion.
+
+**Deux défauts de tracé corrigés.** Les libellés d'années se chevauchaient aux
+extrémités : la dernière année remplace maintenant le repère précédent s'il en
+est trop proche. Et la construction des abscisses avait disparu lors d'un
+remplacement de bloc, ce qui aurait fait échouer le rendu.
+
+**Mise à jour.** Quand une année projetée devient observée, changez son statut
+dans `serie_nationale.csv` et corrigez sa valeur. Le mode d'emploi qui
+accompagne le fichier le détaille.
+
+## OPEScGolem_V54 (septembre 2026)
+
+**Le graphique d'accueil vient d'une source camerounaise**
+
+Sur la page d'accueil d'une plateforme du ministère, un chiffre camerounais
+doit venir d'une institution camerounaise. L'Institut national de la
+statistique produit les comptes nationaux, la Banque mondiale les reprend :
+citer la seconde quand la première est disponible était un contresens.
+
+La série affichée est le taux de croissance du PIB réel de 2019 à 2024, relevé
+dans le **tableau 3 des Comptes nationaux de 2024**, publiés par l'INS en août
+2025, série en volumes chaînés de référence 2016.
+
+**Vérifiez ces chiffres avant une diffusion officielle.** Ils ont été relevés
+dans le document publié, mais une relecture par un statisticien de la division
+vaut mieux qu'une confiance aveugle.
+
+**Pourquoi un fichier et non un connecteur.** Aucune institution camerounaise
+ne publie d'interface interrogeable par programme : la donnée se trouve dans
+des rapports et des tableurs. La saisir une fois par an est plus sûr que de
+moissonner une page qui changera.
+
+Le fichier est `inst/extdata/serie_nationale.csv`, accompagné de ses
+métadonnées et d'un mode d'emploi. Une ligne à ajouter à chaque parution, et
+rien d'autre. Changer d'indicateur, pour montrer l'inflation ou le solde
+budgétaire, demande seulement de remplacer les valeurs et d'ajuster le titre.
+
+Si le fichier est vide, la plateforme se rabat sur les sources internationales
+présentes en base, puis sur l'illustration. Elle ne reste jamais sans rien
+afficher.
+
+**Tracé adapté aux séries courtes.** Six points appellent des repères plus
+marqués et toutes les années en abscisse ; vingt points appellent l'inverse.
+
 ## OPEScGolem_V52 (septembre 2026)
 
 **Le graphique paraît avec la page**

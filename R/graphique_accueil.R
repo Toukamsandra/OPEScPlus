@@ -17,9 +17,15 @@
 #' produit interieur brut en volume. La premiere trouvee est retenue.
 #' @noRd
 serie_croissance <- function(con, iso3 = "CMR") {
-  # Plusieurs codes designent la meme notion selon le fournisseur, et rien ne
-  # garantit que le premier soit alimente. Ils sont essayes dans l'ordre de
-  # preference, et la premiere serie exploitable est retenue.
+  # Une source nationale passe avant toute autre. Sur la page d'accueil d'une
+  # plateforme du ministere, un chiffre camerounais doit venir d'une
+  # institution camerounaise : l'Institut national de la statistique produit
+  # les comptes nationaux, la Banque mondiale les reprend. Citer le second
+  # quand le premier est disponible serait un contresens.
+  nationale <- serie_nationale()
+  if (!is.null(nationale)) return(nationale)
+
+  # A defaut, les sources internationales, dans l'ordre de preference.
   candidats <- list(
     list(code = "NY.GDP.MKTP.KD.ZG",
          titre = "Taux de croissance du PIB r\u00e9el, Cameroun", unite = "%"),
@@ -41,8 +47,6 @@ serie_croissance <- function(con, iso3 = "CMR") {
       error = function(e) NULL)
 
     if (!is.null(d) && nrow(d) >= 5) {
-      # Les vingt dernieres annees : au-dela, les points se serrent au point de
-      # rendre la courbe illisible dans une banniere.
       d <- utils::tail(d, 20)
       d$titre <- c_$titre
       d$unite <- c_$unite
@@ -50,8 +54,6 @@ serie_croissance <- function(con, iso3 = "CMR") {
     }
   }
 
-  # A defaut de croissance, le produit interieur brut en niveau : mieux vaut
-  # une serie de niveau qu'une banniere sans donnee.
   d <- tryCatch(DBI::dbGetQuery(con, "
     SELECT o.annee, o.valeur, i.source
     FROM observation o
@@ -67,6 +69,66 @@ serie_croissance <- function(con, iso3 = "CMR") {
     return(d)
   }
   NULL
+}
+
+#' Serie nationale saisie a la main
+#'
+#' Lue dans `inst/extdata/serie_nationale.csv`, que l'on remplit avec les
+#' chiffres publies par l'institution camerounaise de son choix. Le fichier de
+#' metadonnees qui l'accompagne porte le titre, l'unite et le nom de la source
+#' a citer.
+#'
+#' Ce detour par un fichier n'est pas un pis-aller. Aucune institution
+#' camerounaise ne publie d'interface interrogeable par programme : la donnee
+#' se trouve dans des rapports et des tableurs, et la saisir une fois par an
+#' est plus sur que de moissonner une page qui changera.
+#' @noRd
+serie_nationale <- function() {
+  chemin <- app_sys("extdata/serie_nationale.csv")
+  meta_chemin <- app_sys("extdata/serie_nationale_metadonnees.csv")
+  if (!nzchar(chemin) || !file.exists(chemin)) return(NULL)
+
+  d <- tryCatch(utils::read.csv(chemin, stringsAsFactors = FALSE,
+                                fileEncoding = "UTF-8-BOM"),
+                error = function(e) NULL)
+  if (is.null(d) || !nrow(d)) return(NULL)
+  if (!all(c("annee", "valeur") %in% names(d))) return(NULL)
+
+  d$annee <- suppressWarnings(as.integer(d$annee))
+  d$valeur <- suppressWarnings(as.numeric(d$valeur))
+  d <- d[!is.na(d$annee) & !is.na(d$valeur), ]
+  if (nrow(d) < 5) return(NULL)
+  d <- d[order(d$annee), ]
+
+  # Le statut distingue observation et projection. Sans lui, une prevision
+  # s'afficherait comme un constat, ce qui n'est pas admissible sur la page
+  # d'accueil d'une plateforme du ministere.
+  if (!"statut" %in% names(d)) d$statut <- "observe"
+
+  meta <- tryCatch(utils::read.csv(meta_chemin, stringsAsFactors = FALSE,
+                                   fileEncoding = "UTF-8-BOM"),
+                   error = function(e) NULL)
+  lire <- function(champ, defaut) {
+    if (is.null(meta)) return(defaut)
+    v <- meta$valeur[meta$champ == champ]
+    if (length(v) && nzchar(v[[1]])) v[[1]] else defaut
+  }
+  anglais <- identical(langue_courante(), "en")
+
+  # Toute la serie est conservee : couper les projections priverait le lecteur
+  # de ce que la banniere a de plus interessant a montrer.
+  data.frame(
+    annee = d$annee,
+    valeur = d$valeur,
+    statut = d$statut,
+    source = lire(if (anglais) "source_en" else "source",
+                  "Institut national de la statistique du Cameroun"),
+    titre = lire(if (anglais) "titre_en" else "titre",
+                 "Taux de croissance du PIB r\u00e9el"),
+    unite = lire("unite", "%"),
+    mention = lire(if (anglais) "mention_projection_en" else "mention_projection",
+                   ""),
+    stringsAsFactors = FALSE)
 }
 
 #' Explique pourquoi la banniere n'affiche pas de graphique
@@ -164,21 +226,52 @@ svg_croissance <- function(d, largeur = 560, hauteur = 300) {
     if (abs(g) < 1e-9) "#B9C6D6" else "#EDF1F6",
     marge$g - 9, py(g) + 4, nombre(g)), character(1)), collapse = "")
 
-  points <- paste(sprintf("%.1f,%.1f", px(x), py(y)), collapse = " ")
-  cercles <- paste(vapply(seq_along(x), function(i) sprintf(
-    '<circle cx="%.1f" cy="%.1f" r="2.4" fill="#0A2F5C"/>',
-    px(x[i]), py(y[i])), character(1)), collapse = "")
+  # Deux traces distincts. La projection reprend au dernier point observe pour
+  # que la courbe ne se rompe pas, et se poursuit en pointilles : le lecteur
+  # voit d'un coup d'oeil ou s'arrete le constat et ou commence la prevision.
+  statut <- if ("statut" %in% names(d)) d$statut else rep("observe", length(x))
+  observes <- statut != "projection"
+  i_obs <- which(observes)
+  i_proj <- which(!observes)
 
-  # Quelques annees seulement en abscisse : les afficher toutes les ferait se
-  # chevaucher.
-  pas <- max(1, ceiling(length(x) / 6))
+  trace <- function(indices) {
+    if (!length(indices)) return("")
+    paste(sprintf("%.1f,%.1f", px(x[indices]), py(y[indices])), collapse = " ")
+  }
+  points_obs <- trace(i_obs)
+  points_proj <- if (length(i_proj)) {
+    trace(c(utils::tail(i_obs, 1), i_proj))
+  } else ""
+
+  # Fond leger sur la zone de projection, pour la designer sans la souligner.
+  zone <- if (length(i_proj)) {
+    debut_zone <- px(x[utils::tail(i_obs, 1)])
+    sprintf('<rect x="%.1f" y="%.1f" width="%.1f" height="%.1f" fill="#0A2F5C"
+             fill-opacity=".04"/>', debut_zone, marge$h,
+            largeur - marge$d - debut_zone, aire_h)
+  } else ""
+
+  rayon <- if (length(x) <= 8) 3.6 else 2.2
+  cercles <- paste(vapply(seq_along(x), function(i) sprintf(
+    '<circle cx="%.1f" cy="%.1f" r="%.1f" fill="%s"/>',
+    px(x[i]), py(y[i]), rayon,
+    if (observes[i]) "#0A2F5C" else "#7C93B4"), character(1)), collapse = "")
+
+  # Quelques annees en abscisse, pas toutes : vingt-six libelles se
+  # chevaucheraient. La derniere est toujours portee, mais elle remplace le
+  # repere precedent s'il en est trop proche.
+  pas <- max(1, ceiling(length(x) / 8))
   reperes <- x[seq(1, length(x), by = pas)]
-  if (utils::tail(reperes, 1) != max(x)) reperes <- c(reperes, max(x))
+  if (utils::tail(reperes, 1) != max(x)) {
+    if (max(x) - utils::tail(reperes, 1) < pas / 2) {
+      reperes <- utils::head(reperes, -1)
+    }
+    reperes <- c(reperes, max(x))
+  }
   abscisses <- paste(vapply(reperes, function(a) sprintf(
     '<text x="%.1f" y="%.1f" class="g-axe" text-anchor="middle">%d</text>',
     px(a), hauteur - 14, a), character(1)), collapse = "")
 
-  dernier <- length(y)
   paste0(
     sprintf('<svg viewBox="0 0 %d %d" class="g-croissance" role="img"
              xmlns="http://www.w3.org/2000/svg">', largeur, hauteur),
@@ -186,15 +279,25 @@ svg_croissance <- function(d, largeur = 560, hauteur = 300) {
             escamoter(d$titre[[1]])),
     sprintf('<text x="%.1f" y="40" class="g-unite">%s</text>', marge$g - 9,
             escamoter(d$unite[[1]])),
-    grille,
+    zone, grille,
     sprintf('<polyline points="%s" fill="none" stroke="#0A2F5C"
              stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>',
-            points),
+            points_obs),
+    if (nzchar(points_proj)) sprintf(
+      '<polyline points="%s" fill="none" stroke="#7C93B4" stroke-width="2"
+       stroke-dasharray="5 4" stroke-linejoin="round" stroke-linecap="round"/>',
+      points_proj) else "",
     cercles,
+    # Le repere rouge marque la derniere annee observee, non le dernier point
+    # trace : c'est elle qui separe le constat de la prevision.
     sprintf('<circle cx="%.1f" cy="%.1f" r="4.2" fill="#CE1126"/>',
-            px(x[dernier]), py(y[dernier])),
-    sprintf('<text x="%.1f" y="%.1f" class="g-derniere" text-anchor="end">%s</text>',
-            largeur - marge$d, py(y[dernier]) - 11, nombre(y[dernier])),
+            px(x[utils::tail(i_obs, 1)]), py(y[utils::tail(i_obs, 1)])),
+    sprintf('<text x="%.1f" y="%.1f" class="g-derniere" text-anchor="middle">%s</text>',
+            px(x[utils::tail(i_obs, 1)]), py(y[utils::tail(i_obs, 1)]) - 12,
+            nombre(y[utils::tail(i_obs, 1)])),
+    if (length(i_proj)) sprintf(
+      '<text x="%.1f" y="%.1f" class="g-mention" text-anchor="end">%s</text>',
+      largeur - marge$d, marge$h - 8, escamoter(d$mention[[1]])) else "",
     abscisses,
     '</svg>')
 }

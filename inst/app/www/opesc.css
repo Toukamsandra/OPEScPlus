@@ -363,6 +363,9 @@ body{background:var(--fond);color:var(--texte);margin:0}
 .g-unite{fill:var(--gris);font-size:11px;font-family:inherit}
 .g-axe{fill:var(--gris);font-size:11px;font-family:inherit}
 .g-derniere{fill:var(--rouge);font-size:14px;font-weight:700;font-family:inherit}
+/* La mention des projections : discrete, mais toujours presente. Une prevision
+   affichee sans le dire serait prise pour un constat. */
+.g-mention{fill:var(--gris);font-size:11px;font-style:italic;font-family:inherit}
 .hero-legende{margin-top:0;padding:0 10px 8px;display:flex;
   flex-direction:column;gap:2px}
 .hero-legende-source{color:var(--gris);font-size:.76rem;font-style:italic}
