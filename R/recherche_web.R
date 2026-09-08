@@ -264,33 +264,91 @@ definir <- function(requete) {
 
   q <- normaliser(requete)
   termes <- normaliser(d$terme)
+  if (!nzchar(trimws(q))) return(NULL)
 
-  # Correspondance exacte, puis inclusion, puis initiales.
-  i <- which(termes == q)
-  if (!length(i)) i <- which(vapply(termes, function(t) grepl(t, q, fixed = TRUE),
-                                    logical(1)))
-  if (!length(i)) i <- which(vapply(termes, function(t) grepl(q, t, fixed = TRUE),
-                                    logical(1)) & nchar(q) >= 4)
+  # Les variantes de libelle sont essayees avec le nom canonique : un
+  # indicateur s'appelle « Taux de croissance du PIB reel », jamais
+  # « Croissance economique ».
+  variantes <- lapply(seq_len(nrow(d)), function(k) {
+    a <- if ("alias" %in% names(d)) as.character(d$alias[[k]]) else ""
+    if (is.na(a) || !nzchar(a)) return(termes[k])
+    c(termes[k], normaliser(unlist(strsplit(a, "|", fixed = TRUE))))
+  })
+  # Les variantes sont eprouvees de la plus longue a la plus courte : la plus
+  # specifique doit l'emporter. Sans cet ordre, « PIB reel » rattachait
+  # « Taux de croissance du PIB reel » a la notion de produit interieur brut,
+  # alors que « taux de croissance du PIB » designe la croissance.
+  paires <- do.call(rbind, lapply(seq_along(variantes), function(k) {
+    data.frame(indice = k, variante = variantes[[k]], stringsAsFactors = FALSE)
+  }))
+  paires <- paires[order(-nchar(paires$variante)), ]
+
+  correspond <- function(test) {
+    for (r in seq_len(nrow(paires))) {
+      v <- paires$variante[[r]]
+      if (nzchar(v) && test(v)) return(paires$indice[[r]])
+    }
+    integer(0)
+  }
+
+  # Correspondance exacte, puis inclusion dans un sens ou dans l'autre.
+  i <- correspond(function(t) t == q)
+  if (!length(i)) i <- correspond(function(t) nzchar(t) && grepl(t, q, fixed = TRUE))
+  if (!length(i) && nchar(q) >= 4) {
+    i <- correspond(function(t) nzchar(t) && grepl(q, t, fixed = TRUE))
+  }
+
+  # Initiales : « PIB » retrouve « Produit interieur brut ».
   if (!length(i)) {
     initiales <- vapply(strsplit(termes, " "), function(m) {
       paste(substr(m[nchar(m) > 2], 1, 1), collapse = "")
     }, character(1))
     i <- which(initiales == gsub(" ", "", q))
   }
+
+  # A defaut, les mots partages. Un libelle d'indicateur ne reprend presque
+  # jamais le nom exact d'une notion : « Taux de croissance du PIB reel » ne
+  # contient ni « croissance economique » ni « produit interieur brut », mais
+  # partage avec eux des mots qui suffisent a les reconnaitre.
+  if (!length(i)) {
+    mots_requete <- setdiff(unlist(strsplit(q, "\\s+")), MOTS_VIDES)
+    mots_requete <- mots_requete[nchar(mots_requete) >= 4]
+    if (length(mots_requete)) {
+      scores <- vapply(termes, function(t) {
+        mots_terme <- setdiff(unlist(strsplit(t, "\\s+")), MOTS_VIDES)
+        mots_terme <- mots_terme[nchar(mots_terme) >= 4]
+        if (!length(mots_terme)) return(0L)
+        # Un mot compte s'il est present, ou s'il est le prefixe d'un autre :
+        # « croissance » doit rencontrer « croissances ».
+        sum(vapply(mots_terme, function(m) {
+          any(mots_requete == m) || any(startsWith(mots_requete, m)) ||
+            any(startsWith(m, mots_requete))
+        }, logical(1)))
+      }, integer(1))
+      # La notion doit partager la majorite de ses mots avec le libelle, sans
+      # quoi « prix » rattacherait tout indicateur contenant ce mot a la
+      # premiere notion venue.
+      longueurs <- vapply(strsplit(termes, "\\s+"), function(m) {
+        length(m[nchar(m) >= 4 & !m %in% MOTS_VIDES])
+      }, integer(1))
+      # Deux mots partages au moins, des lors que la notion en compte deux.
+      # Un seul suffisait, et « prix » rattachait « PIB par habitant, prix
+      # courants » a l'indice des prix a la consommation. Une definition
+      # fausse est pire qu'une definition absente.
+      seuil <- ifelse(longueurs <= 1L, 1L,
+                      pmax(2L, ceiling(longueurs * 0.6)))
+      retenus <- which(scores > 0 & scores >= seuil)
+      if (length(retenus)) {
+        i <- retenus[which.max(scores[retenus])]
+      }
+    }
+  }
   if (!length(i)) return(NULL)
 
-  # Le terme le plus proche en longueur : « croissance » doit rendre
-  # « Croissance economique » et non une notion qui la contient.
+  # Le terme le plus proche en longueur, quand plusieurs conviennent.
   i <- i[which.min(abs(nchar(termes[i]) - nchar(q)))]
+
   colonne <- if (langue_courante() == "en") "definition_en" else "definition_fr"
-  # La source est celle du manuel dont la definition est tiree, non le nom de
-  # la plateforme : « Glossaire OPESc+ » n'apprenait rien et laissait croire a
-  # une definition maison, alors qu'elles reprennent toutes un texte de
-  # reference.
-  # `source` peut manquer d'un glossaire ancien, et la valeur peut etre vide.
-  # Elle est ramenee a une chaine dans tous les cas : une condition posee plus
-  # loin sur une valeur nulle interrompait l'affichage de toute la recherche,
-  # `nzchar(NULL)` rendant un vecteur vide dont `if` ne sait que faire.
   source <- if ("source" %in% names(d)) as.character(d$source[[i]]) else ""
   if (is.na(source) || !nzchar(trimws(source))) source <- "Glossaire OPESc+"
   list(terme = d$terme[[i]], definition = d[[colonne]][[i]],

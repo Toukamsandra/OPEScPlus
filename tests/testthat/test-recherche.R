@@ -118,3 +118,43 @@ test_that("les sources citees sont des references, non la plateforme", {
   expect_true(all(nzchar(d$source)))
   expect_lt(sum(grepl("OPESc", d$source)), 3L)
 })
+
+test_that("un libelle d'indicateur retrouve la bonne notion", {
+  # Les libelles d'indicateurs ne reprennent presque jamais le nom canonique
+  # d'une notion : les variantes de libelle font le lien.
+  .i18n$langue <- "fr"
+  attendus <- list(
+    "Taux de croissance du PIB r\u00e9el" = "Croissance \u00e9conomique",
+    "Dette publique brute" = "Dette publique",
+    "Taux de ch\u00f4mage total" = "Taux de ch\u00f4mage",
+    "Envois de fonds des migrants" = "Transferts des migrants")
+  for (libelle in names(attendus)) {
+    d <- definir(libelle)
+    expect_false(is.null(d), info = libelle)
+    expect_equal(d$terme, attendus[[libelle]], info = libelle)
+  }
+})
+
+test_that("un mot commun ne suffit pas a rattacher une notion", {
+  # « prix » rattachait « PIB par habitant, prix courants » a l'indice des prix
+  # a la consommation. Une definition fausse est pire qu'une definition
+  # absente.
+  .i18n$langue <- "fr"
+  d <- definir("PIB par habitant, prix courants")
+  expect_false(identical(d$terme, "Indice des prix \u00e0 la consommation"))
+})
+
+test_that("la variante la plus specifique l'emporte", {
+  # « PIB reel » est une variante du produit interieur brut, « taux de
+  # croissance du PIB » une variante de la croissance : sur un libelle qui
+  # contient les deux, la seconde doit gagner.
+  .i18n$langue <- "fr"
+  expect_equal(definir("Taux de croissance du PIB r\u00e9el")$terme,
+               "Croissance \u00e9conomique")
+})
+
+test_that("toute definition affichee porte une langue", {
+  .i18n$langue <- "fr"
+  d <- definir("dette publique")
+  expect_true(nzchar(d$source))
+})

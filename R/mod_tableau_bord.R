@@ -157,7 +157,7 @@ mod_tableau_bord_server <- function(id, con) {
             tr("La fl\u00e8che devant \u00ab Ensemble de donn\u00e9es \u00bb d\u00e9roule les autres bases disponibles, dont l'indice des prix \u00e0 la production."),
             tr("Vous pouvez ensuite restreindre aux pays et aux indicateurs voulus, plut\u00f4t que de tout t\u00e9l\u00e9charger."),
             tr("\u00ab Transformer les donn\u00e9es \u00bb permet d'en changer la pr\u00e9sentation."),
-            tr("La fr\u00e9quence se choisit ensuite : annuelle, trimestrielle, mensuelle, ou toutes."),
+            tr("Pour la fr\u00e9quence, choisissez \u00ab Tous \u00bb : la plateforme s\u00e9pare ensuite les pas annuel, trimestriel et mensuel."),
             tr("Cliquez sur \u00ab Postulez \u00bb, puis \u00ab T\u00e9l\u00e9charger \u00bb."),
             tr("Choisissez l'ensemble de donn\u00e9es sur la page, non les donn\u00e9es compl\u00e8tes."))),
           etape("2", tr("Importer dans la plateforme"), list(

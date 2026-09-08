@@ -335,7 +335,11 @@ mod_recherche_server <- function(id, con, parent) {
                        tr("Disponible dans la plateforme")),
             lapply(seq_len(nrow(indicateurs)), function(i) {
               r <- indicateurs[i, ]
-              def <- lire_definition(con, r$code_interne)
+              # La definition dans la langue de l'interface passe avant celle
+              # du fournisseur. La Banque mondiale ne publie qu'en anglais :
+              # afficher son texte a un lecteur francophone sans le dire
+              # reviendrait a lui presenter de l'anglais comme du francais.
+              def <- definition_affichable(con, r$code_interne, r$libelle)
               shiny::div(class = "resultat-interne",
                 shiny::strong(tr(r$libelle)),
                 shiny::span(class = "resultat-meta", sprintf(
@@ -347,8 +351,13 @@ mod_recherche_server <- function(id, con, parent) {
                   shiny::tagList(
                     shiny::p(class = "resultat-definition", def$texte),
                     shiny::span(class = "resultat-source",
-                                sprintf(tr("Source de la d\u00e9finition : %s"),
-                                        def$source)))
+                      sprintf(tr("Source de la d\u00e9finition : %s"), def$source),
+                      # La mention de langue n'apparait que lorsque le texte
+                      # n'est pas dans celle de l'interface.
+                      if (!identical(def$langue, langue_courante())) {
+                        shiny::span(class = "resultat-langue",
+                                    tr("texte publi\u00e9 en anglais par la source"))
+                      }))
                 } else {
                   shiny::span(class = "resultat-sans-definition",
                               tr("D\u00e9finition non renseign\u00e9e. Lancez collecter_definitions()."))

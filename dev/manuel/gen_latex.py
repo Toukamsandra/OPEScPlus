@@ -56,7 +56,7 @@ def bloc(b, langue):
     genre = b[0]
 
     if genre == "h2":
-        return "\\subsection{%s}\n" % echapper(b[1])
+        return "\\section{%s}\n" % echapper(b[1])
 
     if genre == "p":
         return echapper(b[1]) + "\n\n" if b[1] else ""
@@ -100,9 +100,9 @@ def catalogue_latex(catalogue, T, langue):
     """Annexe du catalogue, une section par categorie."""
     sortie = []
     for cat in catalogue:
-        sortie.append("\\subsection*{%s. %s}\n"
+        sortie.append("\\section*{%s. %s}\n"
                       % (cat["code"], echapper(cat[langue])))
-        sortie.append("\\addcontentsline{toc}{subsection}{%s. %s}\n"
+        sortie.append("\\addcontentsline{toc}{section}{%s. %s}\n"
                       % (cat["code"], echapper(cat[langue])))
         indic = cat["indicateurs"]
         sources = sorted({i["source"] for i in indic})
@@ -195,11 +195,24 @@ def preambule(T):
   {\normalfont\bfseries}{\normalsize\mdseries\chaptertitlename\ \thechapter}
   {5pt}{\Large}
 \titlespacing*{\chapter}{0pt}{-26pt}{16pt}
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection}{0.7em}{}
+\titlespacing*{\section}{0pt}{12pt}{5pt}
 
 \setlist{itemsep=1pt, topsep=3pt, parsep=1pt}
 \setlength{\parskip}{5pt}
 \setlength{\parindent}{0pt}
 \renewcommand{\arraystretch}{1.06}
+
+\renewcommand{\chaptername}{@@CHAPITRE@@}
+\renewcommand{\tablename}{@@TABLE@@}
+\renewcommand{\appendixname}{@@ANNEXE@@}
+\renewcommand{\contentsname}{@@SOMMAIRE@@}
+\renewcommand{\listtablename}{@@LISTETAB@@}
+
+% Les sous-titres sont numerotes 7.1, 7.2, non 7.0.1 : sans cette remise a
+% zero, le compteur de section ignore le changement de chapitre.
+\counterwithin{section}{chapter}
+\renewcommand{\thesection}{\thechapter.\arabic{section}}
 
 \begin{document}
 """
@@ -209,6 +222,11 @@ def preambule(T):
         "@@TITRE@@": echapper(T["titre"]), "@@SERVICE@@": echapper(T["service"]),
         "@@ENTETEG@@": echapper(T["enteteGauche"]),
         "@@ENTETED@@": echapper(T["servicePied"]),
+        "@@CHAPITRE@@": echapper(T["chapitre"]),
+        "@@TABLE@@": echapper(T["tableau"]),
+        "@@ANNEXE@@": echapper(T["annexe"]),
+        "@@SOMMAIRE@@": echapper(T["sommaire"]),
+        "@@LISTETAB@@": echapper(T["listeTableaux"]),
     }
     for jeton, valeur in remplacements.items():
         modele = modele.replace(jeton, valeur)

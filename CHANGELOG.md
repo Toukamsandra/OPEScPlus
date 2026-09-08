@@ -1,5 +1,114 @@
 # Journal des versions
 
+## OPEScGolem_V60 (septembre 2026)
+
+**Les définitions s'affichaient en anglais en mode français**
+
+La Banque mondiale ne publie ses définitions qu'en anglais, et elles étaient
+enregistrées puis affichées telles quelles. Un lecteur francophone recevait
+donc de l'anglais sans que rien ne le signale.
+
+Trois corrections.
+
+**La langue est enregistrée avec chaque définition.** Une colonne s'ajoute à la
+table, et les bases antérieures la reçoivent automatiquement.
+
+**Le glossaire français passe avant la définition du fournisseur.** Quand la
+notion y figure, c'est sa définition qui s'affiche, dans la langue de
+l'interface, avec le manuel de référence pour source.
+
+**À défaut, le texte du fournisseur reste affiché, avec la mention « texte
+publié en anglais par la source ».** Ce n'est pas satisfaisant, mais une
+définition en anglais renseigne davantage qu'un blanc, pourvu que le lecteur
+sache qu'elle est en anglais.
+
+**Le rattachement au glossaire a été refait**
+
+Un libellé d'indicateur ne reprend presque jamais le nom canonique d'une
+notion : « Taux de croissance du PIB réel » ne contient ni « croissance
+économique » ni « produit intérieur brut ».
+
+Vingt-neuf notions reçoivent désormais des variantes de libellé, et les
+variantes sont éprouvées de la plus longue à la plus courte pour que la plus
+spécifique l'emporte. Sans cet ordre, « PIB réel » rattachait la croissance à
+la notion de produit intérieur brut.
+
+Le seuil a été durci en sens inverse : deux mots partagés au moins, dès lors
+que la notion en compte deux. Un seul suffisait, et « prix » rattachait « PIB
+par habitant, prix courants » à l'indice des prix à la consommation. Une
+définition fausse est pire qu'une définition absente.
+
+Résultat mesuré : 31 % des indicateurs trouvent une définition française, sans
+rattachement erroné sur les cas contrôlés. Les autres gardent la définition du
+fournisseur, sa langue étant signalée.
+
+## OPEScGolem_V59 (septembre 2026)
+
+**Manuels actualisés, version 2.1**
+
+Les quatre fichiers reflètent l'état actuel : **313 indicateurs, 14
+catégories**, contre 341 et 15 auparavant.
+
+Le chapitre sur les matières premières a été refait. Il opposait deux
+catégories dont l'une n'existe plus : la présentation porte désormais sur la
+seule catégorie subsistante, et explique pourquoi la précédente a été
+supprimée, à savoir qu'elle faisait double emploi et que sa voie
+d'alimentation automatique n'a jamais abouti.
+
+Deux sections nouvelles. « La définition et sa source », qui expose d'où
+viennent les définitions affichées et pourquoi leur origine est toujours
+nommée. Et « Ce qui s'affiche au chargement », qui décrit la sélection tracée
+d'emblée dans le tableau de bord et la base de données.
+
+**Trois défauts de composition corrigés**
+
+Les noms d'usage restaient en anglais, faute du paquet de francisation : le
+manuel français affichait « Chapter ». Ils sont redéfinis à la main.
+
+Les sous-titres étaient émis comme sous-sections sans section au-dessus, ce qui
+donnait une numérotation en 7.0.1 au lieu de 7.1. Ils passent au niveau
+section, et leur espacement a été resserré pour compenser les deux pages
+gagnées.
+
+Les fichiers auxiliaires de LaTeX n'étaient pas effacés entre deux
+compositions : le sommaire gardait l'ancienne numérotation alors que le corps
+portait la nouvelle.
+
+**Trente pages** dans les deux langues, la limite tenue.
+
+## OPEScGolem_V58 (septembre 2026)
+
+**La carte « Projections » quitte l'accueil**
+
+Six cartes au lieu de sept dans le bloc « Ce que la plateforme permet ».
+
+La fonction elle-même reste dans le tableau de bord : seule sa présentation en
+page d'accueil disparaît. Mettre en avant un prolongement statistique à côté de
+la collecte et de la cartographie lui donnait un poids qu'il n'a pas, et
+risquait de le faire prendre pour une prévision institutionnelle.
+
+## OPEScGolem_V57 (septembre 2026)
+
+**Le graphique quitte la page d'accueil**
+
+L'espace de droite de la bannière reste vide. Le texte garde sa largeur de
+lecture plutôt que de s'étirer sur toute la bannière : une ligne trop longue se
+lit mal.
+
+Le module `R/graphique_accueil.R` et la série nationale restent dans le projet,
+dormants. Ils ne sont plus appelés, mais rien n'est supprimé : les données que
+vous avez fournies, la distinction entre observations et projections et
+l'interactivité sont conservées. Une ligne suffit à les rallumer, remplacer
+`shiny::div(class = "hero-image")` par
+`shiny::div(class = "hero-image", banniere_graphique())`.
+
+**Marche à suivre du téléchargement**
+
+L'étape sur la fréquence indiquait un choix ouvert. Elle recommande désormais
+« Tous », et précise que la plateforme sépare ensuite les pas annuel,
+trimestriel et mensuel. Télécharger une seule fréquence obligerait à refaire
+l'opération pour obtenir les autres.
+
 ## OPEScGolem_V56 (septembre 2026)
 
 **Série complète, observations et projections distinguées**

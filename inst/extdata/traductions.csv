@@ -649,3 +649,5 @@ Source : %s,Source: %s
 "Croissance du produit intérieur brut par habitant, Cameroun","Gross domestic product per capita growth, Cameroon"
 Glossaire OPESc+,OPESc+ glossary
 Aucune donnée à tracer au chargement. La base ne contient peut-être encore rien pour cette catégorie : lancez diagnostic_plateforme() dans la console.,No data to plot at startup. The database may hold nothing for this category yet: run diagnostic_plateforme() in the console.
+"Pour la fréquence, choisissez « Tous » : la plateforme sépare ensuite les pas annuel, trimestriel et mensuel.","For frequency, choose All: the platform then separates the annual, quarterly and monthly steps."
+texte publié en anglais par la source,text published in English by the source

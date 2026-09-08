@@ -252,10 +252,47 @@ svg_croissance <- function(d, largeur = 560, hauteur = 300) {
   } else ""
 
   rayon <- if (length(x) <= 8) 3.6 else 2.2
-  cercles <- paste(vapply(seq_along(x), function(i) sprintf(
-    '<circle cx="%.1f" cy="%.1f" r="%.1f" fill="%s"/>',
-    px(x[i]), py(y[i]), rayon,
-    if (observes[i]) "#0A2F5C" else "#7C93B4"), character(1)), collapse = "")
+
+  # Chaque point recoit une zone de survol large, un repere et une infobulle.
+  # L'interactivite est obtenue en CSS seul, sans bibliotheque a telecharger :
+  # une banniere ne doit pas faire attendre, et plotly imposait de charger un
+  # moteur graphique puis un aller-retour avec le serveur avant de rien
+  # afficher.
+  demi <- if (length(x) > 1) aire_l / (length(x) - 1) / 2 else aire_l / 2
+  bord_droit <- largeur - marge$d
+
+  groupes <- vapply(seq_along(x), function(i) {
+    cx <- px(x[i]); cy <- py(y[i])
+    # L'infobulle bascule a gauche pres du bord droit, sinon elle sortirait
+    # du cadre.
+    a_gauche <- cx > largeur - 120
+    tx <- if (a_gauche) cx - 10 else cx + 10
+    ancrage <- if (a_gauche) "end" else "start"
+    largeur_bulle <- 96
+    bx <- if (a_gauche) tx - largeur_bulle else tx
+
+    sprintf(paste0(
+      '<g class="g-point" tabindex="0">',
+      '<rect x="%.1f" y="%.1f" width="%.1f" height="%.1f" fill="transparent"/>',
+      '<line class="g-guide" x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f"/>',
+      '<circle class="g-repere" cx="%.1f" cy="%.1f" r="%.1f" fill="%s"/>',
+      '<circle class="g-halo" cx="%.1f" cy="%.1f" r="6.5" fill="%s"/>',
+      '<g class="g-infobulle">',
+      '<rect x="%.1f" y="%.1f" width="%d" height="34" rx="4"/>',
+      '<text x="%.1f" y="%.1f" text-anchor="%s" class="g-bulle-annee">%d</text>',
+      '<text x="%.1f" y="%.1f" text-anchor="%s" class="g-bulle-valeur">%s %s</text>',
+      '</g></g>'),
+      cx - demi, marge$h, demi * 2, aire_h,
+      cx, marge$h, cx, marge$h + aire_h,
+      cx, cy, rayon, if (observes[i]) "#0A2F5C" else "#7C93B4",
+      cx, cy, if (observes[i]) "#0A2F5C" else "#7C93B4",
+      bx, max(marge$h, cy - 44), largeur_bulle,
+      tx, max(marge$h, cy - 44) + 14, ancrage, x[i],
+      tx, max(marge$h, cy - 44) + 28, ancrage, nombre(y[i]),
+      if (observes[i]) escamoter(d$unite[[1]])
+      else paste0(escamoter(d$unite[[1]]), " (proj.)"))
+  }, character(1))
+  groupes <- paste(groupes, collapse = "")
 
   # Quelques annees en abscisse, pas toutes : vingt-six libelles se
   # chevaucheraient. La derniere est toujours portee, mais elle remplace le
@@ -287,7 +324,7 @@ svg_croissance <- function(d, largeur = 560, hauteur = 300) {
       '<polyline points="%s" fill="none" stroke="#7C93B4" stroke-width="2"
        stroke-dasharray="5 4" stroke-linejoin="round" stroke-linecap="round"/>',
       points_proj) else "",
-    cercles,
+    groupes,
     # Le repere rouge marque la derniere annee observee, non le dernier point
     # trace : c'est elle qui separe le constat de la prevision.
     sprintf('<circle cx="%.1f" cy="%.1f" r="4.2" fill="#CE1126"/>',

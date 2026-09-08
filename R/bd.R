@@ -141,7 +141,16 @@ creer_schema <- function(con) {
       code_interne TEXT PRIMARY KEY,
       texte        TEXT NOT NULL,
       source       TEXT NOT NULL,
+      langue       TEXT NOT NULL DEFAULT 'en',
       recuperee    TEXT)")
+
+  # La colonne de langue a ete ajoutee apres coup : une base anterieure ne la
+  # possede pas, et SQLite ne sait pas ajouter une colonne conditionnellement.
+  colonnes <- DBI::dbGetQuery(con, "PRAGMA table_info(definition)")$name
+  if (!"langue" %in% colonnes) {
+    DBI::dbExecute(con,
+      "ALTER TABLE definition ADD COLUMN langue TEXT NOT NULL DEFAULT 'en'")
+  }
   invisible(TRUE)
 }
 
@@ -155,11 +164,12 @@ lire_definition <- function(con, code_interne) {
   # proportion.
   d <- tryCatch(
     DBI::dbGetQuery(con,
-      "SELECT texte, source FROM definition WHERE code_interne = ?",
+      "SELECT texte, source, langue FROM definition WHERE code_interne = ?",
       params = list(code_interne)),
     error = function(e) NULL)
   if (is.null(d) || !nrow(d)) return(NULL)
-  list(texte = d$texte[[1]], source = d$source[[1]])
+  list(texte = d$texte[[1]], source = d$source[[1]],
+       langue = if ("langue" %in% names(d)) d$langue[[1]] else "en")
 }
 
 # --- lectures --------------------------------------------------------------

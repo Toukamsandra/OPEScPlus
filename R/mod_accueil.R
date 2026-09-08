@@ -40,9 +40,6 @@ FONCTIONS <- list(
   list("globe", "Analyse cartographique",
        "Une carte du monde pilot\u00e9e par le m\u00eame filtre, avec un curseur d'ann\u00e9e animable. Un clic sur un pays ouvre sa fiche.",
        "Tableau de bord"),
-  list("trend", "Projections",
-       "Trois m\u00e9thodes de prolongement, avec intervalle : tendance lin\u00e9aire, marche al\u00e9atoire avec d\u00e9rive, lissage de Holt.",
-       "Tableau de bord"),
   list("table", "Base de donn\u00e9es compl\u00e8te",
        "Consultation et t\u00e9l\u00e9chargement au format tableur, en s\u00e9ries longues ou en tableau crois\u00e9. Chaque classeur porte ses sources.",
        "Base de donn\u00e9es"),
@@ -98,7 +95,10 @@ mod_accueil_ui <- function(id) {
       # Une illustration decorative ne dit rien. Un graphique de la croissance
       # camerounaise, tire de la base elle-meme, montre d'emblee ce que la
       # plateforme contient et de quelle source elle le tient.
-      shiny::div(class = "hero-image", banniere_graphique())),
+      # L'espace de droite reste vide. Le graphique et sa serie nationale
+      # demeurent dans le projet, dormants : `banniere_graphique()` les
+      # rallume en remplacant cette ligne.
+      shiny::div(class = "hero-image")),
 
     # --- chiffres cles ----------------------------------------------------
     shiny::uiOutput(ns("chiffres")),

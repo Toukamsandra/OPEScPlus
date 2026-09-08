@@ -51,7 +51,10 @@ collecter_definitions <- function(forcer = FALSE, pause = 0.2) {
     message("Toutes les definitions sont deja enregistrees.")
     return(invisible(0L))
   }
-  cat(sprintf("%d indicateurs sans definition.\n\n", nrow(d)))
+  cat(sprintf("%d indicateurs a traiter.\n", nrow(d)))
+  cat(sprintf("Comptez environ %s : un appel par indicateur.\n\n",
+              format(.POSIXct(nrow(d) * (pause + 0.6), tz = "UTC"), "%M min %S s")))
+  depart <- Sys.time()
 
   enregistrees <- 0L
   depuis_glossaire <- 0L
@@ -61,7 +64,11 @@ collecter_definitions <- function(forcer = FALSE, pause = 0.2) {
     def <- NULL
 
     if (grepl("^Banque mondiale", ligne$source)) {
+      # La Banque mondiale ne publie ses definitions qu'en anglais : la langue
+      # est enregistree avec le texte, faute de quoi l'interface francaise
+      # afficherait de l'anglais sans le dire.
       def <- definition_banque_mondiale(ligne$code_source, pause)
+      if (!is.null(def)) def$langue <- "en"
     }
 
     # A defaut, le glossaire de la plateforme, dont la source est nommee comme
@@ -74,7 +81,8 @@ collecter_definitions <- function(forcer = FALSE, pause = 0.2) {
         # plateforme : une definition doit renvoyer a une autorite.
         def <- list(texte = interne$definition,
                     source = if (isTRUE(nzchar(interne$source %||% "")))
-                               interne$source else "Glossaire OPESc+")
+                               interne$source else "Glossaire OPESc+",
+                    langue = langue_courante())
         depuis_glossaire <- depuis_glossaire + 1L
       }
     }
@@ -82,17 +90,25 @@ collecter_definitions <- function(forcer = FALSE, pause = 0.2) {
     if (is.null(def)) next
 
     DBI::dbExecute(con, "
-      INSERT INTO definition (code_interne, texte, source, recuperee)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO definition (code_interne, texte, source, langue, recuperee)
+      VALUES (?, ?, ?, ?, ?)
       ON CONFLICT (code_interne) DO UPDATE
       SET texte = excluded.texte, source = excluded.source,
-          recuperee = excluded.recuperee",
+          langue = excluded.langue, recuperee = excluded.recuperee",
       params = list(ligne$code_interne, def$texte, def$source,
-                    format(Sys.Date(), "%Y-%m-%d")))
+                    def$langue %||% "en", format(Sys.Date(), "%Y-%m-%d")))
     enregistrees <- enregistrees + 1L
 
-    if (enregistrees %% 20 == 0) {
-      cat(sprintf("\r  %d definitions", enregistrees))
+    # L'avancement est imprime sur des lignes distinctes : le retour chariot
+    # n'a aucun effet dans certaines consoles, et l'utilisateur se retrouvait
+    # devant un ecran fige pendant dix minutes.
+    if (i %% 10 == 0 || i == nrow(d)) {
+      ecoule <- as.numeric(difftime(Sys.time(), depart, units = "secs"))
+      cat(sprintf("  %3d/%d  %d definitions  (reste ~%s)\n", i, nrow(d),
+                  enregistrees,
+                  format(.POSIXct(ecoule / i * (nrow(d) - i), tz = "UTC"),
+                         "%M:%S")))
+      utils::flush.console()
     }
   }
 
@@ -173,3 +189,86 @@ diagnostic_definitions <- function() {
   }
   invisible(d)
 }
+
+#' Definition a afficher, dans la langue de l'interface si possible
+#'
+#' Trois cas, dans cet ordre.
+#'
+#'   La definition enregistree est dans la langue courante : elle est retenue.
+#'   Le glossaire de la plateforme connait la notion : sa definition est
+#'     retenue, traduite, et sa source est celle du manuel de reference.
+#'   A defaut, la definition du fournisseur est affichee telle quelle, avec la
+#'     mention de sa langue.
+#'
+#' Ce dernier cas n'est pas satisfaisant, mais il vaut mieux qu'une absence :
+#' une definition en anglais renseigne davantage qu'un blanc, pourvu que le
+#' lecteur sache qu'elle est en anglais.
+#'
+#' @param con connexion ouverte.
+#' @param code_interne identifiant de l'indicateur.
+#' @param libelle libelle de l'indicateur, pour interroger le glossaire.
+#' @noRd
+definition_affichable <- function(con, code_interne, libelle) {
+  courante <- langue_courante()
+  enregistree <- lire_definition(con, code_interne)
+
+  if (!is.null(enregistree) && identical(enregistree$langue, courante)) {
+    return(enregistree)
+  }
+
+  # Le glossaire est interroge sur le libelle de l'indicateur : « Dette
+  # publique brute » y retrouve la notion de dette publique.
+  interne <- tryCatch(definir(libelle), error = function(e) NULL)
+  if (!is.null(interne)) {
+    return(list(texte = interne$definition,
+                source = if (isTRUE(nzchar(interne$source %||% "")))
+                           interne$source else "Glossaire OPESc+",
+                langue = courante))
+  }
+  enregistree
+}
+
+#' Corrige la langue des definitions deja enregistrees
+#'
+#' A utiliser quand les definitions sont en base mais que leur langue n'y
+#' figure pas, ce qui est le cas des bases anterieures a son introduction.
+#' Aucune requete n'est emise : la langue se deduit de la source.
+#'
+#' Cela evite une recollecte complete, qui demande une dizaine de minutes pour
+#' un resultat identique.
+#'
+#' @examples
+#' \dontrun{
+#' marquer_langue_definitions()
+#' }
+#' @export
+marquer_langue_definitions <- function() {
+  con <- connexion()
+  on.exit(DBI::dbDisconnect(con), add = TRUE)
+
+  # Les fournisseurs internationaux ne publient qu'en anglais ; tout ce qui
+  # vient des manuels de reference a ete redige en francais dans le glossaire.
+  n_en <- DBI::dbExecute(con, "
+    UPDATE definition SET langue = 'en'
+    WHERE source NOT LIKE '%Glossaire%'
+      AND source NOT LIKE '%Syst\u00e8me de comptabilit\u00e9%'
+      AND source NOT LIKE '%Manuel%'
+      AND source NOT LIKE '%R\u00e9solutions%'
+      AND source NOT LIKE '%Convention%'
+      AND source NOT LIKE '%Cadre de viabilit\u00e9%'
+      AND source NOT LIKE '%Comit\u00e9 d'' aide%'")
+
+  n_fr <- DBI::dbExecute(con, "
+    UPDATE definition SET langue = 'fr'
+    WHERE source LIKE '%Glossaire%'
+       OR source LIKE '%Syst\u00e8me de comptabilit\u00e9%'
+       OR source LIKE '%Manuel%'
+       OR source LIKE '%R\u00e9solutions%'
+       OR source LIKE '%Convention%'
+       OR source LIKE '%Cadre de viabilit\u00e9%'")
+
+  cat(sprintf("%d definitions marquees en anglais, %d en francais.\n", n_en, n_fr))
+  cat("Aucune requete n'a ete emise.\n")
+  invisible(n_en + n_fr)
+}
+

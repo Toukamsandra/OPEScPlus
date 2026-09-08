@@ -97,6 +97,8 @@ body{background:var(--fond);color:var(--texte);margin:0}
   background:transparent!important}
 
 /* ----------------------------------------------------------- accueil ---- */
+/* La colonne de droite est vide : le texte garde sa largeur de lecture, sans
+   s'etirer sur toute la banniere. Une ligne trop longue se lit mal. */
 .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:center;
   background:#fff;border:1px solid var(--bordure);border-radius:var(--rayon);
   padding:34px 36px;margin-bottom:16px;overflow:hidden}
@@ -238,6 +240,10 @@ body{background:var(--fond);color:var(--texte);margin:0}
 .resultat-definition{color:var(--texte);font-size:.85rem;line-height:1.55;
   margin:7px 0 4px;max-width:80ch}
 .resultat-source{color:var(--vert);font-size:.76rem;font-style:italic}
+/* La langue n'est signalee que lorsqu'elle differe de celle de l'interface :
+   une mention permanente serait du bruit. */
+.resultat-langue{color:var(--gris);font-size:.74rem;font-style:italic;
+  margin-left:8px;padding-left:8px;border-left:1px solid var(--bordure)}
 .resultat-sans-definition{color:var(--gris);font-size:.78rem;font-style:italic;
   display:block;margin-top:5px}
 
@@ -366,6 +372,28 @@ body{background:var(--fond);color:var(--texte);margin:0}
 /* La mention des projections : discrete, mais toujours presente. Une prevision
    affichee sans le dire serait prise pour un constat. */
 .g-mention{fill:var(--gris);font-size:11px;font-style:italic;font-family:inherit}
+
+/* Interactivite du graphique, obtenue en CSS seul. Survoler un point revele
+   son annee et sa valeur, avec un repere vertical. Aucune bibliotheque n'est
+   telechargee : la banniere ne doit pas faire attendre. */
+.g-point{cursor:default}
+.g-guide{stroke:var(--bleu);stroke-width:1;stroke-dasharray:3 3;opacity:0;
+  transition:opacity .12s}
+.g-halo{opacity:0;transition:opacity .12s}
+.g-infobulle{opacity:0;transition:opacity .12s;pointer-events:none}
+.g-infobulle rect{fill:var(--bleu);opacity:.96}
+.g-bulle-annee{fill:#B9D2EC;font-size:10px;font-family:inherit}
+.g-bulle-valeur{fill:#fff;font-size:13px;font-weight:700;font-family:inherit}
+
+.g-point:hover .g-guide{opacity:.45}
+.g-point:hover .g-halo{opacity:.22}
+.g-point:hover .g-infobulle{opacity:1}
+.g-point:hover .g-repere{r:4.5}
+
+/* Sur ecran tactile, il n'y a pas de survol : les infobulles resteraient
+   inaccessibles. Un appui les revele, l'element etant focalisable. */
+.g-point:focus .g-guide{opacity:.45}
+.g-point:focus .g-infobulle{opacity:1}
 .hero-legende{margin-top:0;padding:0 10px 8px;display:flex;
   flex-direction:column;gap:2px}
 .hero-legende-source{color:var(--gris);font-size:.76rem;font-style:italic}
