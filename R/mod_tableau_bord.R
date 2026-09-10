@@ -359,9 +359,25 @@ mod_tableau_bord_server <- function(id, con) {
 
       # On ne propose que les pays pour lesquels l'indicateur existe reellement.
       p <- if (length(dispo)) tous_pays[tous_pays$iso3 %in% dispo, ] else tous_pays
-      p <- p[order(p$est_agregat, p$nom), ]
-      choix <- stats::setNames(p$iso3, ifelse(p$est_agregat == 1,
-                                              paste0(p$nom, tr(" (agrégat)")), p$nom))
+      # Le monde vient en tete, devant les autres agregats puis les pays. Sa
+      # valeur est celle qu'on cherche le plus souvent en premier, et il se
+      # perdait au milieu d'une quarantaine de regroupements ranges par ordre
+      # alphabetique de leur nom anglais.
+      # Trois rangs : le monde, puis les pays, puis les autres agregats. Un
+      # rang nul pour le monde le melait aux pays, dont le rang l'est aussi.
+      p$rang <- ifelse(p$iso3 == "WLD", -1L, p$est_agregat)
+      p <- p[order(p$rang, p$nom), ]
+
+      # Les noms viennent de la Banque mondiale, donc en anglais. Ceux des
+      # agregats passent par le dictionnaire : un utilisateur francophone
+      # cherche « Monde », non « World ».
+      libelles <- vapply(seq_len(nrow(p)), function(k) {
+        nom <- nom_traduit(p$nom[[k]])
+        if (p$est_agregat[[k]] == 1 && p$iso3[[k]] != "WLD") {
+          paste0(nom, tr(" (agrégat)"))
+        } else nom
+      }, character(1))
+      choix <- stats::setNames(p$iso3, libelles)
       selection <- shiny::isolate(input$pays)
       selection <- selection[selection %in% p$iso3]
       if (!length(selection)) {

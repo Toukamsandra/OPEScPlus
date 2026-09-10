@@ -157,3 +157,35 @@ verifier_manuels <- function() {
   }
   combinaisons[c("fichier", "present", "taille_ko", "adresse")]
 }
+
+.cache_noms <- new.env(parent = emptyenv())
+
+#' Traduit un nom de pays ou d'agregat
+#'
+#' Les noms viennent de la Banque mondiale, qui ne publie qu'en anglais. Le
+#' dictionnaire ordinaire ne convient pas : il va du francais vers l'anglais,
+#' et ces noms sont deja dans la langue d'arrivee. Une table dediee fait donc
+#' le chemin inverse, et seulement quand l'interface est en francais.
+#'
+#' Un nom absent de la table est rendu tel quel : mieux vaut un nom anglais
+#' qu'un blanc, et la table ne couvre que les agregats, dont le nom est
+#' vraiment genant en anglais.
+#'
+#' @param nom nom publie par la source.
+#' @noRd
+nom_traduit <- function(nom) {
+  if (!identical(langue_courante(), "fr")) return(nom)
+
+  if (is.null(.cache_noms$table)) {
+    chemin <- app_sys("extdata/noms_pays_fr.csv")
+    d <- if (nzchar(chemin) && file.exists(chemin)) {
+      utils::read.csv(chemin, stringsAsFactors = FALSE, fileEncoding = "UTF-8-BOM")
+    } else {
+      data.frame(en = character(), fr = character(), stringsAsFactors = FALSE)
+    }
+    .cache_noms$table <- stats::setNames(d$fr, d$en)
+  }
+
+  i <- match(nom, names(.cache_noms$table))
+  ifelse(is.na(i), nom, .cache_noms$table[i])
+}

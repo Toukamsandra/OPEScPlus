@@ -1,5 +1,33 @@
 # Journal des versions
 
+## OPEScGolem_V64 (septembre 2026)
+
+**Le monde en tête de la liste des pays**
+
+L'agrégat mondial existait déjà en base, mais deux choses le rendaient
+introuvable.
+
+Il portait le nom publié par la Banque mondiale, « World », alors qu'un
+utilisateur francophone cherche « Monde ». Et il se rangeait par ordre
+alphabétique au milieu d'une quarantaine de regroupements.
+
+Il vient maintenant en premier, devant les pays, suivis des autres agrégats.
+Sa valeur est celle qu'on cherche le plus souvent d'abord.
+
+**Les noms d'agrégats sont traduits**
+
+Une table dédiée, de l'anglais vers le français. Le dictionnaire ordinaire ne
+pouvait pas servir : il va du français vers l'anglais, et ces noms sont déjà
+dans la langue d'arrivée.
+
+Trente-six agrégats couverts : zones géographiques, groupes de revenu,
+classifications des Nations unies. Un nom absent est rendu tel quel, mieux
+valant un nom anglais qu'un blanc.
+
+Les noms de pays ne sont pas traduits : ils sont pour l'essentiel identiques ou
+reconnaissables, et en traduire deux cents introduirait des erreurs pour un
+gain faible.
+
 ## OPEScGolem_V60 (septembre 2026)
 
 **Les définitions s'affichaient en anglais en mode français**

@@ -8,6 +8,8 @@ Deux chaînes, un seul contenu.
 | `catalogue.json` | les 341 indicateurs, par catégorie |
 | `gen_latex.py` | compose le PDF, avec la page de garde de référence |
 | `gen.js` | compose le Word |
+| `gen_note.py` | note de présentation, dix pages |
+| `gen_guide.py` | guide technique, huit pages |
 
 Le PDF passe par LaTeX parce que le manuel de référence en vient : la page de
 garde et la typographie s'y reproduisent exactement, ce qu'un traitement de
@@ -17,9 +19,15 @@ bibliothèque `docx`, un DOCX issu de LaTeX étant toujours dégradé.
 ## Régénérer
 
 ```bash
-python3 gen_latex.py     # PDF, trois passes pour la pagination
-node gen.js              # Word
+python3 gen_latex.py     # manuel, PDF
+node gen.js              # manuel, Word
+python3 gen_note.py      # note de présentation
+python3 gen_guide.py     # guide technique
 ```
+
+Effacez les fichiers auxiliaires de LaTeX entre deux compositions, sans quoi le
+sommaire garde une numérotation périmée. `gen_guide.py` le fait de lui-même,
+les deux autres non.
 
 Puis copier les quatre fichiers dans `inst/app/www/manuel` et
 `inst/extdata/manuel`.

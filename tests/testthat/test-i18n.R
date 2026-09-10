@@ -56,3 +56,26 @@ test_that("l'agregation annuelle d'un cours est une moyenne", {
   expect_equal(a$valeur, 15)
   expect_equal(a$frequence, "A")
 })
+
+test_that("les noms d'agregats sont traduits en francais", {
+  # Les noms viennent de la Banque mondiale, donc en anglais. Le dictionnaire
+  # ordinaire ne convient pas : il va du francais vers l'anglais.
+  .i18n$langue <- "fr"
+  expect_equal(nom_traduit("World"), "Monde")
+  expect_equal(nom_traduit("Euro area"), "Zone euro")
+  expect_equal(nom_traduit("Sub-Saharan Africa"), "Afrique subsaharienne")
+})
+
+test_that("un nom absent de la table est rendu tel quel", {
+  # Mieux vaut un nom anglais qu'un blanc : la table ne couvre que les
+  # agregats, dont le nom est vraiment genant en anglais.
+  .i18n$langue <- "fr"
+  expect_equal(nom_traduit("Cameroon"), "Cameroon")
+  expect_equal(nom_traduit("Xyzzy"), "Xyzzy")
+})
+
+test_that("en anglais, les noms ne sont pas touches", {
+  .i18n$langue <- "en"
+  expect_equal(nom_traduit("World"), "World")
+  .i18n$langue <- "fr"
+})
