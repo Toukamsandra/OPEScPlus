@@ -401,3 +401,89 @@ diagnostic_plateforme <- function() {
   }
   invisible(TRUE)
 }
+
+#' Etat du referentiel des pays et de leur couverture
+#'
+#' Repond a la question : pourquoi la liste des pays est-elle incomplete ?
+#' Deux causes possibles, et la fonction dit laquelle s'applique.
+#'
+#' La premiere est voulue : la liste ne propose que les entites pour lesquelles
+#' l'indicateur choisi existe reellement. Un indicateur de pauvrete peut n'etre
+#' renseigne que pour quarante pays, et en proposer deux cents menerait a des
+#' graphiques vides.
+#'
+#' La seconde ne l'est pas : le referentiel lui-meme peut etre incomplet, si
+#' `charger_pays()` a echoue faute de reseau. Il compte alors bien moins que
+#' les deux cent soixante entrees attendues.
+#'
+#' @param code_source code d'un indicateur a examiner, facultatif.
+#'
+#' @examples
+#' \dontrun{
+#' diagnostic_pays()
+#' diagnostic_pays("NY.GDP.MKTP.CD")
+#' }
+#' @export
+diagnostic_pays <- function(code_source = NULL) {
+  con <- connexion()
+  on.exit(DBI::dbDisconnect(con), add = TRUE)
+
+  d <- DBI::dbGetQuery(con, "
+    SELECT est_agregat, COUNT(*) AS n FROM pays GROUP BY est_agregat")
+  pays <- sum(d$n[d$est_agregat == 0])
+  agregats <- sum(d$n[d$est_agregat == 1])
+
+  cat("Referentiel\n")
+  cat(sprintf("  %d pays et %d regroupements, soit %d entrees.\n",
+              pays, agregats, pays + agregats))
+
+  # La Banque mondiale publie environ 218 economies et 48 regroupements.
+  if (pays < 180 || agregats < 30) {
+    cat("\n  Ce referentiel est incomplet. Il en faut environ 218 et 48.\n")
+    cat("  Relancez preparer_base() avec une connexion au reseau : il est\n")
+    cat("  charge depuis l'interface de la Banque mondiale.\n")
+  } else {
+    cat("  Referentiel complet.\n")
+  }
+
+  couverture <- DBI::dbGetQuery(con, "
+    SELECT COUNT(DISTINCT iso3) AS n FROM observation")$n
+  cat(sprintf("\n%d entites portent au moins une observation.\n", couverture))
+
+  if (is.null(code_source)) {
+    cat("\nLa liste du tableau de bord ne propose, pour chaque indicateur,\n")
+    cat("que les entites qui le renseignent. Passez un code d'indicateur a\n")
+    cat("cette fonction pour voir sa couverture : diagnostic_pays(\"NY.GDP.MKTP.CD\")\n")
+    return(invisible(NULL))
+  }
+
+  ind <- DBI::dbGetQuery(con,
+    "SELECT code_interne, libelle FROM indicateur WHERE code_source = ?",
+    params = list(code_source))
+  if (!nrow(ind)) {
+    cat(sprintf("\nIndicateur %s absent du catalogue.\n", code_source))
+    return(invisible(NULL))
+  }
+
+  n <- DBI::dbGetQuery(con, "
+    SELECT p.est_agregat, COUNT(DISTINCT o.iso3) AS n
+    FROM observation o JOIN pays p ON p.iso3 = o.iso3
+    WHERE o.code_interne = ? GROUP BY p.est_agregat",
+    params = list(ind$code_interne[[1]]))
+
+  cat(sprintf("\n%s\n", ind$libelle[[1]]))
+  cat(sprintf("  %d pays et %d regroupements renseignes.\n",
+              sum(n$n[n$est_agregat == 0]), sum(n$n[n$est_agregat == 1])))
+
+  absents <- DBI::dbGetQuery(con, "
+    SELECT nom FROM pays WHERE est_agregat = 1 AND iso3 NOT IN
+      (SELECT DISTINCT iso3 FROM observation WHERE code_interne = ?)
+    ORDER BY nom", params = list(ind$code_interne[[1]]))
+  if (nrow(absents)) {
+    cat(sprintf("  %d regroupements sans valeur pour cet indicateur :\n",
+                nrow(absents)))
+    cat(sprintf("    %s\n", paste(utils::head(absents$nom, 8), collapse = ", ")))
+    cat("  La source ne les publie pas : la plateforme ne les invente pas.\n")
+  }
+  invisible(NULL)
+}

@@ -1,5 +1,39 @@
 # Journal des versions
 
+## OPEScGolem_V65 (septembre 2026)
+
+**La liste des pays est rangée en trois groupes**
+
+Le monde, puis les régions et regroupements, puis les pays. Chaque groupe est
+classé par ordre alphabétique, et porte un intitulé dans la liste déroulante.
+
+Une liste plate mêlait une quarantaine de regroupements aux deux cents pays, et
+il fallait connaître le nom anglais d'une région pour la trouver.
+
+**Quarante-neuf regroupements traduits**
+
+La table de traduction couvre désormais tous les agrégats publiés par la Banque
+mondiale : les régions géographiques, les groupes de revenu, les
+classifications institutionnelles et celles des Nations unies.
+
+**Une limite que je dois signaler**
+
+Les communautés économiques régionales africaines, CEMAC, CEDEAO, UEMOA, SADC,
+n'apparaissent pas dans cette liste. La Banque mondiale ne les publie pas comme
+agrégats, et la plateforme ne les calcule pas.
+
+Les calculer serait possible, mais hasardeux : agréger des pays n'a de sens que
+pour certaines grandeurs. Additionner des produits intérieurs bruts se
+justifie ; additionner des taux de croissance ou des indices de Gini n'a aucun
+sens, et une moyenne non pondérée en aurait encore moins. Produire ces
+agrégats demanderait de définir, indicateur par indicateur, la règle
+d'agrégation applicable.
+
+Si ces communautés vous sont nécessaires, deux voies. Les importer depuis une
+source qui les publie, la BEAC ou la Commission de la CEMAC, par le dépôt de
+fichier de l'onglet Collectes. Ou me demander d'implémenter l'agrégation, en
+sachant qu'elle ne sera proposée que sur les grandeurs additives.
+
 ## OPEScGolem_V64 (septembre 2026)
 
 **Le monde en tête de la liste des pays**

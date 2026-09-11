@@ -54,8 +54,12 @@ mod_tableau_bord_ui <- function(id) {
         shiny::div(class = "champ champ-pays",
           shiny::selectizeInput(ns("pays"), tr("Pays"), choices = NULL, multiple = TRUE,
                                 width = "100%",
-                                options = list(placeholder = "Choisissez un ou plusieurs pays",
-                                               plugins = list("remove_button")))),
+                                options = list(placeholder = tr("Choisissez un ou plusieurs pays"),
+                                               plugins = list("remove_button"))),
+          # La liste peut paraitre courte sans que rien ne soit casse : elle
+          # ne propose que les entites qui renseignent l'indicateur choisi.
+          # L'annoncer evite de chercher une panne la ou il n'y en a pas.
+          shiny::uiOutput(ns("couverture_pays"))),
         shiny::div(class = "champ champ-actions",
           shiny::actionButton(ns("appliquer"), tr("Appliquer le filtre"),
                               class = "btn-opesc", icon = shiny::icon("filter")),
@@ -168,6 +172,14 @@ mod_tableau_bord_server <- function(id, con) {
         shiny::p(class = "marche-note", tr(paste(
           "Une base est d\u00e9j\u00e0 livr\u00e9e avec la plateforme. Ces \u00e9tapes servent \u00e0 la",
           "mettre \u00e0 jour ou \u00e0 \u00e9tendre la p\u00e9riode couverte."))))
+    })
+
+    output$couverture_pays <- shiny::renderUI({
+      c_ <- etat$couverture
+      if (is.null(c_) || c_$retenus >= c_$total) return(NULL)
+      shiny::p(class = "petit indication", sprintf(
+        tr("%d entit\u00e9s sur %d renseignent cet indicateur."),
+        c_$retenus, c_$total))
     })
 
     output$tuiles <- shiny::renderUI({
@@ -357,27 +369,46 @@ mod_tableau_bord_server <- function(id, con) {
         "SELECT DISTINCT iso3 FROM observation WHERE code_interne = ?",
         params = list(indicateur_principal()))$iso3
 
-      # On ne propose que les pays pour lesquels l'indicateur existe reellement.
+      # On ne propose que les entites pour lesquelles l'indicateur existe
+      # reellement. Un indicateur de pauvrete n'est renseigne que pour une
+      # quarantaine de pays : en proposer deux cents menerait a des graphiques
+      # vides, ce que la plateforme s'interdit.
       p <- if (length(dispo)) tous_pays[tous_pays$iso3 %in% dispo, ] else tous_pays
-      # Le monde vient en tete, devant les autres agregats puis les pays. Sa
-      # valeur est celle qu'on cherche le plus souvent en premier, et il se
-      # perdait au milieu d'une quarantaine de regroupements ranges par ordre
-      # alphabetique de leur nom anglais.
-      # Trois rangs : le monde, puis les pays, puis les autres agregats. Un
-      # rang nul pour le monde le melait aux pays, dont le rang l'est aussi.
-      p$rang <- ifelse(p$iso3 == "WLD", -1L, p$est_agregat)
-      p <- p[order(p$rang, p$nom), ]
 
+      # La liste peut paraitre courte sans que rien ne soit casse : le nombre
+      # d'entites retenues est donc annonce sous le champ.
+      etat$couverture <- list(retenus = nrow(p), total = nrow(tous_pays))
+      # La liste est rangee en trois groupes nommes, chacun par ordre
+      # alphabetique : le monde, les regroupements, puis les pays. Une liste
+      # plate melait une quarantaine d'agregats aux deux cents pays, et il
+      # fallait connaitre le nom anglais d'un regroupement pour le trouver.
+      #
       # Les noms viennent de la Banque mondiale, donc en anglais. Ceux des
-      # agregats passent par le dictionnaire : un utilisateur francophone
-      # cherche « Monde », non « World ».
-      libelles <- vapply(seq_len(nrow(p)), function(k) {
-        nom <- nom_traduit(p$nom[[k]])
-        if (p$est_agregat[[k]] == 1 && p$iso3[[k]] != "WLD") {
-          paste0(nom, tr(" (agrégat)"))
-        } else nom
-      }, character(1))
-      choix <- stats::setNames(p$iso3, libelles)
+      # regroupements passent par la table de traduction : on cherche
+      # « Monde », non « World ».
+      p$libelle <- vapply(p$nom, nom_traduit, character(1), USE.NAMES = FALSE)
+
+      monde <- p[p$iso3 == "WLD", ]
+      groupes <- p[p$est_agregat == 1 & p$iso3 != "WLD", ]
+      pays_seuls <- p[p$est_agregat == 0, ]
+
+      groupes <- groupes[order(groupes$libelle), ]
+      pays_seuls <- pays_seuls[order(pays_seuls$libelle), ]
+
+      # Un groupe vide est omis : selectize afficherait un intitule sans
+      # contenu, ce qui laisse croire a une liste incomplete.
+      choix <- list()
+      if (nrow(monde)) {
+        choix[[tr("Monde")]] <- stats::setNames(monde$iso3, monde$libelle)
+      }
+      if (nrow(groupes)) {
+        choix[[tr("R\u00e9gions et regroupements")]] <-
+          stats::setNames(groupes$iso3, groupes$libelle)
+      }
+      if (nrow(pays_seuls)) {
+        choix[[tr("Pays")]] <- stats::setNames(pays_seuls$iso3, pays_seuls$libelle)
+      }
+
       selection <- shiny::isolate(input$pays)
       selection <- selection[selection %in% p$iso3]
       if (!length(selection)) {

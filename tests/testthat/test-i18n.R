@@ -79,3 +79,25 @@ test_that("en anglais, les noms ne sont pas touches", {
   expect_equal(nom_traduit("World"), "World")
   .i18n$langue <- "fr"
 })
+
+test_that("les regroupements de la Banque mondiale sont traduits", {
+  .i18n$langue <- "fr"
+  attendus <- list("World" = "Monde", "Euro area" = "Zone euro",
+                   "Sub-Saharan Africa" = "Afrique subsaharienne",
+                   "High income" = "Revenu \u00e9lev\u00e9",
+                   "Least developed countries: UN classification" =
+                     "Pays les moins avanc\u00e9s (Nations unies)")
+  for (en in names(attendus)) {
+    expect_equal(nom_traduit(en), attendus[[en]], info = en)
+  }
+})
+
+test_that("la table des noms couvre les regroupements publies", {
+  # Une quarantaine d'agregats sont publies : si la table en couvre beaucoup
+  # moins, la liste des pays melera du francais et de l'anglais.
+  d <- utils::read.csv(app_sys("extdata/noms_pays_fr.csv"),
+                       stringsAsFactors = FALSE, fileEncoding = "UTF-8-BOM")
+  expect_gt(nrow(d), 40)
+  expect_true(all(nzchar(d$fr)))
+  expect_equal(nrow(d), length(unique(d$en)))
+})
