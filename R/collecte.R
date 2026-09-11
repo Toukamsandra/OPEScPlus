@@ -33,6 +33,19 @@ collecter_indicateur <- function(con, ligne, debut = NULL, fin = NULL) {
   if (!nrow(d)) return(list(creees = 0L, modifiees = 0L))
 
   d$code_interne <- ligne$code_interne
+
+  # Un connecteur peut rendre `date_periode` en texte plutot qu'en date. Sans
+  # cette conversion, `format(x, "%Y")` passe le motif a l'argument `trim` de
+  # `format.default`, qui l'attend logique : la collecte s'arretait sur
+  # « argument 'trim' incorrect », apres un telechargement pourtant reussi.
+  # La conversion vaut mieux qu'une regle de plus imposee aux connecteurs :
+  # elle protege aussi ceux qui seront ecrits plus tard.
+  if (!inherits(d$date_periode, "Date")) {
+    d$date_periode <- as.Date(as.character(d$date_periode))
+    d <- d[!is.na(d$date_periode), ]
+    if (!nrow(d)) return(list(creees = 0L, modifiees = 0L))
+  }
+
   d$annee <- as.integer(format(d$date_periode, "%Y"))
   d$date_periode <- format(d$date_periode, "%Y-%m-%d")
   d <- d[!duplicated(d[c("code_interne", "iso3", "frequence", "date_periode")]), ]
@@ -224,7 +237,22 @@ initialiser_base <- function(con, avec_pays = TRUE) {
   # demander a l'utilisateur de lancer une commande d'import : la donnee est
   # dans le paquet, elle est chargee au meme titre que le catalogue.
   charger_fichier_livre(con)
-  invisible(nrow(catalogue) - nrow(inactifs))
+
+  # Un indicateur qui porte des observations est actif, quelle que soit la
+  # facon dont elles sont arrivees. Le drapeau est pose plus haut, avant que
+  # le fichier livre ne soit charge : sur une base neuve, les cours de
+  # produits de base n'avaient alors aucune observation et restaient
+  # desactives jusqu'a un second `preparer_base()`. Les codes ecartes a la
+  # recette gardent leur drapeau : une observation ancienne ne les rend pas
+  # collectables pour autant.
+  DBI::dbExecute(con, sprintf("
+    UPDATE indicateur SET actif = 1
+    WHERE actif = 0
+      AND code_source NOT IN (%s)
+      AND code_interne IN (SELECT DISTINCT code_interne FROM observation)",
+    paste(sprintf("'%s'", NON_VALIDES), collapse = ", ")))
+
+  invisible(n_indicateurs(con))
 }
 
 #' La liste des pays vient de l'API de la Banque mondiale, qui fournit region,

@@ -7,9 +7,15 @@ test_that("les periodes de toutes formes sont normalisees", {
     periode = c("2023", "2023-Q4", "2023-M07", "2023-03"),
     valeur = c(1, 2, 3, 4))
   expect_equal(nrow(d), 4L)
-  expect_equal(d$frequence, c("A", "Q", "M", "M"))
+  # Le trimestre porte le code du referentiel, « T », et non le « Q » de la
+  # source : une frequence inconnue de FREQUENCES ne serait jamais proposee
+  # dans les filtres.
+  expect_equal(d$frequence, c("A", "T", "M", "M"))
+  # La colonne est une colonne de dates : le moteur en tire l'annee par
+  # format(), qui echoue sur du texte.
+  expect_s3_class(d$date_periode, "Date")
   expect_equal(d$date_periode,
-               c("2023-01-01", "2023-10-01", "2023-07-01", "2023-03-01"))
+               as.Date(c("2023-01-01", "2023-10-01", "2023-07-01", "2023-03-01")))
 })
 
 test_that("une periode invalide est ecartee, pas devinee", {
@@ -19,7 +25,7 @@ test_that("une periode invalide est ecartee, pas devinee", {
                         periode = c("2023-Q5", "2023-M13", "2023-Q2"),
                         valeur = c(1, 2, 3))
   expect_equal(nrow(d), 1L)
-  expect_equal(d$date_periode, "2023-04-01")
+  expect_equal(d$date_periode, as.Date("2023-04-01"))
 })
 
 test_that("les codes pays qui ne sont pas en ISO3 sont ecartes", {
@@ -49,6 +55,7 @@ test_that("une serie vide porte les colonnes attendues", {
   d <- serie_vide()
   expect_equal(names(d),
                c("iso3", "date_periode", "frequence", "valeur"))
+  expect_s3_class(d$date_periode, "Date")
   expect_equal(nrow(d), 0L)
 })
 
@@ -96,4 +103,24 @@ test_that("tout code prive commencant par X est ecarte", {
     iso3 = c("CMR", "X01", "XA1", "XB2", "NGA"),
     periode = rep("2023", 5), valeur = 1:5)
   expect_equal(sort(d$iso3), c("CMR", "NGA"))
+})
+
+test_that("la serie rendue traverse la conversion du moteur", {
+  # Regression. `collecter_indicateur()` appelle format(date_periode, "%Y")
+  # pour en tirer l'annee. Sur une colonne de texte, format.default prend le
+  # motif pour son argument `trim` et s'arrete sur « argument 'trim'
+  # incorrect » : la collecte echouait apres un telechargement pourtant
+  # reussi, et l'indicateur restait affiche comme non collecte.
+  d <- normaliser_serie(iso3 = c("CMR", "NGA"), periode = c("2023", "2024"),
+                        valeur = c(1, 2))
+  expect_equal(as.integer(format(d$date_periode, "%Y")), c(2023L, 2024L))
+  expect_equal(format(d$date_periode, "%Y-%m-%d"),
+               c("2023-01-01", "2024-01-01"))
+})
+
+test_that("le pas trimestriel appartient au referentiel des frequences", {
+  # Une frequence absente de FREQUENCES n'est jamais proposee dans les
+  # filtres : la serie serait en base sans jamais devenir consultable.
+  d <- normaliser_serie(iso3 = "CMR", periode = "2023-Q2", valeur = 1)
+  expect_true(all(d$frequence %in% FREQUENCES$code))
 })

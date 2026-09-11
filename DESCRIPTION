@@ -1,6 +1,6 @@
 Package: opescplus
 Title: OPESc+, Observatoire des perspectives economiques
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: person("MINEPAT", role = c("aut", "cre"),
                   email = "contact@minepat.gov.cm")
 Description: Plateforme de collecte, de consultation et de visualisation des

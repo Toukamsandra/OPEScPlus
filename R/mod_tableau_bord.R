@@ -200,8 +200,10 @@ mod_tableau_bord_server <- function(id, con) {
         legende <- if (collectes == 0) {
           sprintf(tr("%d indicateur%s, aucune donn\u00e9e"), nb, if (nb > 1) "s" else "")
         } else if (collectes < nb) {
+          # Trois specificateurs, donc trois arguments. Un quatrieme etait
+          # passe, d'ou l'avertissement repete a chaque tuile au demarrage.
           sprintf(tr("%d indicateur%s sur %d avec donn\u00e9es"), collectes,
-                  if (collectes > 1) "s" else "", nb, if (collectes > 1) "s" else "")
+                  if (collectes > 1) "s" else "", nb)
         } else {
           sprintf("%d indicateur%s", nb, if (nb > 1) "s" else "")
         }

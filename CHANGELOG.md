@@ -1,5 +1,43 @@
 # Journal des versions
 
+## OPEScGolem_V77 (septembre 2026)
+
+**Les connecteurs OIT, OCDE et CNUCED n'écrivaient rien en base.** Le
+téléchargement réussissait, la collecte échouait juste après sur « argument
+'trim' incorrect ». Cause : `normaliser_serie()` rendait `date_periode` en
+texte, alors que le moteur en tire l'année par `format(x, "%Y")`. Sur du
+texte, ce deuxième argument est pris pour `trim` par `format.default`, qui
+l'attend logique. Les trois indicateurs de l'OIT de la catégorie C10 restaient
+donc affichés comme non collectés après une collecte apparemment menée à son
+terme.
+
+Deux corrections plutôt qu'une. `normaliser_serie()` et `serie_vide()` rendent
+maintenant une colonne de dates, comme `vide()` le faisait déjà du côté de la
+Banque mondiale. Et `collecter_indicateur()` convertit ce qu'il reçoit avant de
+le formater : un connecteur écrit plus tard ne pourra plus faire tomber la
+collecte de cette façon.
+
+**Le pas trimestriel portait le code `Q`.** Le référentiel `FREQUENCES` emploie
+`T`. Une fréquence qui n'y figure pas n'est jamais proposée dans les filtres :
+une série trimestrielle venue de ces trois fournisseurs aurait été collectée
+sans jamais devenir consultable.
+
+**Les chiffres de l'accueil se rafraîchissent dans la session.** Ils étaient
+lus une seule fois, à l'ouverture de la page. Une collecte ou un import lancé
+depuis l'onglet Collectes ne les faisait pas bouger, et il fallait recharger la
+page pour voir le changement. Un signal partagé relie maintenant les Collectes,
+l'accueil et le bandeau de fraîcheur.
+
+**Avertissement `sprintf` au démarrage.** Le libellé des tuiles de catégorie
+compte trois spécificateurs et recevait quatre arguments, d'où l'avis répété à
+chaque ouverture du tableau de bord. Argument surnuméraire retiré.
+
+**Les cours de produits de base restaient inactifs sur une base neuve.** Le
+drapeau `actif` était posé avant le chargement du fichier livré : les 108
+séries de C15 n'avaient alors aucune observation et le restaient jusqu'à un
+second `preparer_base()`. Le drapeau est maintenant repassé à 1 après le
+chargement, pour tout indicateur qui porte des observations.
+
 ## OPEScGolem_V75 (septembre 2026)
 
 **Deux indicateurs de l'OIT inscrits au catalogue**

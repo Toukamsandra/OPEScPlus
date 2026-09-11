@@ -91,7 +91,7 @@ mod_collectes_ui <- function(id) {
     journal)
 }
 
-mod_collectes_server <- function(id, con) {
+mod_collectes_server <- function(id, con, rafraichir = NULL) {
   shiny::moduleServer(id, function(input, output, session) {
 
     ns <- session$ns
@@ -121,7 +121,10 @@ mod_collectes_server <- function(id, con) {
       choices = stats::setNames(categories$code, tr(categories$libelle)),
       selected = "C15")
 
-    rafraichir <- shiny::reactiveVal(0)
+    # Le signal vient de `app_server` quand il est fourni : l'accueil et le
+    # bandeau de fraicheur le lisent aussi, et se mettent a jour avec le
+    # journal. Un module appele seul garde son propre compteur.
+    if (is.null(rafraichir)) rafraichir <- shiny::reactiveVal(0)
     message_import <- shiny::reactiveVal(NULL)
 
     shiny::observeEvent(input$importer, {

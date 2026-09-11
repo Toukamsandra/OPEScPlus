@@ -148,12 +148,15 @@ mod_accueil_ui <- function(id) {
         }))))
 }
 
-mod_accueil_server <- function(id, con, parent) {
+mod_accueil_server <- function(id, con, parent, rafraichir = NULL) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-
+    # Les chiffres sont relus a chaque signal de rafraichissement, et non une
+    # seule fois a l'ouverture de la session : une collecte lancee depuis
+    # l'onglet Collectes doit se voir ici sans recharger la page.
     output$chiffres <- shiny::renderUI({
+      if (is.function(rafraichir)) rafraichir()
       n <- DBI::dbGetQuery(con, "
         SELECT (SELECT COUNT(*) FROM indicateur WHERE actif = 1) AS indicateurs,
                (SELECT COUNT(*) FROM categorie) AS categories,

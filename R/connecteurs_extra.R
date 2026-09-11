@@ -360,9 +360,15 @@ connecteur_cnuced <- function(code, debut = NULL, ...) {
 }
 
 #' Serie vide, au format attendu par le moteur
+#'
+#' `date_periode` est une colonne de dates, et non de texte. Le moteur appelle
+#' `format(d$date_periode, "%Y")` pour en tirer l'annee : sur une colonne de
+#' texte, ce deuxieme argument est pris pour `trim` par `format.default`, qui
+#' l'attend logique et s'arrete sur « argument 'trim' incorrect ». La collecte
+#' echouait alors apres un telechargement pourtant reussi.
 #' @noRd
 serie_vide <- function() {
-  data.frame(iso3 = character(), date_periode = character(),
+  data.frame(iso3 = character(), date_periode = as.Date(character()),
              frequence = character(), valeur = numeric(),
              stringsAsFactors = FALSE)
 }
@@ -374,17 +380,24 @@ serie_vide <- function() {
 #' qu'elle couvre, convention du reste de la plateforme.
 #' @noRd
 normaliser_serie <- function(iso3, periode, valeur, debut = NULL) {
-  garde <- !is.na(valeur) & nzchar(iso3) & nzchar(periode)
+  iso3 <- as.character(iso3)
+  periode <- as.character(periode)
+  garde <- !is.na(valeur) & !is.na(iso3) & !is.na(periode) &
+    nzchar(iso3) & nzchar(periode)
   iso3 <- iso3[garde]; periode <- periode[garde]; valeur <- valeur[garde]
   if (!length(valeur)) return(serie_vide())
 
-  frequence <- ifelse(grepl("-Q", periode, fixed = TRUE), "Q",
+  # Le trimestre porte le code « T », celui du referentiel FREQUENCES, et non
+  # le « Q » de la source. Une frequence absente du referentiel n'est jamais
+  # proposee dans les filtres : la serie aurait ete collectee sans jamais
+  # devenir consultable.
+  frequence <- ifelse(grepl("-Q", periode, fixed = TRUE), "T",
                ifelse(grepl("-M|^[0-9]{4}-[0-9]{2}$", periode), "M", "A"))
 
   date_periode <- vapply(seq_along(periode), function(i) {
     p <- periode[[i]]
     if (frequence[[i]] == "A") return(sprintf("%s-01-01", substr(p, 1, 4)))
-    if (frequence[[i]] == "Q") {
+    if (frequence[[i]] == "T") {
       t <- suppressWarnings(as.integer(sub(".*-Q", "", p)))
       if (is.na(t) || t < 1 || t > 4) return(NA_character_)
       return(sprintf("%s-%02d-01", substr(p, 1, 4), (t - 1) * 3 + 1))
@@ -394,13 +407,14 @@ normaliser_serie <- function(iso3, periode, valeur, debut = NULL) {
     sprintf("%s-%02d-01", substr(p, 1, 4), m)
   }, character(1))
 
-  d <- data.frame(iso3 = toupper(iso3), date_periode = date_periode,
-                  frequence = frequence, valeur = valeur,
+  d <- data.frame(iso3 = toupper(iso3),
+                  date_periode = as.Date(date_periode),
+                  frequence = frequence, valeur = as.numeric(valeur),
                   stringsAsFactors = FALSE)
   d <- d[!is.na(d$date_periode), ]
 
   if (!is.null(debut)) {
-    d <- d[as.integer(substr(d$date_periode, 1, 4)) >= as.integer(debut), ]
+    d <- d[as.integer(format(d$date_periode, "%Y")) >= as.integer(debut), ]
   }
   # Les codes pays a deux lettres ou numeriques sont ecartes : la plateforme
   # travaille en ISO3, et convertir a l'aveugle creerait de faux

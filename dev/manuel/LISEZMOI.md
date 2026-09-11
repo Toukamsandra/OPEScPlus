@@ -9,7 +9,8 @@ Deux chaînes, un seul contenu.
 | `gen_latex.py` | compose le PDF, avec la page de garde de référence |
 | `gen.js` | compose le Word |
 | `gen_note.py` | note de présentation, dix pages |
-| `gen_guide.py` | guide technique, huit pages |
+| `gen_guide.py` | guide technique, treize pages |
+| `gen_dossier.py` | dossier de projet, dix pages |
 
 Le PDF passe par LaTeX parce que le manuel de référence en vient : la page de
 garde et la typographie s'y reproduisent exactement, ce qu'un traitement de
@@ -23,6 +24,7 @@ python3 gen_latex.py     # manuel, PDF
 node gen.js              # manuel, Word
 python3 gen_note.py      # note de présentation
 python3 gen_guide.py     # guide technique
+python3 gen_dossier.py   # dossier de projet
 ```
 
 Effacez les fichiers auxiliaires de LaTeX entre deux compositions, sans quoi le
