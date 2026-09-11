@@ -343,3 +343,5 @@ C15.PWOOL,C15,S02,Indice de la laine,Import local (PCPS),PWOOL,"M,T,A",,0,0
 C15.PWOOLC,C15,S02,"Laine, fibre grossière",Import local (PCPS),PWOOLC,"M,T,A",,0,0
 C15.PWOOLF,C15,S02,"Laine, fibre fine",Import local (PCPS),PWOOLF,"M,T,A",,0,0
 C15.PZINC,C15,S02,Zinc,Import local (PCPS),PZINC,"M,T,A",,0,0
+C10.SDG_0852_SEX_AGE_RT_A,C10,S07,"Taux de chômage, définition OIT (ODD 8.5.2)",OIT (ILOSTAT),SDG_0852_SEX_AGE_RT_A,A,% de la pop. active,1,0
+C10.EMP_2EMP_SEX_AGE_NB_A,C10,S07,"Emploi total, estimations OIT",OIT (ILOSTAT),EMP_2EMP_SEX_AGE_NB_A,A,milliers de personnes,1,0

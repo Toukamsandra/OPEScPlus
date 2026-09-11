@@ -913,30 +913,16 @@ explorer_champs_atlas <- function() {
 
 # --- registre --------------------------------------------------------------
 # Ajouter une source revient a ecrire une fonction et a l'inscrire ici.
-REGISTRE <- list(
-  "Banque mondiale (WDI)"      = connecteur_banque_mondiale,
-  "Banque mondiale (IDS)"      = connecteur_banque_mondiale,
-  "Banque mondiale (WGI)"      = connecteur_banque_mondiale,
-  "Banque mondiale (PIP)"      = connecteur_banque_mondiale,
-  "Banque mondiale (Findex)"   = connecteur_banque_mondiale,
-  "Banque mondiale (ASPIRE)"   = connecteur_banque_mondiale,
-  "Banque mondiale (LPI)"      = connecteur_banque_mondiale,
-  "Banque mondiale (B-READY)"  = connecteur_banque_mondiale,
-  # Les trois anciennes entrees FMI convergent vers le flux WEO du nouveau
-  # portail : il porte aussi bien les agregats de finances publiques que les
-  # cours des matieres premieres.
-  "FMI (WEO)"                  = connecteur_fmi_weo,
-  "FMI (Fiscal Monitor)"       = connecteur_fmi_weo,
-  "FMI (PCPS)"                   = connecteur_produits_de_base,
-  "Banque mondiale (Pink Sheet)" = connecteur_produits_de_base,
-  # L'OCDE sort du registre. Les identifiants de flux du catalogue renvoient
-  # tous 404 : l'agence supposee (OECD.SDD.STES) n'est pas la bonne pour la
-  # plupart d'entre eux, et l'un des codes etait meme malforme. Six indicateurs
-  # sont concernes, tous disponibles ailleurs sous une forme voisine. Ils
-  # seront rebranches quand les identifiants auront ete verifies un par un.
-  "Growth Lab Harvard (Atlas)" = connecteur_atlas,
-  "Growth Lab Harvard"         = connecteur_atlas,
-  "Growth Lab / Comtrade"      = connecteur_atlas)
+# Le registre des connecteurs est defini dans R/zzz_registre.R.
+#
+# Il y a ete deplace parce que R lit les fichiers d'un paquet par ordre
+# alphabetique : construit ici, il etait evalue avant que
+# `connecteurs_extra.R` ne soit lu, et les fonctions qu'il y cherchait
+# n'existaient pas encore. D'ou l'erreur « objet 'connecteur_ilostat'
+# introuvable » au chargement.
+#
+# Le prefixe `zzz` garantit que ce fichier est lu en dernier, quels que
+# soient les connecteurs ajoutes par la suite.
 
 # Flux du FMI non encore branches : leur ordre de dimensions n'a pas ete
 # verifie. Utilisez explorer_flux_fmi("IFS") pour l'obtenir, puis ajoutez une

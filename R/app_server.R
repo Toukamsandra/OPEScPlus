@@ -19,6 +19,8 @@ app_server <- function(input, output, session) {
 
   # `session` est transmis pour que les boutons de l'accueil puissent changer
   # d'onglet : la navigation reste celle de la barre, sans duplication.
+  output$bandeau_fraicheur <- shiny::renderUI(bandeau_fraicheur(con))
+
   mod_accueil_server("accueil", con, parent = session)
   mod_tableau_bord_server("tdb", con)
   mod_base_donnees_server("base", con)

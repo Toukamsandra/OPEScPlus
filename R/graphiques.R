@@ -11,8 +11,14 @@ assembler <- function(con, series, debut = NULL, fin = NULL) {
     if (!nrow(d)) return(NULL)
     # Une serie de cours mondial n'a pas de pays : la legende porte alors le
     # seul nom de l'indicateur, sans mention geographique parasite.
-    d$serie <- if (d$dimension_pays[1] == 0) d$libelle
-               else paste0(d$libelle, " : ", d$pays)
+    # La legende porte le libelle traduit et le nom de pays traduit : elle
+    # affichait du francais dans l'interface anglaise, et l'anglais de la
+    # Banque mondiale pour les regroupements dans l'interface francaise.
+    libelle <- tr(d$libelle)
+    d$serie <- if (d$dimension_pays[1] == 0) libelle
+               else paste0(libelle, " : ",
+                           vapply(d$pays, nom_traduit, character(1),
+                                  USE.NAMES = FALSE))
     d
   })
   morceaux <- Filter(Negate(is.null), morceaux)

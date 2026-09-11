@@ -48,8 +48,8 @@ annees_carte <- function(con, code_interne, frequence, seuil = 5L) {
 tracer_carte <- function(d, surligner = character(0), id_clic = NULL) {
   if (is.null(d) || !nrow(d)) return(NULL)
 
-  unite <- d$unite[1]
-  libelle <- d$libelle[1]
+  unite <- tr(d$unite[1])
+  libelle <- tr(d$libelle[1])
 
   # Les valeurs extremes ecrasent l'echelle : une poignee de pays a 300 % du
   # PIB rendrait tous les autres de la meme teinte. On borne l'echelle aux
@@ -119,12 +119,12 @@ fiche_pays <- function(con, iso3, libelle_indicateur, unite, annee,
   shiny::div(class = "fiche-pays",
     shiny::div(class = "fiche-drapeau",
       if (nzchar(drapeau)) {
-        shiny::img(src = drapeau, alt = p$nom[[1]],
+        shiny::img(src = drapeau, alt = nom_traduit(p$nom[[1]]),
                    onerror = "this.style.display='none'")
       },
       shiny::span(class = "fiche-code", iso3)),
     shiny::div(class = "fiche-corps",
-      shiny::h4(p$nom[[1]]),
+      shiny::h4(nom_traduit(p$nom[[1]])),
       shiny::div(class = "fiche-lignes",
         ligne_fiche(tr("Langue officielle"),
                     if (nzchar(extra$langues)) extra$langues else tr("non renseign\u00e9e")),

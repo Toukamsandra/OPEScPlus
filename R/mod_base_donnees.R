@@ -55,7 +55,7 @@ mod_base_donnees_server <- function(id, con) {
     })
     shiny::updateSelectInput(session, "categorie",
       choices = c(stats::setNames("", tr("Toutes les catégories")),
-                  stats::setNames(categories$code, categories$libelle)),
+                  stats::setNames(categories$code, tr(categories$libelle))),
       selected = categorie_depart)
 
     shiny::observe({
@@ -142,6 +142,14 @@ mod_base_donnees_server <- function(id, con) {
       d <- utils::head(donnees(), 1000)
       shiny::validate(shiny::need(nrow(d) > 0, tr("Aucune donnée.")))
       affichage <- d[c("pays", "libelle", "frequence", "date_periode", "valeur", "unite", "source")]
+      # Les libelles et les unites passent par le dictionnaire, les noms de
+      # pays par la table dediee : le tableau affichait du francais dans
+      # l'interface anglaise, et de l'anglais pour les regroupements dans
+      # l'interface francaise.
+      affichage$libelle <- tr(affichage$libelle)
+      affichage$unite <- tr(affichage$unite)
+      affichage$pays <- vapply(affichage$pays, nom_traduit, character(1),
+                               USE.NAMES = FALSE)
       affichage$frequence <- libelle_frequence(affichage$frequence)
       names(affichage) <- c("Pays", "Indicateur", tr("Fréquence"), tr("Période"), "Valeur", tr("Unité"), "Source")
       DT::datatable(affichage, rownames = FALSE, filter = "top",

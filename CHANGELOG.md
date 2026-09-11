@@ -1,5 +1,197 @@
 # Journal des versions
 
+## OPEScGolem_V75 (septembre 2026)
+
+**Deux indicateurs de l'OIT inscrits au catalogue**
+
+Ceux-là seulement, parce que ce sont les seuls éprouvés.
+
+| Code | Libellé | Couverture |
+|---|---|---|
+| `SDG_0852_SEX_AGE_RT_A` | Taux de chômage, définition OIT | 2000 à 2027 |
+| `EMP_2EMP_SEX_AGE_NB_A` | Emploi total | 1991 à 2027, 189 pays |
+
+Deux autres codes ont été essayés et écartés. Le taux d'activité laissait
+plusieurs valeurs par pays et par année : le garde-fou l'a refusé, comme prévu.
+Le salaire mensuel n'existe pas sous ce code.
+
+Les inscrire tous aurait rempli la liste de codes dont la moitié ne ramène
+rien. Un indicateur qui ne donnera rien ne doit pas figurer au catalogue.
+
+**Un indicateur OIT y figurait déjà**, « Emploi informel », inscrit lorsque le
+fournisseur n'avait pas de connecteur et jamais éprouvé depuis. Il est
+maintenant atteignable, mais reste à vérifier.
+
+**Le filtre des codes de zone élargi.** Il ne visait que les codes numérotés,
+`X01` et `X02`, et laissait passer `XA1`. La norme ISO 3166 réserve la lettre X
+aux usages privés : aucun pays n'en porte, ils sont tous écartés.
+
+## OPEScGolem_V73 (septembre 2026)
+
+**ILOSTAT répond, mais l'extrait révélait deux défauts graves**
+
+Le premier essai réussi ramenait 16 288 observations. L'extrait montrait
+cependant trois valeurs différentes pour le même pays et la même année, et des
+codes de zone `X01`, `X02` traités comme des pays.
+
+**Trois valeurs pour une année.** Les ventilations par sexe et par âge
+n'étaient pas réduites. Mon filtre cherchait un suffixe `_TOTAL`, alors que
+l'organisation emploie `SEX_T` pour le sexe et `AGE_AGGREGATE_TOTAL` ou
+`AGE_YTHADULT_YGE15` pour l'âge selon la nomenclature.
+
+Les lignes portant la même clé se seraient écrasées en base, la dernière écrite
+l'emportant au hasard. La série aurait paru correcte et aurait été fausse.
+
+Les motifs sont désormais essayés par ordre de préférence, et celui qui ne
+laisse qu'une modalité est retenu. Un contrôle vérifie ensuite qu'il ne reste
+qu'une valeur par pays et par période : s'il en reste plusieurs, la série est
+refusée avec un message nommant la ventilation en cause. Mieux vaut refuser une
+série que d'en enregistrer une fausse.
+
+**Les codes de zone.** L'organisation numérote ses régions `X01`, `X02` : trois
+caractères comme un code ISO3, mais ils ne désignent aucun pays. Ils sont
+écartés.
+
+**Le service ne refuse pas un code inconnu.** Il a répondu 200 avec trente
+méga-octets pour un identifiant inventé. Le connecteur compare donc
+l'indicateur demandé à celui rendu, et rejette s'ils diffèrent.
+
+## OPEScGolem_V71 (septembre 2026)
+
+**ILOSTAT a déplacé son entrepôt**
+
+Le diagnostic a tranché : 404 sur le catalogue, non 403. Ce n'était donc pas un
+filtrage réseau mais une adresse périmée. ILOSTAT a déplacé son service vers
+`rplumber.ilo.org`, sans que l'ancienne adresse redirige.
+
+Plutôt que de parier sur une nouvelle adresse, le connecteur essaie deux voies
+et quatre entrepôts, et retient celui qui répond pour la durée de la session.
+
+La première voie est le service applicatif, qui rend les données directement
+sans dépendre d'une arborescence de fichiers : il résiste mieux aux
+réorganisations. La seconde est le téléchargement de fichiers, aux adresses
+successivement employées par l'organisation.
+
+C'est la troisième fois que ce projet se heurte au déplacement d'un portail
+statistique, après le Fonds monétaire international et l'OCDE. Essayer
+plusieurs adresses n'est pas une précaution excessive : c'est la règle que
+l'expérience impose.
+
+**Le diagnostic éprouve toutes les adresses** et distingue les codes de
+réponse : un 404 signale une adresse périmée, un 403 un filtrage. Si toutes
+rendent 403, c'est le réseau qui bloque, et il faut essayer depuis une autre
+connexion.
+
+## OPEScGolem_V69 (septembre 2026)
+
+**ILOSTAT ne répondait pas : l'identifiant était incomplet**
+
+Les fichiers de l'entrepôt sont rangés par indicateur **et par fréquence**.
+L'identifiant porte donc un suffixe, `_A`, `_Q` ou `_M`. Sans lui, l'adresse ne
+répond pas.
+
+Le connecteur essaie maintenant les trois, l'annuel d'abord : c'est la
+fréquence dont dispose la quasi-totalité des indicateurs, et la seule pour
+beaucoup.
+
+Un détail qui m'avait échappé : le serveur ne rend pas un code d'erreur sur une
+adresse inconnue, mais une page HTML. Le connecteur écartait donc un fichier de
+quelques centaines d'octets comme s'il était valide. Il vérifie désormais la
+taille.
+
+**`catalogue_ilostat()` pour trouver les codes**
+
+Ils ne se devinent pas. Cette commande télécharge la table des matières de
+l'entrepôt et y cherche un motif, dans les trois langues de l'organisation.
+
+```r
+catalogue_ilostat("unemployment rate")
+```
+
+Le message d'échec de `tester_fournisseur()` oriente désormais selon le
+fournisseur : chercher un code ILOSTAT et un identifiant SDMX ne se fait pas de
+la même façon.
+
+## OPEScGolem_V68 (septembre 2026)
+
+**Le chargement échouait sur « objet 'connecteur_ilostat' introuvable »**
+
+R lit les fichiers d'un paquet par ordre alphabétique. Le registre était
+construit dans `connecteurs.R`, donc évalué avant que `connecteurs_extra.R` ne
+soit lu : les fonctions qu'il y cherchait n'existaient pas encore.
+
+Il est déplacé dans `R/zzz_registre.R`, dont le préfixe garantit qu'il est lu
+en dernier, quels que soient les connecteurs ajoutés par la suite.
+
+Un test vérifie désormais que toute fonction citée au registre existe. Ce
+défaut ne se voit pas à la relecture, seulement au chargement.
+
+## OPEScGolem_V67 (septembre 2026)
+
+### Le bilinguisme est complet
+
+Les 313 libellés figuraient déjà au dictionnaire : le défaut était ailleurs.
+L'onglet Base de données affichait les libellés, les unités et les noms de pays
+tels qu'en base, sans passer par la traduction. Les légendes de graphique et la
+fiche pays de la carte non plus.
+
+Tout passe désormais par le dictionnaire pour les libellés et les unités, par
+la table dédiée pour les noms de pays. Trois traductions de cours de matières
+premières étaient inexactes, héritées d'une correspondance approximative avec
+le classeur Pink Sheet, elles sont corrigées.
+
+### Les données ne vieilliront plus en silence
+
+**Un bandeau le dit.** Il apparaît sous la barre d'onglets dès que les données
+dépassent quarante-cinq jours, et passe en alerte au-delà de cent vingt. Rien
+ne s'affiche tant qu'elles sont récentes : une mention permanente deviendrait
+du décor et ne serait plus lue le jour où elle compte.
+
+Le seuil correspond au rythme de révision des sources : la Banque mondiale
+révise deux à quatre fois l'an, le Fonds monétaire international publie en
+avril et octobre.
+
+L'âge se mesure à la dernière collecte réussie, non à la dernière observation :
+une série peut s'arrêter en 2023 parce que la source n'a rien publié depuis,
+sans que la plateforme soit en retard.
+
+**Une tâche planifiée.** `collecte_hebdomadaire()` collecte ce qui manque,
+reconstruit la base publiée et journalise. Le script et son mode d'emploi pour
+le Planificateur de tâches Windows sont dans `dev/planification`.
+
+Elle ne pousse rien sur le dépôt. Publier demande une authentification, et une
+machine qui publierait sans surveillance finirait par mettre en ligne une base
+corrompue un jour de panne. Le journal rappelle la commande à lancer.
+
+`diagnostic_fraicheur()` donne le détail par catégorie : une catégorie peut
+être bien plus ancienne que la moyenne sans que le chiffre global le montre.
+
+### Trois fournisseurs rebranchés
+
+**L'OCDE revient**, et les 404 obtenus auparavant s'expliquent enfin : elle a
+retiré `stats.oecd.org` en 2024 pour un nouveau service à `sdmx.oecd.org`, avec
+des identifiants de flux de forme différente. Je cherchais à une adresse
+retirée.
+
+**L'OIT** passe par le téléchargement direct de son entrepôt plutôt que par son
+service SDMX, qui plafonne à trois cent mille enregistrements, seuil qu'un
+indicateur mondial dépasse souvent. Seuls les totaux sont retenus parmi les
+ventilations par sexe et par âge : additionner des ventilations donnerait des
+doubles comptes, en retenir une au hasard serait pire.
+
+**La CNUCED** emprunte le connecteur SDMX générique, comme l'OCDE.
+
+**Une réserve que je dois poser.** Ces connecteurs sont écrits d'après les
+schémas d'adresse publiés par chaque institution, vérifiés dans leur
+documentation, mais n'ont pas pu être éprouvés sur le réseau.
+`tester_fournisseur()` les valide un par un, et c'est la première chose à
+faire.
+
+**Trois fournisseurs restent dehors.** La FAO et le PNUD demandent chacun un
+travail d'exploration que je n'ai pas mené. Transparency International ne
+publie son indice qu'en classeur, sans service interrogeable : il relève de
+l'import manuel.
+
 ## OPEScGolem_V65 (septembre 2026)
 
 **La liste des pays est rangée en trois groupes**

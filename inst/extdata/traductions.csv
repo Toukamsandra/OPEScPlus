@@ -520,7 +520,7 @@ Viande ovine,Lamb
 Plomb,Lead
 Molybdène,Molybdenum
 Grumes,Soft Logs
-"Grumes, Cameroun",Hard Logs
+"Grumes, Cameroun","Logs, Cameroon"
 Manganèse,Manganese
 Indice des viandes,Meat Index
 Lait,Dairy Products
@@ -529,7 +529,7 @@ Indice du gaz naturel,Natural gas index
 "Gaz naturel, Japon",LNG
 "Gaz naturel, États-Unis",Natural Gas
 Avoine,Oats
-"Pétrole brut, moyenne des trois places",APSP crude oil($/bbl)
+"Pétrole brut, moyenne des trois places","Crude oil, average of three spot prices"
 Huile d'olive,Olive Oil
 Oranges,Orange
 Platine,Platinum
@@ -540,7 +540,7 @@ Volaille,Poultry
 Terres rares,Rare Earth Elements
 Huile de colza,Rapeseed Oil
 Saumon,Fish
-"Sciages, Malaisie",Hard Sawnwood
+"Sciages, Malaisie","Sawnwood, Malaysia"
 Sciages,Soft Sawnwood
 Indice des produits de la mer,Seafood index
 Crevettes,Shrimp
@@ -655,3 +655,10 @@ Régions et regroupements,Regions and groupings
 Monde,World
 %d entités sur %d renseignent cet indicateur.,%d of %d entities report this indicator.
 Choisissez un ou plusieurs pays,Choose one or more countries
+Données actualisées il y a %d jours,Data last updated %d days ago
+"Elles sont probablement dépassées. Avant de les citer, vérifiez auprès de la source ou relancez une collecte.","They are probably out of date. Before citing them, check with the source or run a collection."
+Les sources révisent leurs séries plusieurs fois par an : une actualisation est conseillée.,Sources revise their series several times a year: an update is advisable.
+"Taux de chômage, définition OIT (ODD 8.5.2)","Unemployment rate, ILO definition (SDG 8.5.2)"
+"Emploi total, estimations OIT","Total employment, ILO estimates"
+milliers de personnes,thousands of persons
+Emploi informel,Informal employment
